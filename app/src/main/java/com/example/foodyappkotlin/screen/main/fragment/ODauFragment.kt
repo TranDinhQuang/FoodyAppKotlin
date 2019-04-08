@@ -2,19 +2,24 @@ package com.example.foodyappkotlin.screen.main.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.foodyappkotlin.R
+import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
-import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import javax.inject.Inject
 
-class ODauFragment : Fragment() {
+class ODauFragment : Fragment(), ODauInterface.View {
+
     private lateinit var lOdauAdapter: OdauAdapter
+    private lateinit var mView: View
+    private lateinit var mODauPresenter: ODauPresenter
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -26,17 +31,25 @@ class ODauFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_odau, container, false)
+        mView = inflater.inflate(R.layout.fragment_odau, container, false)
         AndroidSupportInjection.inject(this)
-        initView(view)
-        return view
+        initView()
+        return mView
     }
 
 
-    private fun initView(view: View) {
-        val quanans = foodyRepository.getQuanAns()
-        lOdauAdapter = OdauAdapter(quanans, context!!)
+    private fun initView() {
+        mODauPresenter = ODauPresenter(foodyRepository, this)
+        mODauPresenter.getQuanAns()
+    }
 
-        view.recycler_quan_an.adapter = lOdauAdapter
+    override fun QuanAnsFailure(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun QuanAnsSuccess(quanans: List<QuanAn>) {
+        Log.d("kiemtra","${quanans.size}")
+        lOdauAdapter = OdauAdapter(quanans, context!!)
+        mView.recycler_quan_an.adapter = lOdauAdapter
     }
 }
