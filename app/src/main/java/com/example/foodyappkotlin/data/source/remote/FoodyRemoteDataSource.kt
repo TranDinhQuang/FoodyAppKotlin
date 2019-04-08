@@ -8,28 +8,35 @@ import javax.inject.Singleton
 
 @Singleton
 class FoodyRemoteDataSource : FoodyDataSource.Remote {
+
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
 
-    override fun getQuanAns(): List<QuanAn> {
+    override fun getQuanAns(callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
         var quanans: ArrayList<QuanAn> = ArrayList()
+        val hinhanhquanans: ArrayList<String> = ArrayList()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
                 val dataSnapshotQuanAn = p0.child("quanans")
                 for (item in dataSnapshotQuanAn.children) {
-                    val quanan = item.getValue(QuanAn::class.java)
+                    var quanan = item.getValue(QuanAn::class.java)
                     if (quanan != null) {
+                        quanan.id = item.key.toString()
+                        val dataSnapshotHinhAnh = p0.child("hinhanhquanans").child(quanan.id)
+                        for (item in dataSnapshotHinhAnh.children) {
+                            hinhanhquanans.add(item.value as String)
+                        }
+                        quanan.hinhanhquanans = hinhanhquanans
                         quanans.add(quanan)
                     }
                 }
+                callback.onSuccess(quanans)
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                Log.d("onCancelled", p0.message)
+                callback.onFailure(p0.message)
             }
-
         }
         nodeRoot.addValueEventListener(postListener)
-        return quanans
     }
 }
