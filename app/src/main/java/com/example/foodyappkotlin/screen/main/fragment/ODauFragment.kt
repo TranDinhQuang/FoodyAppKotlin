@@ -6,15 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.foodyappkotlin.R
+import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
-import dagger.android.AndroidInjection
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import javax.inject.Inject
 
-class ODauFragment : Fragment() {
+class ODauFragment : Fragment(), ODauInterface.View {
+
     private lateinit var lOdauAdapter: OdauAdapter
+    private lateinit var mView: View
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -26,17 +28,23 @@ class ODauFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_odau, container, false)
+        mView = inflater.inflate(R.layout.fragment_odau, container, false)
         AndroidSupportInjection.inject(this)
-        initView(view)
-        return view
+        initView()
+        return mView
     }
 
 
-    private fun initView(view: View) {
-        val quanans = foodyRepository.getQuanAns()
+    private fun initView() {
+
+    }
+
+    override fun QuanAnsFailure() {
+    }
+
+    override fun QuanAnsSuccess(quanans: List<QuanAn>) {
         lOdauAdapter = OdauAdapter(quanans, context!!)
 
-        view.recycler_quan_an.adapter = lOdauAdapter
+        mView.recycler_quan_an.adapter = lOdauAdapter
     }
 }
