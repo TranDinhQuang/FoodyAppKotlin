@@ -2,9 +2,11 @@ package com.example.foodyappkotlin.screen.main.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
@@ -17,6 +19,7 @@ class ODauFragment : Fragment(), ODauInterface.View {
 
     private lateinit var lOdauAdapter: OdauAdapter
     private lateinit var mView: View
+    private lateinit var mODauPresenter: ODauPresenter
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -36,15 +39,17 @@ class ODauFragment : Fragment(), ODauInterface.View {
 
 
     private fun initView() {
-
+        mODauPresenter = ODauPresenter(foodyRepository, this)
+        mODauPresenter.getQuanAns()
     }
 
-    override fun QuanAnsFailure() {
+    override fun QuanAnsFailure(msg: String) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
     }
 
     override fun QuanAnsSuccess(quanans: List<QuanAn>) {
+        Log.d("kiemtra","${quanans.size}")
         lOdauAdapter = OdauAdapter(quanans, context!!)
-
         mView.recycler_quan_an.adapter = lOdauAdapter
     }
 }

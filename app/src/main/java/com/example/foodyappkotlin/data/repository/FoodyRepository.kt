@@ -10,8 +10,7 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
-    override fun getQuanAns(): List<QuanAn> {
-        return remoteRepo.getQuanAns()
+    override fun getQuanAns(callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
+        remoteRepo.getQuanAns(callback)
     }
-
 }
