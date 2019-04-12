@@ -23,11 +23,13 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     if (quanan != null) {
                         quanan.id = item.key.toString()
                         val dataSnapshotHinhAnh = p0.child("hinhanhquanans").child(quanan.id)
+                        Log.d("remote", quanan.id)
                         for (item in dataSnapshotHinhAnh.children) {
                             hinhanhquanans.add(item.value as String)
                         }
-                        quanan.hinhanhquanans = hinhanhquanans
+                        quanan.hinhanhquanans.addAll(hinhanhquanans)
                         quanans.add(quanan)
+                        hinhanhquanans.clear()
                     }
                 }
                 callback.onSuccess(quanans)
