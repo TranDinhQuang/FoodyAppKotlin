@@ -12,6 +12,7 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_odau.*
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import javax.inject.Inject
 
@@ -48,7 +49,6 @@ class ODauFragment : Fragment(), ODauInterface.View {
     }
 
     override fun QuanAnsSuccess(quanans: List<QuanAn>) {
-        Log.d("kiemtra","${quanans.size}")
         lOdauAdapter = OdauAdapter(quanans, context!!)
         mView.recycler_quan_an.adapter = lOdauAdapter
     }
