@@ -4,7 +4,8 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="@dimen/dp_20">
+        android:paddingBottom="@dimen/dp_35"
+        android:background="@drawable/bg_line_bottom">
 
     <TextView
             android:id="@+id/text_point"
@@ -58,7 +59,7 @@
     <ImageView
             android:id="@+id/image_foody"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_170"
+            android:layout_height="@dimen/dp_270"
             android:layout_marginTop="@dimen/dp_10"
             android:scaleType="fitXY"
             android:src="@drawable/background_login"
@@ -70,12 +71,15 @@
             android:id="@+id/image_avatar_comment"
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"
-            android:layout_margin="@dimen/dp_10"
-            android:src="@drawable/ic_test"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/ic_user_man"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_foody"/>
 
     <TextView
+            android:id="@+id/text_cmt_one"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
@@ -92,12 +96,15 @@
             android:id="@+id/image_avatar_comment_second"
             android:layout_width="@dimen/dp_35"
             android:layout_height="@dimen/dp_35"
-            android:layout_margin="@dimen/dp_10"
-            android:src="@drawable/ic_test"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@drawable/ic_user_man"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/image_avatar_comment"/>
 
     <TextView
+            android:id="@+id/text_cmt_two"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/dp_10"
@@ -114,7 +121,9 @@
             android:id="@+id/button_order"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
             android:background="@color/red"
             android:text="@string/app_name"
             android:textColor="@color/white"
@@ -125,8 +134,8 @@
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_marginLeft="@dimen/dp_50"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_marginRight="@dimen/dp_10"
             android:src="@drawable/ic_test"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"

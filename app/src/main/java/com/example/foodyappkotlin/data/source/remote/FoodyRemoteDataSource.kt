@@ -1,6 +1,6 @@
 package com.example.foodyappkotlin.data.source.remote
 
-import android.util.Log
+import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.google.firebase.database.*
@@ -14,6 +14,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getQuanAns(callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
         var quanans: ArrayList<QuanAn> = ArrayList()
         val hinhanhquanans: ArrayList<String> = ArrayList()
+        var binhluans =  BinhLuan()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
@@ -23,11 +24,18 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     if (quanan != null) {
                         quanan.id = item.key.toString()
                         val dataSnapshotHinhAnh = p0.child("hinhanhquanans").child(quanan.id)
-                        Log.d("remote", quanan.id)
-                        for (item in dataSnapshotHinhAnh.children) {
-                            hinhanhquanans.add(item.value as String)
+                        val dataSnapshotBinhLuan = p0.child("binhluans").child(quanan.id)
+
+                        for (itemhinhanh in dataSnapshotHinhAnh.children) {
+                            hinhanhquanans.add(itemhinhanh.value as String)
                         }
+
+                        for (itembinhluan in dataSnapshotBinhLuan.children) {
+                            binhluans = itembinhluan.getValue(BinhLuan::class.java)!!
+                        }
+
                         quanan.hinhanhquanans.addAll(hinhanhquanans)
+                        quanan.binhluans.add(binhluans)
                         quanans.add(quanan)
                         hinhanhquanans.clear()
                     }

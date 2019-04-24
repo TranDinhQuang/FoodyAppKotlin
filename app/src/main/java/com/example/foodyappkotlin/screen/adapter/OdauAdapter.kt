@@ -25,7 +25,6 @@ class OdauAdapter(var quanans: List<QuanAn>, val context: Context) : RecyclerVie
 
     override fun onBindViewHolder(p0: OdauAdapter.ViewHolder, p1: Int) {
         p0.bindData(quanans[p1], context)
-        Log.d("kiemtra", "$p1")
     }
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -36,8 +35,17 @@ class OdauAdapter(var quanans: List<QuanAn>, val context: Context) : RecyclerVie
             var storageRef: StorageReference = storage.child("monan").child("error")
             if ((quanan.hinhanhquanans.isNotEmpty())) {
                 storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
-                Log.d("kiemtranhe", quanan.hinhanhquanans[0])
             }
+            if (quanan.binhluans.isNotEmpty()) {
+                Log.d("kiemtra",quanan.binhluans[0].noidung)
+                if (quanan.binhluans.size >= 2) {
+                    v.text_cmt_one.text = quanan.binhluans[0].noidung
+                    v.text_cmt_two.text = quanan.binhluans[1].noidung
+                } else {
+                    v.text_cmt_one.text = quanan.binhluans[0].noidung
+                }
+            }
+
             v.text_food.text = quanan.tenquanan
             v.text_address.text = quanan.diachi
             GlideApp.with(context)
