@@ -45,4 +45,14 @@
     <string name="thongbaoemailkhonghople">Email không lệ !</string>
     <string name="thongbaoguimailthanhcong">Gữi email thành công !</string>
     <string name="text_gan_toi">Gần tôi</string>
+
+    <!--bottom navigation-->
+    <string name="title_home">Home</string>
+    <string name="title_notification">Notify</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_save">Note</string>
+    <string name="msg_comment">Bình luận</string>
+    <string name="msg_image">Hình ảnh</string>
+    <string name="msg_menu">Thực đơn</string>
+    <string name="title_comment">Bình luận</string>
 </resources>

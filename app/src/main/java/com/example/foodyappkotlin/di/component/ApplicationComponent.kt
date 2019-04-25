@@ -26,7 +26,4 @@ interface ApplicationComponent : AndroidInjector<BaseApp> {
 
         fun build(): ApplicationComponent
     }
-
-    // this is needed because MainActivity has @Inject
-    fun inject(oDauFragment: ODauFragment)
 }

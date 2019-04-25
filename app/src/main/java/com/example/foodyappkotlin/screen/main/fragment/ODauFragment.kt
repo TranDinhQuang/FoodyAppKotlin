@@ -2,7 +2,6 @@ package com.example.foodyappkotlin.screen.main.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,13 +10,12 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
+import com.example.foodyappkotlin.screen.detail.DetailEating
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_odau.*
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import javax.inject.Inject
 
-class ODauFragment : Fragment(), ODauInterface.View {
-
+class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener {
     private lateinit var lOdauAdapter: OdauAdapter
     private lateinit var mView: View
     private lateinit var mODauPresenter: ODauPresenter
@@ -49,7 +47,12 @@ class ODauFragment : Fragment(), ODauInterface.View {
     }
 
     override fun QuanAnsSuccess(quanans: List<QuanAn>) {
-        lOdauAdapter = OdauAdapter(quanans, context!!)
+        lOdauAdapter = OdauAdapter(quanans, this)
         mView.recycler_quan_an.adapter = lOdauAdapter
+    }
+
+    override fun onItemClickListener() {
+        val intentDetailEating = DetailEating.newInstance(context!!)
+        startActivity(intentDetailEating)
     }
 }

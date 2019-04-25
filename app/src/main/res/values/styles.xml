@@ -14,4 +14,11 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
+    <style name="TabTextStyle" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">12dp</item>
+    </style>
+    <style name="TabTextStyleUnselected" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">12dp</item>
+    </style>
 </resources>

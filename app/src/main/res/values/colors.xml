@@ -3,6 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D1CECE</color>
+    <color name="bgBottomNavigation">#fe485a</color>
     <color name="transparentBackgroundLogin">#33000000</color>
     <color name="changebgdangnhap">#66000000</color>
     <color name="colorfacebook">#e6208bcd</color>
@@ -12,4 +13,5 @@
     <color name="colorFacebook">#189aca</color>
     <color name="white">#FFFFFF</color>
     <color name="red">#DF2B2B</color>
+    <color name="green">#4CAF50</color>
 </resources>
