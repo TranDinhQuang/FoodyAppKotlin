@@ -14,7 +14,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getQuanAns(callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
         var quanans: ArrayList<QuanAn> = ArrayList()
         val hinhanhquanans: ArrayList<String> = ArrayList()
-        var binhluans =  BinhLuan()
+        var binhluans = ArrayList<BinhLuan>()
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
@@ -31,13 +31,14 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                         }
 
                         for (itembinhluan in dataSnapshotBinhLuan.children) {
-                            binhluans = itembinhluan.getValue(BinhLuan::class.java)!!
+                            binhluans.add(itembinhluan.getValue(BinhLuan::class.java)!!)
                         }
 
                         quanan.hinhanhquanans.addAll(hinhanhquanans)
-                        quanan.binhluans.add(binhluans)
+                        quanan.binhluans.addAll(binhluans)
                         quanans.add(quanan)
                         hinhanhquanans.clear()
+                        binhluans.clear()
                     }
                 }
                 callback.onSuccess(quanans)

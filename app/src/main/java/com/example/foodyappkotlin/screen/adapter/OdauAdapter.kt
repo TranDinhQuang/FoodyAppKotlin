@@ -37,7 +37,8 @@ class OdauAdapter(var quanans: List<QuanAn>, val context: Context) : RecyclerVie
                 storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
             }
             if (quanan.binhluans.isNotEmpty()) {
-                Log.d("kiemtra",quanan.binhluans[0].noidung)
+                Log.d("kiemtra", quanan.binhluans[0].id)
+                itemView.group.visibility = View.VISIBLE
                 if (quanan.binhluans.size >= 2) {
                     v.text_cmt_one.text = quanan.binhluans[0].noidung
                     v.text_cmt_two.text = quanan.binhluans[1].noidung
@@ -49,11 +50,11 @@ class OdauAdapter(var quanans: List<QuanAn>, val context: Context) : RecyclerVie
             v.text_food.text = quanan.tenquanan
             v.text_address.text = quanan.diachi
             GlideApp.with(context)
-                .load(storageRef)
-                .error(R.drawable.ic_lock)
-                .thumbnail(0.1f)
-                .placeholder(R.drawable.ic_lock)
-                .into(v.image_foody)
+                    .load(storageRef)
+                    .error(R.drawable.ic_lock)
+                    .thumbnail(0.1f)
+                    .placeholder(R.drawable.ic_lock)
+                    .into(v.image_foody)
         }
     }
 
