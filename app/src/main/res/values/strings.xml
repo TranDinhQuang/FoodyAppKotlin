@@ -55,4 +55,7 @@
     <string name="msg_image">Hình ảnh</string>
     <string name="msg_menu">Thực đơn</string>
     <string name="title_comment">Bình luận</string>
+    <string name="txt_food_list">Món ăn</string>
+    <string name="txt_drinkl_list">Nước uống</string>
+    <string name="txt_viewmore">Xem thêm</string>
 </resources>

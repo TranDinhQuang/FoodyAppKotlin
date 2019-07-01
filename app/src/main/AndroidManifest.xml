@@ -18,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".screen.login.LoginActivity" />
-        <activity android:name=".screen.detail.DetailEating" />
+        <activity android:name=".screen.detail.DetailEatingActivity" />
     </application>
 
 </manifest>

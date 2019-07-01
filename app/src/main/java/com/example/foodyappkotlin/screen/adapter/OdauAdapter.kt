@@ -13,53 +13,55 @@ import kotlinx.android.synthetic.main.item_odau.view.*
 
 class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.OnClickListener) :
     RecyclerView.Adapter<OdauAdapter.ViewHolder>() {
+    val mListQuanAn = this.quanans
+    val storage = FirebaseStorage.getInstance().reference
+
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): OdauAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(p0.context).inflate(R.layout.item_odau, p0, false))
     }
 
     override fun getItemCount(): Int {
-        return quanans.size
+        return mListQuanAn.size
     }
 
     override fun onBindViewHolder(p0: OdauAdapter.ViewHolder, p1: Int) {
-        p0.bindData(quanans[p1], itemClickListener)
+        bindData(p0.itemView,mListQuanAn[p1], itemClickListener)
     }
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private var v = view
-        val storage = FirebaseStorage.getInstance().reference
-
-        fun bindData(quanan: QuanAn, onItemClick: OdauAdapter.OnClickListener) {
-            var storageRef: StorageReference = storage.child("monan").child("error")
-            if ((quanan.hinhanhquanans.isNotEmpty())) {
-                storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
-            }
-            if (quanan.binhluans.isNotEmpty()) {
-                itemView.group.visibility = View.VISIBLE
-                if (quanan.binhluans.size >= 2) {
-                    v.text_cmt_one.text = quanan.binhluans[0].noidung
-                    v.text_cmt_two.text = quanan.binhluans[1].noidung
-                } else {
-                    v.text_cmt_one.text = quanan.binhluans[0].noidung
-                }
-            }
-
-            v.layout_item_eating.setOnClickListener {
-                onItemClick.onItemClickListener()
-            }
-
-            v.text_food.text = quanan.tenquanan
-            v.text_address.text = quanan.diachi
-            GlideApp.with(v.context)
-                .load(storageRef)
-                .error(R.drawable.ic_lock)
-                .thumbnail(0.1f)
-                .placeholder(R.drawable.ic_lock)
-                .into(v.image_foody)
+    private fun bindData(v :View,quanan: QuanAn, onItemClick: OdauAdapter.OnClickListener){
+        var storageRef: StorageReference = storage.child("error")
+        if ((quanan.hinhanhquanans.isNotEmpty())) {
+            storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
         }
+        if (quanan.binhluans.isNotEmpty()) {
+            v.group.visibility = View.VISIBLE
+            if (quanan.binhluans.size >= 2) {
+                v.text_cmt_one.text = quanan.binhluans[0].noidung
+                v.text_cmt_two.text = quanan.binhluans[1].noidung
+            } else {
+                v.text_cmt_one.text = quanan.binhluans[0].noidung
+            }
+        }else{
+            v.group.visibility = View.GONE
+        }
+
+        v.layout_item_eating.setOnClickListener {
+            onItemClick.onItemClickListener(quanan)
+        }
+
+        v.text_food.text = quanan.tenquanan
+        v.text_address.text = quanan.diachi
+        GlideApp.with(v.context)
+            .load(storageRef)
+            .error(R.drawable.ic_lock)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.ic_lock)
+            .into(v.image_foody)
     }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface OnClickListener {
-        fun onItemClickListener()
+        fun onItemClickListener(quanAn: QuanAn)
     }
 }

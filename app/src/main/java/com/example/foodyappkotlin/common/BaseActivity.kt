@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
-import dagger.android.AndroidInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -77,6 +76,11 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     fun pushFragment(id: Int, fragment: Fragment) {
         mFragmentTransition.replace(id, fragment)
         mFragmentTransition.addToBackStack(null)
+        mFragmentTransition.commit()
+    }
+
+    fun pushFragmentWithoutBackStack(id: Int, fragment: Fragment) {
+        mFragmentTransition.replace(id, fragment)
         mFragmentTransition.commit()
     }
 }

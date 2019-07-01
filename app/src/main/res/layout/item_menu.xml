@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_food_menu"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_centerVertical="true"
+            android:src="@color/backgroundtrangchu" />
+
+        <TextView
+            android:id="@+id/text_food_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/img_food_menu"
+            android:padding="@dimen/dp_2"
+            android:text="ten" />
+
+        <TextView
+            android:id="@+id/text_food_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_food_name"
+            android:layout_toRightOf="@id/img_food_menu"
+            android:padding="@dimen/dp_2"
+            android:text="gia" />
+
+    </RelativeLayout>
+
+</android.support.v7.widget.LinearLayoutCompat>

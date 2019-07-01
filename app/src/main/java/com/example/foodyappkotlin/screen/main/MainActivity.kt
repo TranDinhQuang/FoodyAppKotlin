@@ -6,17 +6,21 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.MenuItem
 import com.example.foodyappkotlin.BaseApp
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
+import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.ViewPagerAdapterMain
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.layout_main_activity.*
+import javax.inject.Inject
 
 
 class MainActivity : BaseActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_main_activity)
@@ -37,7 +41,6 @@ class MainActivity : BaseActivity() {
 
     private val mOnNavigationItemSelectedListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
         override fun onNavigationItemSelected(item: MenuItem): Boolean {
-            val fragment: Fragment
             when (item.itemId) {
                 R.id.navigation_home -> {
 //                    toolbar.setTitle("Shop")

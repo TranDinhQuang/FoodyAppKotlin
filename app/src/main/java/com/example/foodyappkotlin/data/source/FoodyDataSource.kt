@@ -1,6 +1,7 @@
 package com.example.foodyappkotlin.data.source
 
 import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.models.ThucDon
 
 interface FoodyDataSource {
     interface DataCallBack<T> {
@@ -10,5 +11,7 @@ interface FoodyDataSource {
 
     interface Remote {
         fun getQuanAns(callback: DataCallBack<List<QuanAn>>)
+        fun getThucDons(maQuanAn: String, callback: DataCallBack<ThucDon>)
+        fun getHinhAnhBinhLuan(callBack: DataCallBack<List<String>>)
     }
 }

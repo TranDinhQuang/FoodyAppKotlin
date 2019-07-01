@@ -5,7 +5,6 @@ import com.example.foodyappkotlin.di.module.ActivityBindingModule
 import com.example.foodyappkotlin.di.module.AppGlideModule
 import com.example.foodyappkotlin.di.module.FragmentBindingModule
 import com.example.foodyappkotlin.di.module.RepositoryBindingModule
-import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjector

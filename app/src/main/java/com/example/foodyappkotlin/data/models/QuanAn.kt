@@ -13,6 +13,7 @@ data class QuanAn(
     var giomocua: String = "",
     var luotthich: Long = 0,
     var tienich: List<String> = emptyList(),
+    var thucdon : String = "",
     var hinhanhquanans: ArrayList<String> = ArrayList(),
     var binhluans: ArrayList<BinhLuan> = ArrayList()
 ) : Serializable

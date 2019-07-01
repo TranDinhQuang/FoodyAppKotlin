@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorAccent"
     android:orientation="vertical"
     tools:context=".screen.main.MainActivity">
 
@@ -42,7 +41,8 @@
                     <android.support.v4.view.ViewPager
                         android:id="@+id/pager_backdrop"
                         android:layout_width="match_parent"
-                        android:layout_height="250dp" />
+                        android:layout_height="250dp"
+                        android:visibility="gone" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -77,8 +77,10 @@
 
                 <android.support.design.widget.TabLayout
                     android:id="@+id/tab_layout"
+                    android:background="@color/colorAccent"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dp_35"
+                    app:tabTextColor="@color/black"
                     android:layout_below="@id/layout_header" />
 
                 <android.support.v4.view.ViewPager
@@ -98,7 +100,7 @@
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
             android:foreground="?attr/selectableItemBackground"
-            app:itemBackground="@color/bgBottomNavigation"
+            app:itemBackground="@color/colorAccent"
             app:itemIconTint="@android:color/white"
             app:itemTextColor="@android:color/white"
             app:layout_behavior="android.support.design.behavior.HideBottomViewOnScrollBehavior"
