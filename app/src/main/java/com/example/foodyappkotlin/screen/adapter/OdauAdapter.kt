@@ -48,7 +48,7 @@ class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.
         v.layout_item_eating.setOnClickListener {
             onItemClick.onItemClickListener(quanan)
         }
-
+        v.text_point.text = quanan.danhgia?.toString()
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
         GlideApp.with(v.context)

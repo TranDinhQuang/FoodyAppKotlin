@@ -22,7 +22,7 @@ import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_detail_eating.*
+import kotlinx.android.synthetic.main.fragment_detail_eatingg.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -51,7 +51,7 @@ class OverviewFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_detail_eating, null)
+        return inflater.inflate(R.layout.fragment_detail_eatingg, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

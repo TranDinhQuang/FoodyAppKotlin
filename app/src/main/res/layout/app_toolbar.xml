@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/actionBarView"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_44"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dp_16"
     android:background="@color/colorAccent">
 
     <ImageView

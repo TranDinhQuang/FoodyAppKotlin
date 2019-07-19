@@ -58,4 +58,5 @@
     <string name="txt_food_list">Món ăn</string>
     <string name="txt_drinkl_list">Nước uống</string>
     <string name="txt_viewmore">Xem thêm</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

@@ -1,10 +1,10 @@
 package com.example.foodyappkotlin.screen.login
 
 interface LoginInterface {
-    interface View{
+    interface View {
     }
 
-    interface Presenter{
+    interface Presenter {
         fun requestLoginGmail()
     }
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:hint="Tiêu đề (không bắt buộc)"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingTop="@dimen/dp_16"
+        android:paddingBottom="@dimen/dp_16"
+        android:textSize="@dimen/sp_14" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_200"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="Nội dung (Ngôn từ văn hóa,không spam...)"
+        android:inputType="text|textMultiLine"
+        android:paddingLeft="@dimen/dp_6"
+        android:paddingTop="@dimen/dp_6"
+        android:paddingBottom="@dimen/dp_16" />
+
+
+</LinearLayout>
