@@ -1,5 +1,7 @@
 package com.example.foodyappkotlin.screen.main
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.support.design.widget.TabLayout
@@ -15,12 +17,18 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.ViewPagerAdapterMain
+import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.layout_main_activity.*
 import javax.inject.Inject
 
 
 class MainActivity : BaseActivity() {
+    companion object {
+        fun newInstance(context: Context): Intent {
+            return Intent(context, MainActivity::class.java)
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.layout_main_activity)

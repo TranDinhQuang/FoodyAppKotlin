@@ -2,18 +2,17 @@ package com.example.foodyappkotlin.screen.login
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import com.example.foodyappkotlin.R
+import com.example.foodyappkotlin.screen.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.android.synthetic.main.layout_login_activity.*
 
@@ -70,6 +69,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, LoginInterface.
                 // Google Sign In was successful, authenticate with Firebase
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
+
             } catch (e: ApiException) {
                 // Google Sign In failed, update UI appropriately
                 Log.w(TAG, "Google sign in failed", e)
@@ -96,6 +96,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, LoginInterface.
                     Log.d(TAG, "signInWithCredential:success")
                     val user = auth.currentUser
 //                    updateUI(user)
+                    startActivity(MainActivity.newInstance(this))
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
@@ -123,7 +124,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, LoginInterface.
 
         // Google sign out
         googleSignInClient.signOut().addOnCompleteListener(this) {
-//            updateUI(null)
+            //            updateUI(null)
         }
     }
 
@@ -133,7 +134,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener, LoginInterface.
 
         // Google revoke access
         googleSignInClient.revokeAccess().addOnCompleteListener(this) {
-//            updateUI(null)
+            //            updateUI(null)
         }
     }
 /*
