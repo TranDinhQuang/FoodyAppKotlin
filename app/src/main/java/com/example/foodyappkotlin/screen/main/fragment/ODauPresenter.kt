@@ -8,7 +8,7 @@ class ODauPresenter(val repository: FoodyRepository, val view: ODauInterface.Vie
 
 
     override fun getQuanAns() {
-        repository.getQuanAns(object : FoodyDataSource.DataCallBack<List<QuanAn>> {
+        repository.getQuanAns(1,1,object : FoodyDataSource.DataCallBack<List<QuanAn>> {
             override fun onSuccess(data: List<QuanAn>) {
                 view.QuanAnsSuccess(data)
             }

@@ -18,7 +18,7 @@ class FoodyRepository @Inject constructor(
         remoteRepo.getThucDons(maQuanAn,callback)
     }
 
-    override fun getQuanAns(callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
-        remoteRepo.getQuanAns(callback)
+    override fun getQuanAns(province : Int,page : Int,callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
+        remoteRepo.getQuanAns(province,page,callback)
     }
 }

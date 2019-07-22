@@ -10,7 +10,7 @@ interface FoodyDataSource {
     }
 
     interface Remote {
-        fun getQuanAns(callback: DataCallBack<List<QuanAn>>)
+        fun getQuanAns(province : Int,page : Int,callback: DataCallBack<List<QuanAn>>)
         fun getThucDons(maQuanAn: String, callback: DataCallBack<ThucDon>)
         fun getHinhAnhBinhLuan(callBack: DataCallBack<List<String>>)
     }
