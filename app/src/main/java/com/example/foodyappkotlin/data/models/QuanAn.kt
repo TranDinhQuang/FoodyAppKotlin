@@ -12,6 +12,8 @@ data class QuanAn(
     var giodongcua: String = "",
     var giomocua: String = "",
     var luotthich: Long = 0,
+    var num_comments: Long = 0,
+    var num_images: Long = 0,
     var danhgia : Double = 0.0,
     var tienich: List<String> = emptyList(),
     var thucdon : String = "",

@@ -10,6 +10,11 @@ data class BinhLuan(
     var mauser: String = "",
     var noidung: String = "",
     var tieude: String = "",
-    var hinhanh: Map<String,String> = HashMap(),
-    var hinhanhbinhluan : ArrayList<String> = ArrayList()
+    var hinhanh: Map<String, String> = HashMap(),
+    var hinhanhbinhluan: ArrayList<String> = ArrayList()
+) : Serializable
+
+data class ThaoLuan(
+    var mauser: String = "",
+    var noidung: String = ""
 ) : Serializable

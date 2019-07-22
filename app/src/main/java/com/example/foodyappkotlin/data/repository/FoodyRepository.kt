@@ -14,11 +14,11 @@ class FoodyRepository @Inject constructor(
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getThucDons(maQuanAn : String,callback: FoodyDataSource.DataCallBack<ThucDon>) {
-        remoteRepo.getThucDons(maQuanAn,callback)
+    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
+        remoteRepo.getThucDons(maQuanAn, callback)
     }
 
-    override fun getQuanAns(province : Int,page : Int,callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
-        remoteRepo.getQuanAns(province,page,callback)
+    override fun getQuanAns(province: Int, page: Int, callback: FoodyDataSource.DataCallBack<List<QuanAn>>) {
+        remoteRepo.getQuanAns(province, page, callback)
     }
 }

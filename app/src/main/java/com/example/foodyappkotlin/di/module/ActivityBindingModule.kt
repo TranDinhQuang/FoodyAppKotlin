@@ -4,6 +4,7 @@ import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailEatingModule
 import com.example.foodyappkotlin.screen.main.MainActivity
+import com.example.foodyappkotlin.screen.splash.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -16,4 +17,8 @@ abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector
     abstract fun mainActivity(): MainActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract fun splashActivity(): SplashActivity
 }

@@ -4,8 +4,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Fragment
 import android.app.Service
+import android.content.Context
 import android.support.multidex.MultiDexApplication
 import com.example.foodyappkotlin.di.component.DaggerApplicationComponent
+import com.example.foodyappkotlin.di.module.NetworkModule
 import dagger.android.*
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject

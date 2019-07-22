@@ -121,12 +121,14 @@
     <Button
         android:id="@+id/button_order"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dp_40"
         android:layout_marginLeft="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_10"
         android:background="@drawable/border_button"
-        android:text="@string/app_name"
+        android:text="@string/txt_order"
+        android:textSize="@dimen/sp_16"
+        android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintTop_toBottomOf="@id/image_avatar_comment_second" />
 
@@ -137,7 +139,7 @@
         android:layout_marginLeft="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginRight="@dimen/dp_10"
-        android:src="@drawable/icon_chat"
+        android:src="@drawable/ic_chat"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/button_order" />
@@ -155,10 +157,10 @@
 
     <ImageView
         android:id="@+id/image_take_picture"
-        android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_50"
-        android:src="@drawable/icon_camera"
+        android:src="@drawable/ic_image"
         app:layout_constraintBottom_toBottomOf="@id/image_comment"
         app:layout_constraintLeft_toRightOf="@id/text_comment"
         app:layout_constraintTop_toTopOf="@id/image_comment" />

@@ -37,6 +37,5 @@
         android:orientation="vertical"
         android:background="@color/gray3"
         android:paddingTop="@dimen/dp_1"
-        android:paddingBottom="@dimen/dp_44"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 </LinearLayout>

@@ -1,6 +1,5 @@
 package com.example.foodyappkotlin.screen.splash
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,11 +9,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
-import android.util.Log
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.screen.login.LoginActivity
 import com.example.foodyappkotlin.screen.maps.MapsActivity
 import com.google.android.gms.maps.model.LatLng
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
 
 class SplashActivity : BaseActivity() {
@@ -22,16 +23,24 @@ class SplashActivity : BaseActivity() {
     private val mWaitHandler = Handler()
     private var mLocationPermissionGranted: Boolean = false
 
+    @Inject
+    lateinit var appSharedPreferences: AppSharedPreference
+
     companion object {
         private val mDefaultLocation = LatLng(-33.8523341, 151.2106085)
     }
 
-    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.foodyappkotlin.R.layout.splash_activity)
+        AndroidInjection.inject(this)
         getLocationPermission()
         delayTime()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        appSharedPreferences.getUserName()
     }
 
     private fun delayTime() {
@@ -48,7 +57,6 @@ class SplashActivity : BaseActivity() {
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         mLocationPermissionGranted = false
-        print("vao day nhes")
         when (requestCode) {
             (MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -70,11 +78,7 @@ class SplashActivity : BaseActivity() {
             val network_enabled = locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
             if (network_enabled) {
                 location = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-                if (location != null) {
-                    val longitude = location!!.longitude
-                    val latitude = location!!.latitude
-                    Log.d("kiemtra", "$longitude " + latitude)
-                }
+                appSharedPreferences.setLocation(location!!)
             }
 
         } else {

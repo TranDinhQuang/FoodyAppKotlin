@@ -47,6 +47,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/text_gan_toi"
+                        android:visibility="gone"
                         android:textColor="@color/black"
                         android:textStyle="bold" />
 
@@ -54,6 +55,7 @@
                         android:id="@+id/recycler_near_me"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:visibility="gone"
                         android:layout_marginTop="@dimen/dp_8"
                         android:scrollbars="horizontal"
                         app:layoutManager="android.support.v7.widget.LinearLayoutManager">
@@ -99,9 +101,9 @@
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
             android:foreground="?attr/selectableItemBackground"
-            app:itemBackground="@color/colorAccent"
-            app:itemIconTint="@android:color/white"
-            app:itemTextColor="@android:color/white"
+            app:itemBackground="@color/white_transparent"
+            app:itemIconTint="@android:color/holo_red_light"
+            app:itemTextColor="@android:color/holo_red_light"
             app:layout_behavior="android.support.design.behavior.HideBottomViewOnScrollBehavior"
             app:menu="@menu/navigation" />
     </android.support.design.widget.CoordinatorLayout>
