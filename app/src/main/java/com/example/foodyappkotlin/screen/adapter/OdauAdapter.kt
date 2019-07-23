@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.adapter
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -28,7 +29,8 @@ class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.
         bindData(p0.itemView,mListQuanAn[p1], itemClickListener)
     }
 
-    private fun bindData(v :View,quanan: QuanAn, onItemClick: OdauAdapter.OnClickListener){
+    @SuppressLint("SetTextI18n")
+    private fun bindData(v :View, quanan: QuanAn, onItemClick: OdauAdapter.OnClickListener){
         var storageRef: StorageReference = storage.child("error")
         if ((quanan.hinhanhquanans.isNotEmpty())) {
             storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
@@ -48,7 +50,9 @@ class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.
         v.layout_item_eating.setOnClickListener {
             onItemClick.onItemClickListener(quanan)
         }
-        v.text_point.text = quanan.danhgia?.toString()
+        v.text_comment.text = "${quanan.num_comments} bình luận"
+        v.text_take_picture.text =  "${quanan.num_images} hình ảnh"
+        v.text_point.text = quanan.danhgia.toString()
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
         GlideApp.with(v.context)

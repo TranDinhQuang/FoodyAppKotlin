@@ -60,7 +60,7 @@
     <ImageView
         android:id="@+id/image_foody"
         android:layout_width="0dp"
-        android:layout_height="@dimen/dp_170"
+        android:layout_height="@dimen/dp_200"
         android:layout_marginTop="@dimen/dp_10"
         android:scaleType="fitXY"
         android:src="@drawable/background_login"
@@ -166,7 +166,7 @@
         app:layout_constraintTop_toTopOf="@id/image_comment" />
 
     <TextView
-        android:id="@+id/text_ctake_picture"
+        android:id="@+id/text_take_picture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/dp_5"

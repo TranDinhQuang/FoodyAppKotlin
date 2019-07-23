@@ -10,11 +10,15 @@ import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import com.example.foodyappkotlin.AppSharedPreference
+import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
+import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.login.LoginActivity
 import com.example.foodyappkotlin.screen.maps.MapsActivity
 import com.google.android.gms.maps.model.LatLng
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.item_odau.view.*
+import kotlinx.android.synthetic.main.splash_activity.*
 import javax.inject.Inject
 
 

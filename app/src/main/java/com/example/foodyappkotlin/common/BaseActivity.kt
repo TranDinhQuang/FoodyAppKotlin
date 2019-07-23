@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -16,7 +17,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
 abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
-    private var mFragmentTransition = supportFragmentManager.beginTransaction()
+    private lateinit var mFragmentTransition : FragmentTransaction
     private var mFragmentManager = supportFragmentManager
 
     @Inject
@@ -74,6 +75,7 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     fun pushFragment(id: Int, fragment: Fragment) {
+        mFragmentTransition = supportFragmentManager.beginTransaction()
         mFragmentTransition.replace(id, fragment)
         mFragmentTransition.addToBackStack(null)
         mFragmentTransition.commit()

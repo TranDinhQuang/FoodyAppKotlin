@@ -11,12 +11,14 @@ import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import dagger.android.AndroidInjection
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
+@ActivityScoped
 class DetailEatingActivity : BaseActivity(),
     DetailEatingInterface.View {
     lateinit var quanAn: QuanAn
@@ -64,7 +66,8 @@ class DetailEatingActivity : BaseActivity(),
         detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         detailViewModel.setQuanan(quanAn)
         detailViewModel.setThucDon(thucdon)
-        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
+//        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
+        this.pushFragment(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 
     @SuppressLint("ShowToast")

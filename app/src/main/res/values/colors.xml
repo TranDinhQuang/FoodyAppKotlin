@@ -27,5 +27,7 @@
     <color name="sliver">#C0C0C0</color>
     <color name="sliver2">#B1B1B1</color>
     <color name="black_transparent">#99000000</color>
+    <color name="black_transparent2">#80000000</color>
+    <color name="black_transparent3">#66000000</color>
     <color name="white_transparent">#b5eeeeee</color>
 </resources>

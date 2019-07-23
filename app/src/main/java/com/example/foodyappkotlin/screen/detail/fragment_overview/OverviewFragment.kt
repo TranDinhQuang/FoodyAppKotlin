@@ -19,10 +19,13 @@ import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
+import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
+import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_detail_eatingg.*
+import kotlinx.android.synthetic.main.layout_feature.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -51,6 +54,7 @@ class OverviewFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        AndroidSupportInjection.inject(this)
         return inflater.inflate(R.layout.fragment_detail_eatingg, null)
     }
 
@@ -70,6 +74,10 @@ class OverviewFragment : BaseFragment() {
             findQuanAnData(item!!)
             findCommentData(item!!)
         })
+
+        ln_post_comment.setOnClickListener {
+            mActivity.pushFragment(R.id.layout_food_detail,PostCommentFragment.newInstance())
+        }
     }
 
     fun findQuanAnData(quanAn: QuanAn) {
@@ -145,9 +153,5 @@ class OverviewFragment : BaseFragment() {
         } catch (e: java.text.ParseException) {
             Date(0)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 }

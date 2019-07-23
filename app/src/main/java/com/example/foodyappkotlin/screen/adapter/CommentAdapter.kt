@@ -31,7 +31,6 @@ class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
         p0.itemView.text_title.text = comments[p1].tieude
         p0.itemView.text_content_comment.text = comments[p1].noidung
         p0.itemView.text_title.text = comments[p1].tieude
-        p0.itemView.sum_like.text = comments[p1].luotthich.toString()
         if (comments[p1].hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
