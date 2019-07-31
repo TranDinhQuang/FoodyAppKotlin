@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
-<ImageView
-    android:layout_width=""
-    android:layout_height="" />
-</android.support.constraint.ConstraintLayout>
+    <ImageView
+        android:id="@+id/image_upload"
+        android:layout_width="@dimen/dp_120"
+        android:layout_height="@dimen/dp_150"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_login" />
+
+    <ImageView
+        android:id="@+id/img_close"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_margin="@dimen/dp_5"
+        android:layout_alignRight="@id/image_upload"
+        android:src="@drawable/ic_close" />
+</RelativeLayout>
