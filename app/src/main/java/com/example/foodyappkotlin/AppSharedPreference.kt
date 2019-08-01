@@ -25,7 +25,6 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
 
     private lateinit var location: Location
     fun getUserName(): String? {
-        Log.d("kiemtra", "vao day")
         /*if (userName == null) {
             userName = sharedPreferences.getString(KeyUserName, "")
         }

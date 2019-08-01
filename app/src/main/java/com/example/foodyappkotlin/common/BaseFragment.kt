@@ -11,6 +11,9 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 import javax.inject.Named
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+
 
 abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
 
@@ -39,4 +42,20 @@ abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return childFragmentInjector
     }
+
+    fun showAlertListerner(title : String,message : String,listerner : DialogInterface.OnClickListener ){
+        AlertDialog.Builder(activityContext)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
+    }
+
+
+    fun showAlertMessage(title : String,message : String){
+        AlertDialog.Builder(activityContext)
+                .setTitle(title)
+                .setMessage(message)
+                .setNegativeButton("Đồng ý", null).show()
+    }
 }
+

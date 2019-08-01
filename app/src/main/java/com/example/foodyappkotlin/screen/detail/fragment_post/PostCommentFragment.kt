@@ -1,9 +1,7 @@
 package com.example.foodyappkotlin.screen.detail.fragment_post
 
 import android.Manifest
-import android.annotation.SuppressLint
 import android.app.Activity.RESULT_OK
-import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,7 +16,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -33,8 +31,6 @@ import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.view.ItemOffsetDecoration
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -45,14 +41,17 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 
-class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
-    private var quanAn : QuanAn? = null
+class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePostAdapter.OnClickListener {
+
+    private var quanAn: QuanAn? = null
 
     private lateinit var photoURI: Uri
     private lateinit var mAdapter: PicturePostAdapter
     private lateinit var detailViewModel: DetailViewModel
+    private lateinit var listImagePost: MutableList<String>
 
     @Inject
     lateinit var mActivity: DetailEatingActivity
@@ -69,7 +68,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
         val REQUEST_GALLERY_PHOTO = 102
 
         var permissions =
-            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         fun newInstance(): Fragment {
             val postCommentFragment = PostCommentFragment()
@@ -78,9 +77,9 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_post_comment, null)
     }
@@ -90,8 +89,13 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
         init()
     }
 
+    override fun removeImage(position: Int) {
+        listImagePost.removeAt(position)
+    }
+
     private fun init() {
-        recycler_picture_post.layoutManager = GridLayoutManager(activityContext,3)
+        listImagePost = ArrayList()
+        recycler_picture_post.layoutManager = GridLayoutManager(activityContext, 3)
         val itemDecoration = ItemOffsetDecoration(activityContext, R.dimen.dp_2)
         recycler_picture_post.addItemDecoration(itemDecoration)
         recycler_picture_post.setHasFixedSize(true)
@@ -101,18 +105,18 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
         } ?: throw Exception("Invalid Activity")
 
         quanAn = detailViewModel.quanan.value!!
-        if(quanAn != null){
+        if (quanAn != null) {
             txt_restaurent_name.text = quanAn!!.tenquanan
             txt_restaurent_address.text = quanAn!!.diachi
         }
 
-        mAdapter = PicturePostAdapter(activityContext)
+        mAdapter = PicturePostAdapter(activityContext, this)
         recycler_picture_post.adapter = mAdapter
         open_camera.setOnClickListener {
             if (checkPermission()) {
                 val file = newFile()
                 if (file == null) {
-                    Toast.makeText(context, "Co loi xay ra", Toast.LENGTH_SHORT)
+                    Toast.makeText(context, "Có lỗi xảy ra", Toast.LENGTH_SHORT)
                 } else {
                     startCamera(file)
                 }
@@ -129,13 +133,32 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
         }
 
         txtPostComment.setOnClickListener {
+            postComment()
+        }
+    }
+
+    private fun postComment() {
+        Log.d("kliemtrea", "${ratingBar.rating}")
+        if (txtTitleComment.text.toString().trim() == "" || txtContentComment.text.toString().trim() == "" || (ratingBar.rating.equals(0F))) {
+            showAlertMessage("Thiếu thông tin", "Bạn cần chọn và nhập đầy đủ các thông tin")
+        } else {
             var binhLuan = BinhLuan()
-            binhLuan.mauser ="9vxmsiy2xtPcQuKD9CHyUVgNqxB3"
+            binhLuan.mauser = "9vxmsiy2xtPcQuKD9CHyUVgNqxB3"
             binhLuan.tieude = txtTitleComment.text.toString()
             binhLuan.noidung = txtContentComment.text.toString()
             binhLuan.num_like = 0
             binhLuan.num_share = 0
-            presenter.postCommentToServer(this, quanAn!!.id,binhLuan)
+            binhLuan.chamdiem = ratingBar.rating
+            if (!listImagePost.isNullOrEmpty()) {
+                var i = 1
+                val map = listImagePost.associate {
+                    "hinhanh${i++}" to it
+                }
+                binhLuan.hinhanh.putAll(map)
+            }
+            presenter.postCommentToServer(this, quanAn!!.id, binhLuan)
+            txtPostComment.isEnabled = false
+            progressBar.visibility = View.VISIBLE
         }
     }
 
@@ -147,6 +170,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
             } else if (requestCode == REQUEST_GALLERY_PHOTO) {
                 val selectedImage = data!!.data
                 val mPhotoPath = getRealPathFromUri(selectedImage)
+                listImagePost.add(mPhotoPath)
                 mAdapter.setImagePost(mPhotoPath)
             }
         }
@@ -196,30 +220,30 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
 
     private fun showPermissionDialog() {
         Dexter.withActivity(mActivity).withPermissions().withListener(
-            object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    if (report != null) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                        }
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog()
+                object : MultiplePermissionsListener {
+                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                        if (report != null) {
+                            // check if all permissions are granted
+                            if (report.areAllPermissionsGranted()) {
+                            }
+                            // check for permanent denial of any permission
+                            if (report.isAnyPermissionPermanentlyDenied) {
+                                // show alert dialog navigating to Settings
+                                showSettingsDialog()
+                            }
                         }
                     }
-                }
 
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
-                ) {
-                    token?.continuePermissionRequest()
+                    override fun onPermissionRationaleShouldBeShown(
+                            permissions: MutableList<PermissionRequest>?,
+                            token: PermissionToken?
+                    ) {
+                        token?.continuePermissionRequest()
+                    }
                 }
-            }
         ).withErrorListener { showSettingsDialog() }
-            .onSameThread()
-            .check()
+                .onSameThread()
+                .check()
     }
 
     fun showSettingsDialog() {
@@ -246,11 +270,11 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
         if (takePictureIntent.resolveActivity(mActivity.packageManager) != null) {
             if (file != null) {
                 photoURI =
-                    FileProvider.getUriForFile(
-                        activityContext,
-                        BuildConfig.APPLICATION_ID + ".provider",
-                        file
-                    )
+                        FileProvider.getUriForFile(
+                                activityContext,
+                                BuildConfig.APPLICATION_ID + ".provider",
+                                file
+                        )
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
             }
@@ -265,11 +289,15 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
     //start camera
 
     override fun postCommentFailure() {
-        Toast.makeText(activityContext,"that bai",Toast.LENGTH_SHORT)
+        txtPostComment.isEnabled = true
+        progressBar.visibility = View.GONE
+        Toast.makeText(activityContext, "that bai", Toast.LENGTH_SHORT)
     }
 
     override fun postCommentSuccess() {
-        Toast.makeText(activityContext,"Thanh cong",Toast.LENGTH_SHORT)
+        progressBar.visibility = View.GONE
+        mActivity.popFragment()
+        Toast.makeText(activityContext, "Thanh cong", Toast.LENGTH_SHORT)
     }
 
 }

@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_odau.view.*
 
 class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.OnClickListener) :
     RecyclerView.Adapter<OdauAdapter.ViewHolder>() {
-    val mListQuanAn = this.quanans
+    var mListQuanAn = this.quanans
     val storage = FirebaseStorage.getInstance().reference
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): OdauAdapter.ViewHolder {
@@ -58,10 +58,15 @@ class OdauAdapter(var quanans: List<QuanAn>, val itemClickListener: OdauAdapter.
         v.text_address.text = quanan.diachi
         GlideApp.with(v.context)
             .load(storageRef)
-            .error(R.drawable.ic_lock)
+            .error(R.drawable.placeholder)
             .thumbnail(0.1f)
-            .placeholder(R.drawable.ic_lock)
+            .placeholder(R.drawable.placeholder)
             .into(v.image_foody)
+    }
+
+    fun addAllItem(quanans: List<QuanAn>){
+        mListQuanAn = quanans
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

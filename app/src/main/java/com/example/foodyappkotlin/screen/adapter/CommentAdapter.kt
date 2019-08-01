@@ -91,9 +91,9 @@ class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
     private fun glideLoadImage(img: ImageView, url: StorageReference) {
         GlideApp.with(context)
             .load(url)
-            .error(R.drawable.ic_lock)
+            .error(R.drawable.placeholder)
             .thumbnail(0.1f)
-            .placeholder(R.drawable.ic_lock)
+            .placeholder(R.drawable.placeholder)
             .into(img)
     }
 

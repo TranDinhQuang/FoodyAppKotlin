@@ -87,9 +87,9 @@ class OverviewFragment : BaseFragment() {
         }
         GlideApp.with(activityContext)
             .load(storageRef)
-            .error(R.drawable.ic_lock)
+            .error(R.drawable.placeholder)
             .thumbnail(0.1f)
-            .placeholder(R.drawable.ic_lock)
+            .placeholder(R.drawable.placeholder)
             .into(image_eating)
 
         var sum = 0

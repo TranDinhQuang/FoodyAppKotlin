@@ -13,12 +13,14 @@ import com.example.foodyappkotlin.screen.adapter.OdauAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_odau.view.*
+import java.util.ArrayList
 import javax.inject.Inject
 
 class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener {
     private lateinit var lOdauAdapter: OdauAdapter
     private lateinit var mView: View
     private lateinit var mODauPresenter: ODauPresenter
+    private lateinit var quanans: List<QuanAn>
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -38,8 +40,11 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
 
 
     private fun initView() {
+        quanans = ArrayList()
         mODauPresenter = ODauPresenter(foodyRepository, this)
         mODauPresenter.getQuanAns()
+        lOdauAdapter = OdauAdapter(quanans, this)
+        mView.recycler_quan_an.adapter = lOdauAdapter
     }
 
     override fun QuanAnsFailure(msg: String) {
@@ -47,9 +52,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     }
 
     override fun QuanAnsSuccess(quanans: List<QuanAn>) {
-        lOdauAdapter = OdauAdapter(quanans, this)
-        mView.recycler_quan_an.adapter = lOdauAdapter
-        lOdauAdapter.notifyDataSetChanged()
+        lOdauAdapter.addAllItem(quanans)
     }
 
     override fun onItemClickListener(quanAn: QuanAn) {
