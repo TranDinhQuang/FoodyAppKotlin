@@ -1,15 +1,76 @@
 package com.example.foodyappkotlin.screen.detail.fragment_post
 
+import android.Manifest
+import android.annotation.SuppressLint
+import android.app.Activity.RESULT_OK
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProviders
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
+import android.provider.Settings
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
+import android.support.v4.content.FileProvider
+import android.support.v7.app.AlertDialog
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import com.example.foodyappkotlin.BuildConfig
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
+import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
+import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
+import com.example.foodyappkotlin.screen.detail.DetailViewModel
+import com.example.foodyappkotlin.view.ItemOffsetDecoration
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import kotlinx.android.synthetic.main.fragment_post_comment.*
+import java.io.File
+import java.io.IOException
+import java.util.*
+import javax.inject.Inject
 
-class PostCommentFragment : BaseFragment() {
+
+class PostCommentFragment : BaseFragment(), PostCommentInterface.View {
+    private var quanAn : QuanAn? = null
+
+    private lateinit var photoURI: Uri
+    private lateinit var mAdapter: PicturePostAdapter
+    private lateinit var detailViewModel: DetailViewModel
+
+    @Inject
+    lateinit var mActivity: DetailEatingActivity
+
+
+    @Inject
+    lateinit var repository: FoodyRepository
+
+    @Inject
+    lateinit var presenter: PostCommentInterface.Presenter
+
     companion object {
+        val REQUEST_TAKE_PHOTO = 101
+        val REQUEST_GALLERY_PHOTO = 102
+
+        var permissions =
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+
         fun newInstance(): Fragment {
             val postCommentFragment = PostCommentFragment()
             return postCommentFragment
@@ -17,14 +78,198 @@ class PostCommentFragment : BaseFragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_post_comment, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        init()
     }
+
+    private fun init() {
+        recycler_picture_post.layoutManager = GridLayoutManager(activityContext,3)
+        val itemDecoration = ItemOffsetDecoration(activityContext, R.dimen.dp_2)
+        recycler_picture_post.addItemDecoration(itemDecoration)
+        recycler_picture_post.setHasFixedSize(true)
+
+        detailViewModel = activity?.run {
+            ViewModelProviders.of(this).get(DetailViewModel::class.java)
+        } ?: throw Exception("Invalid Activity")
+
+        quanAn = detailViewModel.quanan.value!!
+        if(quanAn != null){
+            txt_restaurent_name.text = quanAn!!.tenquanan
+            txt_restaurent_address.text = quanAn!!.diachi
+        }
+
+        mAdapter = PicturePostAdapter(activityContext)
+        recycler_picture_post.adapter = mAdapter
+        open_camera.setOnClickListener {
+            if (checkPermission()) {
+                val file = newFile()
+                if (file == null) {
+                    Toast.makeText(context, "Co loi xay ra", Toast.LENGTH_SHORT)
+                } else {
+                    startCamera(file)
+                }
+            } else {
+                showPermissionDialog()
+            }
+        }
+        open_library.setOnClickListener {
+            if (checkPermission()) {
+                chooseGallery()
+            } else {
+                showPermissionDialog()
+            }
+        }
+
+        txtPostComment.setOnClickListener {
+            var binhLuan = BinhLuan()
+            binhLuan.mauser ="9vxmsiy2xtPcQuKD9CHyUVgNqxB3"
+            binhLuan.tieude = txtTitleComment.text.toString()
+            binhLuan.noidung = txtContentComment.text.toString()
+            binhLuan.num_like = 0
+            binhLuan.num_share = 0
+            presenter.postCommentToServer(this, quanAn!!.id,binhLuan)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == RESULT_OK) {
+            if (requestCode == REQUEST_TAKE_PHOTO) {
+
+            } else if (requestCode == REQUEST_GALLERY_PHOTO) {
+                val selectedImage = data!!.data
+                val mPhotoPath = getRealPathFromUri(selectedImage)
+                mAdapter.setImagePost(mPhotoPath)
+            }
+        }
+    }
+
+    fun getRealPathFromUri(contentUri: Uri): String {
+        var cursor: Cursor? = null
+        try {
+            val proj = run { MediaStore.Images.Media.DATA }
+            cursor = mActivity.contentResolver.query(contentUri, arrayOf(proj), null, null, null)
+            assert(cursor != null)
+            val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+            cursor.moveToFirst()
+            return cursor.getString(columnIndex)
+        } finally {
+            cursor?.close()
+        }
+    }
+
+    private fun newFile(): File? {
+        var cal = Calendar.getInstance()
+        var timeInMollis = cal.timeInMillis
+        val mFileName = "$timeInMollis.jpeg"
+        val mFilePath = getFilePath()
+        try {
+            var newFile = File(mFilePath.absolutePath, mFileName)
+            newFile.createNewFile()
+            return newFile
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return null
+    }
+
+    private fun getFilePath(): File {
+        return mActivity.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+    }
+
+
+    private fun checkPermission(): Boolean {
+        for (mPermission in permissions) {
+            val result = ActivityCompat.checkSelfPermission(activityContext, mPermission)
+            if (result == PackageManager.PERMISSION_DENIED) return false
+        }
+        return true
+    }
+
+    private fun showPermissionDialog() {
+        Dexter.withActivity(mActivity).withPermissions().withListener(
+            object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    if (report != null) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    token?.continuePermissionRequest()
+                }
+            }
+        ).withErrorListener { showSettingsDialog() }
+            .onSameThread()
+            .check()
+    }
+
+    fun showSettingsDialog() {
+        val builder = AlertDialog.Builder(activityContext)
+        builder.setTitle(getString(R.string.message_need_permission))
+        builder.setMessage(getString(R.string.message_grant_permission))
+        builder.setPositiveButton(getString(R.string.label_setting)) { dialog, which ->
+            dialog.cancel()
+            openSettings()
+        }
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
+        builder.show()
+    }
+
+    private fun openSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", mActivity.packageName, null)
+        intent.data = uri
+        startActivityForResult(intent, 101)
+    }
+
+    private fun startCamera(file: File) {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        if (takePictureIntent.resolveActivity(mActivity.packageManager) != null) {
+            if (file != null) {
+                photoURI =
+                    FileProvider.getUriForFile(
+                        activityContext,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        file
+                    )
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
+            }
+        }
+    }
+
+    private fun chooseGallery() {
+        val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO)
+    }
+    //start camera
+
+    override fun postCommentFailure() {
+        Toast.makeText(activityContext,"that bai",Toast.LENGTH_SHORT)
+    }
+
+    override fun postCommentSuccess() {
+        Toast.makeText(activityContext,"Thanh cong",Toast.LENGTH_SHORT)
+    }
+
 }

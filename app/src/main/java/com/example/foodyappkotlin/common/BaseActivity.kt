@@ -82,6 +82,7 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
     }
 
     fun pushFragmentWithoutBackStack(id: Int, fragment: Fragment) {
+        mFragmentTransition = supportFragmentManager.beginTransaction()
         mFragmentTransition.replace(id, fragment)
         mFragmentTransition.commit()
     }

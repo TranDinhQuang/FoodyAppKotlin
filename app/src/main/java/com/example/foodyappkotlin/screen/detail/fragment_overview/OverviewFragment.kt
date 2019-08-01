@@ -76,7 +76,7 @@ class OverviewFragment : BaseFragment() {
         })
 
         ln_post_comment.setOnClickListener {
-            mActivity.pushFragment(R.id.layout_food_detail,PostCommentFragment.newInstance())
+            mActivity.pushFragment(R.id.layout_food_detail, PostCommentFragment.newInstance())
         }
     }
 
@@ -95,7 +95,7 @@ class OverviewFragment : BaseFragment() {
         var sum = 0
         text_sum_comment.text = quanAn.binhluans.size.toString()
         quanAn.binhluans.forEach {
-            if(it.hinhanh.isNotEmpty()) {
+            if (it.hinhanh.isNotEmpty()) {
                 sum += it.hinhanh.size
             }
         }.let {
@@ -122,6 +122,7 @@ class OverviewFragment : BaseFragment() {
                 }
             }
         })
+        recycler_menu.isNestedScrollingEnabled = false
     }
 
     fun findCommentData(quanAn: QuanAn) {
@@ -131,6 +132,7 @@ class OverviewFragment : BaseFragment() {
             commentAdapter = CommentAdapter(activity!!, quanAn.binhluans)
             recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
             recycler_user_comment.adapter = commentAdapter
+            recycler_user_comment.isNestedScrollingEnabled = false
         }
     }
 

@@ -60,4 +60,17 @@
     <string name="txt_viewmore">Xem thêm</string>
     <string name="title_activity_maps">Map</string>
     <string name="txt_order">Đặt món</string>
+    <string name="message_hint_input_comment">Nhập nội dung bình luận (tối đa 300 kí tự)</string>
+
+    <string name="error_message_insufficient_space">
+        You have few space available, please make sure your have more than 5MB on disk to
+        take pictures!</string>
+    <string name="ok">Ok</string>
+    <string name="error_message">Error occurred!</string>
+    <string name="message_need_permission">Need Permissions</string>
+    <string name="message_grant_permission">This app needs permission to use this feature. You can grant them in app settings.</string>
+    <string name="label_setting">GOTO SETTINGS</string>
+    <string name="cancel">Cancel</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="choose_gallery">Choose from Gallery</string>
 </resources>

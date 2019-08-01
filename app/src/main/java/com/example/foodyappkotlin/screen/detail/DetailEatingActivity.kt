@@ -66,8 +66,8 @@ class DetailEatingActivity : BaseActivity(),
         detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
         detailViewModel.setQuanan(quanAn)
         detailViewModel.setThucDon(thucdon)
-//        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
-        this.pushFragment(R.id.layout_food_detail, OverviewFragment.newInstance())
+        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
+//        this.pushFragment(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 
     @SuppressLint("ShowToast")

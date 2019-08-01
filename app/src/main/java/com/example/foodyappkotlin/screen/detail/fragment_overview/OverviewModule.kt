@@ -5,5 +5,4 @@ import dagger.Module
 
 @Module(includes = [(BaseFragmentModule::class)])
 abstract class OverviewModule{
-
 }

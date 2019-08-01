@@ -41,46 +41,46 @@ class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
         when (hinhanhs.size) {
             1 -> {
                 view.group_one_picture.visibility = View.VISIBLE
-                storageRef = storage.child("monan").child(hinhanhs[0])
+                storageRef = storage.child("binhluan").child(hinhanhs[0])
                 glideLoadImage(view.img_one_one, storageRef)
             }
             2 -> {
                 view.group_two_picture.visibility = View.VISIBLE
-                storageRef = storage.child("monan").child(hinhanhs[0])
+                storageRef = storage.child("binhluan").child(hinhanhs[0])
                 glideLoadImage(view.img_two_one, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[1])
+                storageRef = storage.child("binhluan").child(hinhanhs[1])
                 glideLoadImage(view.img_two_two, storageRef)
             }
             3 -> {
                 view.group_three_picture.visibility = View.VISIBLE
-                storageRef = storage.child("monan").child(hinhanhs[0])
+                storageRef = storage.child("binhluan").child(hinhanhs[0])
                 glideLoadImage(view.img_three_one, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[1])
+                storageRef = storage.child("binhluan").child(hinhanhs[1])
                 glideLoadImage(view.img_three_two, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[2])
+                storageRef = storage.child("binhluan").child(hinhanhs[2])
                 glideLoadImage(view.img_three_three, storageRef)
 
             }
             4 -> {
                 view.group_four_picture.visibility = View.VISIBLE
-                storageRef = storage.child("monan").child(hinhanhs[0])
+                storageRef = storage.child("binhluan").child(hinhanhs[0])
                 glideLoadImage(view.img_four_one, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[1])
+                storageRef = storage.child("binhluan").child(hinhanhs[1])
                 glideLoadImage(view.img_four_two, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[2])
+                storageRef = storage.child("binhluan").child(hinhanhs[2])
                 glideLoadImage(view.img_four_three, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[3])
+                storageRef = storage.child("binhluan").child(hinhanhs[3])
                 glideLoadImage(view.img_four_four, storageRef)
             }
             else -> {
                 view.group_four_picture.visibility = View.VISIBLE
-                storageRef = storage.child("monan").child(hinhanhs[0])
+                storageRef = storage.child("binhluan").child(hinhanhs[0])
                 glideLoadImage(view.img_four_one, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[1])
+                storageRef = storage.child("binhluan").child(hinhanhs[1])
                 glideLoadImage(view.img_four_two, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[2])
+                storageRef = storage.child("binhluan").child(hinhanhs[2])
                 glideLoadImage(view.img_four_three, storageRef)
-                storageRef = storage.child("monan").child(hinhanhs[3])
+                storageRef = storage.child("binhluan").child(hinhanhs[3])
                 glideLoadImage(view.img_four_four, storageRef)
                 view.img_transparent.visibility = View.VISIBLE
                 view.text_number.visibility = View.VISIBLE

@@ -7,9 +7,21 @@ import com.google.firebase.database.*
 import com.google.gson.Gson
 import javax.inject.Singleton
 
+
 @Singleton
 class FoodyRemoteDataSource : FoodyDataSource.Remote {
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+
+    override fun writeCommentToDataBase(idQuanAn: String, binhluan: BinhLuan, callBack: FoodyDataSource.DataCallBack<String>) {
+        var dataRef = nodeRoot.child("binhluans").child(idQuanAn)
+        dataRef.push().setValue(binhluan) { databaseError, databaseReference ->
+            if (databaseError != null) {
+                callBack.onFailure("Data could not be saved " + databaseError.message)
+            } else {
+                callBack.onSuccess("Data saved successfully.")
+            }
+        }
+    }
 
     override fun getThucDons(maThucDon: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
         var thucdons = ThucDon(ArrayList(), ArrayList())
@@ -43,7 +55,11 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
     }
 
-    override fun getQuanAns(province : Int,page : Int,callback: FoodyDataSource.DataCallBack<List<QuanAn>>){
+    override fun getQuanAns(
+            province: Int,
+            page: Int,
+            callback: FoodyDataSource.DataCallBack<List<QuanAn>>
+    ) {
         var quanans: ArrayList<QuanAn> = ArrayList()
         val hinhanhquanans: ArrayList<String> = ArrayList()
         var binhluans = ArrayList<BinhLuan>()
@@ -73,7 +89,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     }
                 }
                 var gson = Gson()
-                Log.d("data",gson.toJson(quanans))
+                Log.d("data", gson.toJson(quanans))
                 callback.onSuccess(quanans)
             }
 
