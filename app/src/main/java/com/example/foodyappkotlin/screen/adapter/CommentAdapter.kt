@@ -3,6 +3,7 @@ package com.example.foodyappkotlin.screen.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,7 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
-class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>) :
+class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var listLiked : MutableList<String>) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
@@ -38,6 +39,15 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>) 
         if (comments[p1].hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
+        }
+        if(listLiked.isNotEmpty()){
+            listLiked.forEach {
+                Log.d("kiemtra","${it} - ${comments[p1].id}")
+                if(it == comments[p1].id){
+                    p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
+                    return
+                }
+            }
         }
     }
 
@@ -101,7 +111,7 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>) 
             .into(img)
     }
 
-    fun onDataChanged(comment : BinhLuan){
+    fun onDataChanged(comment: BinhLuan) {
         comments.add(comment)
         notifyDataSetChanged()
     }

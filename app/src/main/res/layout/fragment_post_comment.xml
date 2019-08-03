@@ -141,5 +141,6 @@
         android:background="@drawable/bg_circle"
         android:indeterminate="false"
         android:max="100"
-        android:progress="1" />
+        android:progress="1"
+        android:visibility="gone" />
 </RelativeLayout>

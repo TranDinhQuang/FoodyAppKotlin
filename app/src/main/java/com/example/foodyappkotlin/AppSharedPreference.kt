@@ -11,7 +11,6 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
         private val TAG = AppSharedPreference::class.java.name
         private const val KeyPhoneNumber = "phoneNumber"
         private const val KeyToken = "token"
-        private const val KeyFcm = "fcmToken"
         private const val KeyUserName = "userName"
     }
 
@@ -19,34 +18,22 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
 
     private var phoneNumber: String? = null
 
-    private var fcmToken: String? = null
-
     private var userName: String? = null
 
     private lateinit var location: Location
+
+
+
     fun getUserName(): String? {
-        /*if (userName == null) {
+        if (userName == null) {
             userName = sharedPreferences.getString(KeyUserName, "")
         }
-        return userName*/
-        return "quang"
+        return userName
     }
 
     fun setUserName(userName: String) {
         this.userName = userName
         sharedPreferences.edit().putString(KeyUserName, userName).apply()
-    }
-
-    fun getFcmToken(): String? {
-        if (fcmToken == null) {
-            fcmToken = sharedPreferences.getString(KeyFcm, "")
-        }
-        return fcmToken
-    }
-
-    fun setFcmToken(fcm: String?) {
-        this.fcmToken = fcm
-        sharedPreferences.edit().putString(KeyFcm, fcm).apply()
     }
 
     fun getPhoneNumber(): String? {

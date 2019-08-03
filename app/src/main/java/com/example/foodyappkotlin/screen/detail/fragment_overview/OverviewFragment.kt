@@ -160,7 +160,7 @@ class OverviewFragment : BaseFragment() {
         if (!binhluans.isEmpty()) {
             val gson = Gson()
             Log.d("data", gson.toJson(binhluans))
-            commentAdapter = CommentAdapter(activity!!, binhluans)
+            commentAdapter = CommentAdapter(activity!!, binhluans,ArrayList())
             recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
             recycler_user_comment.adapter = commentAdapter
             recycler_user_comment.isNestedScrollingEnabled = false

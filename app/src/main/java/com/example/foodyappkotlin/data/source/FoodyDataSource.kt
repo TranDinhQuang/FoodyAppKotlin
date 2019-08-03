@@ -4,6 +4,7 @@ import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.response.UserResponse
 
 interface FoodyDataSource {
     interface DataCallBack<T> {
@@ -25,7 +26,9 @@ interface FoodyDataSource {
             idQuanAn: QuanAn, binhluan: BinhLuan, callBack: DataCallBack<String>
         )
 
-        fun saveUserLoginData(user : User,callBack: DataCallBack<User>)
+        fun saveUserLoginData(user : User,callBack: DataCallBack<UserResponse>)
+
+        fun getListLikedOfUser(userId : String,callBack: DataCallBack<MutableList<String>>)
 
     }
 }
