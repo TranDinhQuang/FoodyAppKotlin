@@ -2,6 +2,7 @@ package com.example.foodyappkotlin.screen.main.fragment
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_odau.*
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import java.util.ArrayList
 import javax.inject.Inject
@@ -34,12 +36,17 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         mView = inflater.inflate(R.layout.fragment_odau, container, false)
         AndroidSupportInjection.inject(this)
-        initView()
         return mView
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
     }
 
 
     private fun initView() {
+        progressBar.visibility = View.VISIBLE
         quanans = ArrayList()
         mODauPresenter = ODauPresenter(foodyRepository, this)
         mODauPresenter.getQuanAns()
@@ -48,10 +55,11 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     }
 
     override fun QuanAnsFailure(msg: String) {
-        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
+        progressBar.visibility = View.GONE
     }
 
     override fun QuanAnsSuccess(quanans: List<QuanAn>) {
+        progressBar.visibility = View.GONE
         lOdauAdapter.addAllItem(quanans)
     }
 

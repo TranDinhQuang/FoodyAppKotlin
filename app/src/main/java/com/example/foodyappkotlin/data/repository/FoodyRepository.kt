@@ -3,6 +3,7 @@ package com.example.foodyappkotlin.data.repository
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
+import com.example.foodyappkotlin.data.models.User
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.haipq.miniweather.data.source.Remote
 import javax.inject.Inject
@@ -12,11 +13,25 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
-    override fun writeCommentToDataBase(idQuanAn : String,
+    override fun saveUserLoginData(user: User, callBack: FoodyDataSource.DataCallBack<User>) {
+        remoteRepo.saveUserLoginData(user,callBack)
+    }
+
+    override fun getAllCommentFollowQuanAn(
+        idQuanan: String,
+        callback: FoodyDataSource.DataCallBack<BinhLuan>
+    ) {
+        remoteRepo.getAllCommentFollowQuanAn(idQuanan, callback)
+    }
+
+    override fun writeCommentToDataBase(
+        idQuanAn: QuanAn,
         binhluan: BinhLuan,
         callBack: FoodyDataSource.DataCallBack<String>
     ) {
-        remoteRepo.writeCommentToDataBase(idQuanAn,binhluan,callBack)
+        remoteRepo.writeCommentToDataBase(
+            idQuanAn,binhluan, callBack
+        )
     }
 
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {

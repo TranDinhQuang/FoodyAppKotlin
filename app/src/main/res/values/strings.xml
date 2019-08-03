@@ -7,8 +7,8 @@
     <string name="dangnhapbanggoogle">Dang nhap bang google</string>
     <string name="dangnhapfacebook">Dang nhap bang facebook</string>
     <string name="idfacebook">1124511524354361</string>
-    <string name="quenmatkhau">Quen mat khau?</string>
-    <string name="dangkymoi">Dang ky moi</string>
+    <string name="quenmatkhau">Quên mật khẩu?</string>
+    <string name="dangkymoi">Đăng ký mới</string>
     <string name="thongbaoloimk">Mat khau</string>
     <string name="thongbaoloinhaplai">Vui long nhap mat khau giong o tren</string>
     <string name="email">Email</string>
@@ -76,4 +76,5 @@
     <string name="txt_rating_point">Chọn điểm đánh giá</string>
     <string name="txt_post">Đăng</string>
     <string name="txt_title">Tiêu đề</string>
+    <string name="txt_empty_list">Danh sách rỗng</string>
 </resources>

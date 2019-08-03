@@ -1,19 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
-    <include
-        android:id="@+id/layout_feature"
-        layout="@layout/layout_feature" />
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
+            android:layout_marginTop="@dimen/dp_50"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -200,14 +197,20 @@
                         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
                     <TextView
+                        android:id="@+id/text_view_all_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:padding="@dimen/dp_5"
+                        android:layout_marginBottom="@dimen/dp_20"
                         android:text="@string/txt_viewmore"
                         android:textColor="@color/blue" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
-</LinearLayout>
+
+    <include
+        android:id="@+id/layout_feature"
+        layout="@layout/layout_feature" />
+</RelativeLayout>

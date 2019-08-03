@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -14,7 +15,7 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
-class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
+class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
@@ -27,10 +28,13 @@ class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
         return comments.size
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
         p0.itemView.text_title.text = comments[p1].tieude
         p0.itemView.text_content_comment.text = comments[p1].noidung
         p0.itemView.text_title.text = comments[p1].tieude
+        p0.itemView.txt_num_like.text = "${comments[p1].num_like} like"
+        p0.itemView.txt_num_share.text = "${comments[p1].num_share} share"
         if (comments[p1].hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
@@ -95,6 +99,11 @@ class CommentAdapter(val context: Context, val comments: List<BinhLuan>) :
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(img)
+    }
+
+    fun onDataChanged(comment : BinhLuan){
+        comments.add(comment)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

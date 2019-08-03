@@ -57,16 +57,14 @@ class DetailEatingActivity : BaseActivity(),
                         foodyRepository,
                         this
                     )
-                presenter.getThucDons()
             }
         }
+        detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
+        detailViewModel.setQuanan(quanAn)
+        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 
     override fun thucDonsSuccess(thucdon: ThucDon) {
-        detailViewModel = ViewModelProviders.of(this).get(DetailViewModel::class.java)
-        detailViewModel.setQuanan(quanAn)
-        detailViewModel.setThucDon(thucdon)
-        pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
 //        this.pushFragment(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 

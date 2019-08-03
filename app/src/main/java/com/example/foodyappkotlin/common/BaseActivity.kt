@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
@@ -78,12 +79,19 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
         mFragmentTransition = supportFragmentManager.beginTransaction()
         mFragmentTransition.replace(id, fragment)
         mFragmentTransition.addToBackStack(null)
-        mFragmentTransition.commit()
+        mFragmentTransition.commitAllowingStateLoss()
     }
 
     fun pushFragmentWithoutBackStack(id: Int, fragment: Fragment) {
         mFragmentTransition = supportFragmentManager.beginTransaction()
         mFragmentTransition.replace(id, fragment)
-        mFragmentTransition.commit()
+        mFragmentTransition.commitAllowingStateLoss()
+    }
+
+    fun showAlertMessage(title : String,message : String){
+        AlertDialog.Builder(applicationContext)
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton("Đồng ý", null).show()
     }
 }
