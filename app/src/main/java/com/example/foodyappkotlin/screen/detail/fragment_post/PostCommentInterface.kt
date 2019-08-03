@@ -1,6 +1,7 @@
 package com.example.foodyappkotlin.screen.detail.fragment_post
 
 import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.models.QuanAn
 
 interface PostCommentInterface {
     interface View {
@@ -9,6 +10,6 @@ interface PostCommentInterface {
     }
 
     interface Presenter {
-        fun postCommentToServer(view : PostCommentInterface.View,idQuanAn : String,binhLuan: BinhLuan)
+        fun postCommentToServer(view : PostCommentInterface.View,quanAn : QuanAn,binhLuan: BinhLuan)
     }
 }

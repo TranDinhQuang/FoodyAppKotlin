@@ -59,11 +59,19 @@
             android:text="30 like" />
 
         <TextView
+            android:id="@+id/divider"
+            android:layout_toRightOf="@id/txt_num_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:paddingRight="@dimen/dp_10"
+            android:text="-" />
+
+        <TextView
             android:id="@+id/txt_num_comment"
             android:layout_width="wrap_content"
-            android:paddingLeft="@dimen/dp_20"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/txt_num_like"
+            android:layout_toRightOf="@id/divider"
             android:text="20 comment" />
 
         <TextView

@@ -101,7 +101,6 @@
             android:layout_gravity="bottom"
             android:background="?android:attr/windowBackground"
             android:foreground="?attr/selectableItemBackground"
-            app:itemBackground="@color/white_transparent"
             app:itemIconTint="@android:color/holo_red_light"
             app:itemTextColor="@android:color/holo_red_light"
             app:layout_behavior="android.support.design.behavior.HideBottomViewOnScrollBehavior"

@@ -138,8 +138,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
     }
 
     private fun postComment() {
-        Log.d("kliemtrea", "${ratingBar.rating}")
-        if (txtTitleComment.text.toString().trim() == "" || txtContentComment.text.toString().trim() == "" || (ratingBar.rating.equals(0F))) {
+            if (txtTitleComment.text.toString().trim() == "" || txtContentComment.text.toString().trim() == "" || (ratingBar.rating.equals(0F))) {
             showAlertMessage("Thiếu thông tin", "Bạn cần chọn và nhập đầy đủ các thông tin")
         } else {
             var binhLuan = BinhLuan()
@@ -156,7 +155,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
                 }
                 binhLuan.hinhanh.putAll(map)
             }
-            presenter.postCommentToServer(this, quanAn!!.id, binhLuan)
+            presenter.postCommentToServer(this, quanAn!!, binhLuan)
             txtPostComment.isEnabled = false
             progressBar.visibility = View.VISIBLE
         }

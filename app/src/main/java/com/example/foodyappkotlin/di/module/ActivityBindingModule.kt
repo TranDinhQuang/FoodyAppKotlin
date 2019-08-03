@@ -3,6 +3,7 @@ package com.example.foodyappkotlin.di.module
 import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailEatingModule
+import com.example.foodyappkotlin.screen.login.LoginActivity
 import com.example.foodyappkotlin.screen.main.MainActivity
 import com.example.foodyappkotlin.screen.splash.SplashActivity
 import dagger.Module
@@ -21,4 +22,8 @@ abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector
     abstract fun splashActivity(): SplashActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract fun loginActivity(): LoginActivity
 }

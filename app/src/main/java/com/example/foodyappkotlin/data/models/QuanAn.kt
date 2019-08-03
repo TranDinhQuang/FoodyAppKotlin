@@ -6,6 +6,8 @@ import java.io.Serializable
 @IgnoreExtraProperties
 data class QuanAn(
     var id: String = "",
+    var id_khuvuc : Long = 0,
+    var id_page : Long = 0,
     var tenquanan: String = "",
     var diachi: String = "",
     var giaohang: Boolean = false,
@@ -18,7 +20,8 @@ data class QuanAn(
     var tienich: List<String> = emptyList(),
     var thucdon: String = "",
     var hinhanhquanans: ArrayList<String> = ArrayList(),
-    var binhluans: ArrayList<BinhLuan> = ArrayList()
+    var binhluans: ArrayList<BinhLuan> = ArrayList(),
+    var thucdons : ThucDon = ThucDon(ArrayList(),ArrayList())
 ) : Serializable {
     constructor(
         id: String,
@@ -31,6 +34,8 @@ data class QuanAn(
         num_comments: Long,
         danhgia: Double,
         tienich: List<String>,
-        hinhanhquanans: ArrayList<String>
+        hinhanhquanans: ArrayList<String>,
+        binhluans: ArrayList<BinhLuan>,
+        thucdons : ThucDon
     ) : this()
 }

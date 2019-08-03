@@ -38,4 +38,15 @@
         android:background="@color/gray3"
         android:paddingTop="@dimen/dp_1"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/bg_circle"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="1" />
 </LinearLayout>

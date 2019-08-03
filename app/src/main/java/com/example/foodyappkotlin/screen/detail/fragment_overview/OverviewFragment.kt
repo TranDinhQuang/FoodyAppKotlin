@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
+import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.di.module.GlideApp
@@ -19,16 +20,18 @@ import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
+import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_detail_eatingg.*
+import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.layout_feature.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class OverviewFragment : BaseFragment() {
     lateinit var inputParser: SimpleDateFormat
@@ -55,7 +58,7 @@ class OverviewFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         AndroidSupportInjection.inject(this)
-        return inflater.inflate(R.layout.fragment_detail_eatingg, null)
+        return inflater.inflate(R.layout.fragment_detail_eating, null)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -72,11 +75,23 @@ class OverviewFragment : BaseFragment() {
 
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             findQuanAnData(item!!)
-            findCommentData(item!!)
+            if (item.binhluans.isNotEmpty()) {
+                recycler_user_comment.visibility = View.VISIBLE
+                text_view_all_comment.text = "Xem thêm"
+                findCommentData(item.binhluans)
+            } else {
+                recycler_user_comment.visibility = View.GONE
+                text_view_all_comment.text = "Hãy là người đầu tiên đánh giá quán ăn"
+            }
+            findThucDonData(item.thucdons)
         })
 
         ln_post_comment.setOnClickListener {
             mActivity.pushFragment(R.id.layout_food_detail, PostCommentFragment.newInstance())
+        }
+
+        text_view_all_comment.setOnClickListener {
+            mActivity.pushFragment(R.id.layout_food_detail, FragmentComments.newInstance())
         }
     }
 
@@ -103,6 +118,7 @@ class OverviewFragment : BaseFragment() {
         }
         text_name_eating.text = quanAn.tenquanan
         text_location.text = quanAn.diachi
+
 //        text_distance
         if (compareTimes(quanAn.giomocua, quanAn.giodongcua)) {
             text_status.text = "Đang mở cửa: ${quanAn.giomocua} - ${quanAn.giodongcua}"
@@ -110,7 +126,7 @@ class OverviewFragment : BaseFragment() {
             text_status.text = "Đang đóng cửa: Mở cửa vào lúc ${quanAn.giomocua}"
         }
 
-
+/*
         detailViewModel.thucdon.observe(this, Observer<ThucDon> { item ->
             run {
                 if (item!!.monAns.size > 0) {
@@ -121,15 +137,30 @@ class OverviewFragment : BaseFragment() {
                     recycler_menu.adapter = nuocUongAdapter
                 }
             }
-        })
+        })*/
         recycler_menu.isNestedScrollingEnabled = false
     }
 
-    fun findCommentData(quanAn: QuanAn) {
-        if (!quanAn.binhluans.isEmpty()) {
+    fun findThucDonData(thucDon: ThucDon) {
+     /*   recycler_menu.visibility = View.VISIBLE
+        text_menu_viewmore.text = "Xem thêm"
+        findThucDonData(item.thucdons)
+        recycler_menu.visibility = View.GONE
+        text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
+        if (thucDon.monAns.size > 0) {
+            monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns)
+            recycler_menu.adapter = monAnAdapter
+        }else if (thucDon.nuocUongs.size > 0) {
+            nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs)
+            recycler_menu.adapter = nuocUongAdapter
+        }
+    }
+
+    fun findCommentData(binhluans: ArrayList<BinhLuan>) {
+        if (!binhluans.isEmpty()) {
             val gson = Gson()
-            Log.d("data", gson.toJson(quanAn.binhluans))
-            commentAdapter = CommentAdapter(activity!!, quanAn.binhluans)
+            Log.d("data", gson.toJson(binhluans))
+            commentAdapter = CommentAdapter(activity!!, binhluans)
             recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
             recycler_user_comment.adapter = commentAdapter
             recycler_user_comment.isNestedScrollingEnabled = false
@@ -156,4 +187,5 @@ class OverviewFragment : BaseFragment() {
             Date(0)
         }
     }
+
 }
