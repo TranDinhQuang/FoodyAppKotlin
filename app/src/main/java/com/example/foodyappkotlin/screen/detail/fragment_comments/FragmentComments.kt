@@ -6,7 +6,7 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
@@ -25,6 +25,10 @@ class FragmentComments : BaseFragment() {
 
     @Inject
     lateinit var repository: FoodyRepository
+
+    @Inject
+    lateinit var appSharedPreference: AppSharedPreference
+
 
     companion object {
         fun newInstance(): Fragment {
@@ -47,25 +51,33 @@ class FragmentComments : BaseFragment() {
     }
 
     private fun initData() {
-        commentAdapter = CommentAdapter(activity!!, ArrayList())
-        recycler_comments.visibility = View.VISIBLE
-        recycler_comments.adapter = commentAdapter
         detailViewModel = activity?.run {
             ViewModelProviders.of(this).get(DetailViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        repository.getAllCommentFollowQuanAn(
-            detailViewModel.quanan.value!!.id,
-            object : FoodyDataSource.DataCallBack<BinhLuan> {
-                override fun onSuccess(data: BinhLuan) {
-                    commentAdapter.onDataChanged(data)
+        repository.getListLikedOfUser(appSharedPreference.getToken()!!,
+            object : FoodyDataSource.DataCallBack<MutableList<String>> {
+                override fun onSuccess(data: MutableList<String>) {
+                    commentAdapter = CommentAdapter(activity!!, ArrayList(), data)
+                    recycler_comments.visibility = View.VISIBLE
+                    recycler_comments.adapter = commentAdapter
+                    repository.getAllCommentFollowQuanAn(
+                        detailViewModel.quanan.value!!.id,
+                        object : FoodyDataSource.DataCallBack<BinhLuan> {
+                            override fun onSuccess(data: BinhLuan) {
+                                commentAdapter.onDataChanged(data)
+                            }
+
+                            override fun onFailure(message: String) {
+                                recycler_comments.visibility = View.GONE
+                                layout_empty.visibility = View.VISIBLE
+                            }
+                        })
                 }
 
                 override fun onFailure(message: String) {
-                    recycler_comments.visibility = View.GONE
-                    layout_empty.visibility = View.VISIBLE
-                    Toast.makeText(activityContext, "Có lỗi xảy ra", Toast.LENGTH_SHORT)
                 }
+
             })
     }
 }

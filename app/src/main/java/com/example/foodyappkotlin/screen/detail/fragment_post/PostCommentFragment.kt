@@ -21,6 +21,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.BuildConfig
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
@@ -44,7 +45,8 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 
 
-class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePostAdapter.OnClickListener {
+class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
+    PicturePostAdapter.OnClickListener {
 
     private var quanAn: QuanAn? = null
 
@@ -56,9 +58,11 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
     @Inject
     lateinit var mActivity: DetailEatingActivity
 
-
     @Inject
     lateinit var repository: FoodyRepository
+
+    @Inject
+    lateinit var appSharedPreference: AppSharedPreference
 
     @Inject
     lateinit var presenter: PostCommentInterface.Presenter
@@ -68,7 +72,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
         val REQUEST_GALLERY_PHOTO = 102
 
         var permissions =
-                arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            arrayOf(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
         fun newInstance(): Fragment {
             val postCommentFragment = PostCommentFragment()
@@ -77,9 +81,9 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_post_comment, null)
     }
@@ -138,11 +142,15 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
     }
 
     private fun postComment() {
-            if (txtTitleComment.text.toString().trim() == "" || txtContentComment.text.toString().trim() == "" || (ratingBar.rating.equals(0F))) {
+        if (txtTitleComment.text.toString().trim() == "" || txtContentComment.text.toString().trim() == "" || (ratingBar.rating.equals(
+                0F
+            ))
+        ) {
             showAlertMessage("Thiếu thông tin", "Bạn cần chọn và nhập đầy đủ các thông tin")
         } else {
             var binhLuan = BinhLuan()
-            binhLuan.mauser = "9vxmsiy2xtPcQuKD9CHyUVgNqxB3"
+            Log.d("kiemtra", "token ${appSharedPreference.getToken()}")
+            binhLuan.mauser = appSharedPreference.getToken()!!
             binhLuan.tieude = txtTitleComment.text.toString()
             binhLuan.noidung = txtContentComment.text.toString()
             binhLuan.num_like = 0
@@ -219,30 +227,30 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
 
     private fun showPermissionDialog() {
         Dexter.withActivity(mActivity).withPermissions().withListener(
-                object : MultiplePermissionsListener {
-                    override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                        if (report != null) {
-                            // check if all permissions are granted
-                            if (report.areAllPermissionsGranted()) {
-                            }
-                            // check for permanent denial of any permission
-                            if (report.isAnyPermissionPermanentlyDenied) {
-                                // show alert dialog navigating to Settings
-                                showSettingsDialog()
-                            }
+            object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    if (report != null) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog()
                         }
                     }
-
-                    override fun onPermissionRationaleShouldBeShown(
-                            permissions: MutableList<PermissionRequest>?,
-                            token: PermissionToken?
-                    ) {
-                        token?.continuePermissionRequest()
-                    }
                 }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    token?.continuePermissionRequest()
+                }
+            }
         ).withErrorListener { showSettingsDialog() }
-                .onSameThread()
-                .check()
+            .onSameThread()
+            .check()
     }
 
     fun showSettingsDialog() {
@@ -269,11 +277,11 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View, PicturePo
         if (takePictureIntent.resolveActivity(mActivity.packageManager) != null) {
             if (file != null) {
                 photoURI =
-                        FileProvider.getUriForFile(
-                                activityContext,
-                                BuildConfig.APPLICATION_ID + ".provider",
-                                file
-                        )
+                    FileProvider.getUriForFile(
+                        activityContext,
+                        BuildConfig.APPLICATION_ID + ".provider",
+                        file
+                    )
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
                 startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO)
             }

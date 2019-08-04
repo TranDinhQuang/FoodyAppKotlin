@@ -4,6 +4,7 @@ import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.haipq.miniweather.data.source.Remote
 import javax.inject.Inject
@@ -13,7 +14,11 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
-    override fun saveUserLoginData(user: User, callBack: FoodyDataSource.DataCallBack<User>) {
+    override fun getListLikedOfUser(userId: String,callBack: FoodyDataSource.DataCallBack<MutableList<String>>) {
+        remoteRepo.getListLikedOfUser(userId,callBack)
+    }
+
+    override fun saveUserLoginData(user: User, callBack: FoodyDataSource.DataCallBack<UserResponse>) {
         remoteRepo.saveUserLoginData(user,callBack)
     }
 

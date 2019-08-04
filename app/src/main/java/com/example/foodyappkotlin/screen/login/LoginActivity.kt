@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.login
 
+import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,8 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.models.User
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.response.UserResponse
+import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.main.MainActivity
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -28,6 +31,8 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
     private lateinit var googleSignInClient: GoogleSignInClient
 
     lateinit var presenter: LoginInterface.Presenter
+
+    lateinit var detailViewModel: DetailViewModel
 
     @Inject
     lateinit var repository: FoodyRepository
@@ -85,8 +90,10 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
                     Log.d(TAG, "signInWithCredential:success")
                     val userGoogle = auth.currentUser
                     if (userGoogle != null) {
+                        var comment = ArrayList<String>()
+                        comment.add("-LlNKgQcWSeSiJPv9qRa")
                         val user = User(
-                            userGoogle.uid,
+                            userGoogle.email!!,
                             userGoogle.displayName!!,
                             userGoogle.photoUrl.toString(),
                             2
@@ -131,8 +138,7 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
         private const val RC_SIGN_IN = 9001
     }
 
-    override fun userInfoSuccess(user: User) {
-        Log.d("kiemtra", user.userId)
+    override fun userInfoSuccess(user: UserResponse) {
         appSharedPreference.setToken(user.userId)
         appSharedPreference.setUserName(user.tenhienthi)
         startActivity(MainActivity.newInstance(this))
