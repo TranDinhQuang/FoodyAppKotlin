@@ -9,6 +9,6 @@ interface ODauInterface {
     }
 
     interface Presenter{
-        fun getQuanAns(khuvuc : Int,page : Int)
+        fun getQuanAns(khuvuc : Int,page : Int,valueAt : String)
     }
 }

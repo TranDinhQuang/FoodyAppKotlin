@@ -76,7 +76,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         mLocationPermissionGranted = false
         when (requestCode) {
             (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) -> {
@@ -127,7 +131,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
                         mMap.moveCamera(
                             CameraUpdateFactory
-                                .newLatLngZoom(mDefaultLocation, MapsActivity.DEFAULT_ZOOM.toFloat())
+                                .newLatLngZoom(
+                                    mDefaultLocation,
+                                    MapsActivity.DEFAULT_ZOOM.toFloat()
+                                )
                         )
                         mMap.uiSettings.isMyLocationButtonEnabled = false
                     }

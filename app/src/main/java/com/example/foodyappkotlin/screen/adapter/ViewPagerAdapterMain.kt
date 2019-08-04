@@ -13,7 +13,7 @@ class ViewPagerAdapterMain(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
 
     companion object {
         private const val TAB_O_DAU = 0
-        private const val TAB_GAN_TOI = 0
+        private const val TAB_GAN_TOI = 1
 
     }
 
