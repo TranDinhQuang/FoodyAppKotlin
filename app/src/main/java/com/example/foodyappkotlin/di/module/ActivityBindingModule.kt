@@ -5,6 +5,8 @@ import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailEatingModule
 import com.example.foodyappkotlin.screen.login.LoginActivity
 import com.example.foodyappkotlin.screen.main.MainActivity
+import com.example.foodyappkotlin.screen.main.MainModule
+import com.example.foodyappkotlin.screen.menu.MenuActivity
 import com.example.foodyappkotlin.screen.splash.SplashActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -16,7 +18,7 @@ abstract class ActivityBindingModule {
     abstract fun detailEatingActivity(): DetailEatingActivity
 
     @ActivityScoped
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [(MainModule::class)])
     abstract fun mainActivity(): MainActivity
 
     @ActivityScoped
@@ -26,4 +28,8 @@ abstract class ActivityBindingModule {
     @ActivityScoped
     @ContributesAndroidInjector
     abstract fun loginActivity(): LoginActivity
+
+    @ActivityScoped
+    @ContributesAndroidInjector
+    abstract fun menuActivity() : MenuActivity
 }

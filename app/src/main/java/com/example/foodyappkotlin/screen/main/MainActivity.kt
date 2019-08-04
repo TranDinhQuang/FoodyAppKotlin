@@ -16,8 +16,12 @@ import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.source.FoodyDataSource
+import com.example.foodyappkotlin.screen.adapter.RestaurentMyselfAdapter
 import com.example.foodyappkotlin.screen.adapter.ViewPagerAdapterMain
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
+import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
+import com.example.foodyappkotlin.screen.main.fragment.home.HomeFragment
+import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.layout_main_activity.*
 import javax.inject.Inject
@@ -37,14 +41,8 @@ class MainActivity : BaseActivity() {
     }
 
     private fun init() {
-        val manager: FragmentManager = supportFragmentManager
-        val adapter = ViewPagerAdapterMain(manager)
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener)
-        viewpager_restaurant.adapter = adapter
-        tab_layout.setupWithViewPager(viewpager_restaurant)
-        viewpager_restaurant.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tab_layout))
-        tab_layout.setTabsFromPagerAdapter(adapter)//deprecated
-        tab_layout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(viewpager_restaurant))
+        pushFragmentWithoutBackStack(R.id.frame_layout,ODauFragment.getInstance())
     }
 
     private val mOnNavigationItemSelectedListener = object : BottomNavigationView.OnNavigationItemSelectedListener {
@@ -52,10 +50,12 @@ class MainActivity : BaseActivity() {
             when (item.itemId) {
                 R.id.navigation_home -> {
 //                    toolbar.setTitle("Shop")
+                    pushFragmentWithoutBackStack(R.id.frame_layout,ODauFragment.getInstance())
                     return true
                 }
                 R.id.navigation_notify -> {
 //                    toolbar.setTitle("My Gifts")
+                    pushFragmentWithoutBackStack(R.id.frame_layout,QuanAnCuaToiFragment.newInstance())
                     return true
                 }
                 R.id.navigation_profile -> {

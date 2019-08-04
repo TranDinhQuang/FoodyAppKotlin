@@ -43,6 +43,14 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         })
     }
 
+    override fun addQuanAnMyself(
+        idKhuVuc: String,
+        quanAn: QuanAn,
+        callback: FoodyDataSource.DataCallBack<MutableList<String>>
+    ) {
+        nodeRoot.child("quanans").child(idKhuVuc).push().setValue(quanAn)
+    }
+
     override fun saveUserLoginData(
         user: User,
         callBack: FoodyDataSource.DataCallBack<UserResponse>
@@ -89,7 +97,9 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         idQuanan: String,
         callback: FoodyDataSource.DataCallBack<BinhLuan>
     ) {
-        var dataRef = nodeRoot.child("binhluans").child(idQuanan).orderByKey().limitToFirst(1000)
+        var dataRef =
+            nodeRoot.child("quanans").child("KV1").child(idQuanan).child("binhluans").orderByKey()
+                .limitToFirst(1000)
         var binhluans = ArrayList<BinhLuan>()
 
         val childEventListener = object : ChildEventListener {
@@ -122,7 +132,8 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         binhluan: BinhLuan,
         callBack: FoodyDataSource.DataCallBack<String>
     ) {
-        var dataRef = nodeRoot.child("binhluans").child(quanAn.id).push()
+        var dataRef =
+            nodeRoot.child("quanans").child("KV1").child(quanAn.id).child("binhluans").push()
         var hinhanhSuccess: HashMap<String, String> = HashMap()
         binhluan.hinhanh.forEach {
             uploadImageFile(it.value)
@@ -137,12 +148,8 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             } else {
                 var num_comment = quanAn.num_comments + 1
                 var num_image = quanAn.num_images + binhluan.hinhanh.size
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}")
-                    .child("PAGE${quanAn.id_page}")
-                    .child(quanAn.id).child("num_comments").setValue(num_comment)
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}")
-                    .child("PAGE${quanAn.id_page}")
-                    .child(quanAn.id).child("num_images").setValue(num_image)
+                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("num_comments").setValue(num_comment)
+                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("num_images").setValue(num_image)
                 callBack.onSuccess("Data saved successfully!")
             }
         }
@@ -152,16 +159,17 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getThucDons(maThucDon: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
         var thucdons = ThucDon(ArrayList(), ArrayList())
 
+        val thucDonRef = nodeRoot.child("thucdons").child(maThucDon)
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                val dataSnapshot = p0.child("thucdons").child(maThucDon)
-                for (item in dataSnapshot.child("MONAN").children) {
+                val dataSnapshot = p0.child("MONAN")
+                for (item in dataSnapshot.children) {
                     var monAn = item.getValue(MonAn::class.java)
                     if (monAn != null) {
                         thucdons.monAns.add(monAn)
                     }
                 }
-                for (item in dataSnapshot.child("NUOCUONG").children) {
+                for (item in p0.child("NUOCUONG").children) {
                     var nuocUong = item.getValue(NuocUong::class.java)
                     if (nuocUong != null) {
                         thucdons.nuocUongs.add(nuocUong)
@@ -176,13 +184,13 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 callback.onFailure(p0.message)
             }
         }
-        nodeRoot.addValueEventListener(postListener)
+        thucDonRef.addListenerForSingleValueEvent(postListener)
     }
 
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getQuanAns(
+/*    override fun getQuanAns(
         province: Int,
         page: Int,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
@@ -245,6 +253,43 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
         }
         nodeRoot.addValueEventListener(postListener)
+    }*/
+
+    override fun getQuanAns(
+        province: Int,
+        page: Int, valueAt: String,
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
+    ) {
+        val quanans: ArrayList<QuanAn> = ArrayList()
+        Log.d("kiemtra", "page $page")
+        var refQuanAn = if (page == 1) {
+            nodeRoot.child("quanans").child("KV$province").orderByKey().limitToFirst(10)
+        } else {
+            nodeRoot.child("quanans").child("KV$province").orderByKey().startAt(valueAt)
+                .limitToFirst(11)
+        }
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                p0.children.forEach {
+                    var quanan = it.getValue(QuanAn::class.java)
+                    if (quanan != null) {
+                        quanans.add(quanan)
+                    }
+                }
+                var gson = Gson()
+                Log.d("data", gson.toJson(quanans))
+                if (page != 1) {
+                    quanans.removeAt(0)
+                }
+                callback.onSuccess(quanans)
+                refQuanAn.removeEventListener(this)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                callback.onFailure(p0.message)
+            }
+        }
+        refQuanAn.addValueEventListener(postListener)
     }
 
     private fun uploadImageFile(url: String) {

@@ -32,4 +32,6 @@
     <dimen name="sp_20">20sp</dimen>
     <dimen name="dp_60">60dp</dimen>
     <dimen name="dp_30">30dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
+    <dimen name="dp_70">70dp</dimen>
 </resources>
