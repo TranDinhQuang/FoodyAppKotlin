@@ -19,8 +19,8 @@ data class QuanAn(
     var danhgia: Double = 0.0,
     var tienich: List<String> = emptyList(),
     var thucdon: String = "",
-    var hinhanhquanans: ArrayList<String> = ArrayList(),
-    var binhluans: ArrayList<BinhLuan> = ArrayList(),
+    var hinhanhs: HashMap<String, String> = HashMap(),
+    var binhluans: HashMap<String, BinhLuan> = HashMap(),
     var thucdons : ThucDon = ThucDon(ArrayList(),ArrayList())
 ) : Serializable {
     constructor(

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.foodyappkotlin.R
+import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.google.firebase.storage.FirebaseStorage
@@ -71,16 +72,24 @@ class OdauAdapter(
     private fun bindData(v: View, quanan: QuanAn, onItemClick: OdauAdapter.OnClickListener) {
 
         var storageRef: StorageReference = storage.child("error")
-        if ((quanan.hinhanhquanans.isNotEmpty())) {
+        /*if ((quanan.hinhanhquanans.isNotEmpty())) {
             storageRef = storage.child("monan").child(quanan.hinhanhquanans[0])
+        }*/
+        val hinhAnhQuanAn= ArrayList<String>()
+        quanan.hinhanhs.forEach{
+            hinhAnhQuanAn.add(it.value)
+        }
+        if(hinhAnhQuanAn.size > 0){
+            storageRef = storage.child("monan").child(hinhAnhQuanAn[0])
         }
         if (quanan.binhluans.isNotEmpty()) {
+            var listBinhLuan = ArrayList<BinhLuan>(quanan.binhluans.values)
             v.group.visibility = View.VISIBLE
             if (quanan.binhluans.size >= 2) {
-                v.text_cmt_one.text = quanan.binhluans[0].noidung
-                v.text_cmt_two.text = quanan.binhluans[1].noidung
+                v.text_cmt_one.text = listBinhLuan[0].noidung
+                v.text_cmt_two.text = listBinhLuan[1].noidung
             } else {
-                v.text_cmt_one.text = quanan.binhluans[0].noidung
+                v.text_cmt_one.text = listBinhLuan[0].noidung
             }
         } else {
             v.group.visibility = View.GONE

@@ -182,7 +182,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getQuanAns(
+/*    override fun getQuanAns(
         province: Int,
         page: Int,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
@@ -245,36 +245,65 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
         }
         nodeRoot.addValueEventListener(postListener)
-    }
+    }*/
 
-    private fun uploadImageFile(url: String) {
-        var file = Uri.fromFile(File(url))
-        var storageRef: StorageReference = storage.child("binhluan/${file.lastPathSegment}")
-        var uploadTask = storageRef.putFile(file)
-        // Register observers to listen for when the download is done or if it fails
-        uploadTask.addOnFailureListener {
-            // Handle unsuccessful uploads
-            Log.d("kiemtra", "tai anh that bai")
-        }.addOnSuccessListener {
-            Log.d("kiemtra", "tai anh thanh cong")
-            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
-        }
-    }
+    override fun getQuanAns(
+        province: Int,
+        page: Int,
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
+    ) {
+        var quanans: ArrayList<QuanAn> = ArrayList()
 
-    private fun getHinhAnhQuanAn(idQuanAn: String): ArrayList<String> {
-        val dataSnapshotHinhAnhQuanAn = nodeRoot.child("hinhanhquanans").child(idQuanAn)
-        val hinhanhquanans: ArrayList<String> = ArrayList()
-        val hinhanhListener = object : ValueEventListener {
+        val refQuanAn = nodeRoot.child("quanans").child("KV$province").orderByKey().startAt("7").limitToFirst(5)
+        val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                for (item in p0.children) {
-                    hinhanhquanans.add(item.value as String)
+                p0.children.forEach {
+                    var quanan = it.getValue(QuanAn::class.java)
+                    if (quanan != null) {
+                        quanans.add(quanan)
+                    }
                 }
+                var gson = Gson()
+                Log.d("data", gson.toJson(quanans))
+                callback.onSuccess(quanans)
+                nodeRoot.removeEventListener(this)
             }
 
             override fun onCancelled(p0: DatabaseError) {
+                callback.onFailure(p0.message)
             }
         }
-        dataSnapshotHinhAnhQuanAn.addListenerForSingleValueEvent(hinhanhListener)
-        return hinhanhquanans
+        refQuanAn.addValueEventListener(postListener)
     }
+
+private fun uploadImageFile(url: String) {
+    var file = Uri.fromFile(File(url))
+    var storageRef: StorageReference = storage.child("binhluan/${file.lastPathSegment}")
+    var uploadTask = storageRef.putFile(file)
+    // Register observers to listen for when the download is done or if it fails
+    uploadTask.addOnFailureListener {
+        // Handle unsuccessful uploads
+        Log.d("kiemtra", "tai anh that bai")
+    }.addOnSuccessListener {
+        Log.d("kiemtra", "tai anh thanh cong")
+        // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
+    }
+}
+
+private fun getHinhAnhQuanAn(idQuanAn: String): ArrayList<String> {
+    val dataSnapshotHinhAnhQuanAn = nodeRoot.child("hinhanhquanans").child(idQuanAn)
+    val hinhanhquanans: ArrayList<String> = ArrayList()
+    val hinhanhListener = object : ValueEventListener {
+        override fun onDataChange(p0: DataSnapshot) {
+            for (item in p0.children) {
+                hinhanhquanans.add(item.value as String)
+            }
+        }
+
+        override fun onCancelled(p0: DatabaseError) {
+        }
+    }
+    dataSnapshotHinhAnhQuanAn.addListenerForSingleValueEvent(hinhanhListener)
+    return hinhanhquanans
+}
 }

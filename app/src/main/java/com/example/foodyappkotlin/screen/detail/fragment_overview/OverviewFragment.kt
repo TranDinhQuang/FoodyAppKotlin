@@ -79,7 +79,8 @@ class OverviewFragment : BaseFragment() {
             if (item.binhluans.isNotEmpty()) {
                 recycler_user_comment.visibility = View.VISIBLE
                 text_view_all_comment.text = "Xem thêm"
-                findCommentData(item.binhluans)
+                val binhluans = ArrayList<BinhLuan>(item.binhluans.values)
+                findCommentData(binhluans)
             } else {
                 recycler_user_comment.visibility = View.GONE
                 text_view_all_comment.text = "Hãy là người đầu tiên đánh giá quán ăn"
@@ -97,22 +98,26 @@ class OverviewFragment : BaseFragment() {
     }
 
     fun findQuanAnData(quanAn: QuanAn) {
-        var storageRef: StorageReference = storage.child("error")
-        if ((quanAn.hinhanhquanans.isNotEmpty())) {
-            storageRef = storage.child("monan").child(quanAn.hinhanhquanans[0])
+        if ((quanAn.hinhanhs.isNotEmpty())) {
+            var storageRef: StorageReference
+            val hinhAnhQuanAn = ArrayList<String>()
+            quanAn.hinhanhs.forEach {
+                hinhAnhQuanAn.add(it.value)
+            }
+            storageRef = storage.child("monan").child(hinhAnhQuanAn[0])
+            GlideApp.with(activityContext)
+                .load(storageRef)
+                .error(R.drawable.placeholder)
+                .thumbnail(0.1f)
+                .placeholder(R.drawable.placeholder)
+                .into(image_eating)
         }
-        GlideApp.with(activityContext)
-            .load(storageRef)
-            .error(R.drawable.placeholder)
-            .thumbnail(0.1f)
-            .placeholder(R.drawable.placeholder)
-            .into(image_eating)
 
         var sum = 0
         text_sum_comment.text = quanAn.binhluans.size.toString()
         quanAn.binhluans.forEach {
-            if (it.hinhanh.isNotEmpty()) {
-                sum += it.hinhanh.size
+            if (it.value.hinhanh.size > 0) {
+                sum += it.value.hinhanh.size
             }
         }.let {
             text_count_image.text = sum.toString()
@@ -143,15 +148,15 @@ class OverviewFragment : BaseFragment() {
     }
 
     fun findThucDonData(thucDon: ThucDon) {
-     /*   recycler_menu.visibility = View.VISIBLE
-        text_menu_viewmore.text = "Xem thêm"
-        findThucDonData(item.thucdons)
-        recycler_menu.visibility = View.GONE
-        text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
+        /*   recycler_menu.visibility = View.VISIBLE
+           text_menu_viewmore.text = "Xem thêm"
+           findThucDonData(item.thucdons)
+           recycler_menu.visibility = View.GONE
+           text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
         if (thucDon.monAns.size > 0) {
             monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns)
             recycler_menu.adapter = monAnAdapter
-        }else if (thucDon.nuocUongs.size > 0) {
+        } else if (thucDon.nuocUongs.size > 0) {
             nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs)
             recycler_menu.adapter = nuocUongAdapter
         }
@@ -161,7 +166,7 @@ class OverviewFragment : BaseFragment() {
         if (!binhluans.isEmpty()) {
             val gson = Gson()
             Log.d("data", gson.toJson(binhluans))
-            commentAdapter = CommentAdapter(activity!!, binhluans,ArrayList())
+            commentAdapter = CommentAdapter(activity!!, binhluans, ArrayList())
             recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
             recycler_user_comment.adapter = commentAdapter
             recycler_user_comment.isNestedScrollingEnabled = false

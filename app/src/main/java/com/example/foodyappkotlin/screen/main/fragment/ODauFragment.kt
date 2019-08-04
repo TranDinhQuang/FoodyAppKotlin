@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -67,13 +66,13 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         mView.recycler_quan_an.adapter = lOdauAdapter
         scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
-                if (!isLoading) {
-                    mPage += 1
-                    Log.d("XXX", " onLoadMore page $mPage totalItemsCount $totalItemsCount")
-                    isLoading = true
-                    mODauPresenter.getQuanAns(1, mPage)
-                    lOdauAdapter.addLoading()
-                }
+                /* if (!isLoading) {
+                     mPage += 1
+                     Log.d("XXX", " onLoadMore page $mPage totalItemsCount $totalItemsCount")
+                     isLoading = true
+                     mODauPresenter.getQuanAns(1, mPage)
+                     lOdauAdapter.addLoading()
+                 }*/
             }
         }
 
