@@ -39,6 +39,7 @@ class OverviewFragment : BaseFragment() {
     lateinit var monAnAdapter: MonAnAdapter
     lateinit var nuocUongAdapter: NuocUongAdapter
     lateinit var commentAdapter: CommentAdapter
+
     val storage = FirebaseStorage.getInstance().reference
 
     @Inject

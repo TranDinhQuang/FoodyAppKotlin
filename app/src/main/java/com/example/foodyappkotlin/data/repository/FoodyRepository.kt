@@ -49,7 +49,7 @@ class FoodyRepository @Inject constructor(
     override fun getQuanAns(
         province: Int,
         page: Int,
-        callback: FoodyDataSource.DataCallBack<List<QuanAn>>
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         remoteRepo.getQuanAns(province, page, callback)
     }
