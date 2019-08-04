@@ -6,9 +6,9 @@ import com.example.foodyappkotlin.data.source.FoodyDataSource
 
 class ODauPresenter(val repository: FoodyRepository, val view: ODauInterface.View) :
     ODauInterface.Presenter {
-    override fun getQuanAns() {
-        repository.getQuanAns(1, 1, object : FoodyDataSource.DataCallBack<List<QuanAn>> {
-            override fun onSuccess(data: List<QuanAn>) {
+    override fun getQuanAns(khuvuc : Int,page : Int) {
+        repository.getQuanAns(khuvuc, page, object : FoodyDataSource.DataCallBack<MutableList<QuanAn>> {
+            override fun onSuccess(data: MutableList<QuanAn>) {
                 view.QuanAnsSuccess(data)
             }
 
