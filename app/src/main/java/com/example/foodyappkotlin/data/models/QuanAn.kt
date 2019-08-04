@@ -17,8 +17,10 @@ data class QuanAn(
     var num_comments: Long = 0,
     var num_images: Long = 0,
     var danhgia: Double = 0.0,
-    var tienich: List<String> = emptyList(),
+    var latitude: Double = 0.0,
+    var longitude: Double = 0.0,
     var thucdon: String = "",
+    var tienich: List<String> = emptyList(),
     var hinhanhs: HashMap<String, String> = HashMap(),
     var binhluans: HashMap<String, BinhLuan> = HashMap(),
     var thucdons : ThucDon = ThucDon(ArrayList(),ArrayList())

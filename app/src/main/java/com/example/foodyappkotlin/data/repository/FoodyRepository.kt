@@ -14,12 +14,18 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
-    override fun getListLikedOfUser(userId: String,callBack: FoodyDataSource.DataCallBack<MutableList<String>>) {
-        remoteRepo.getListLikedOfUser(userId,callBack)
+    override fun getListLikedOfUser(
+        userId: String,
+        callBack: FoodyDataSource.DataCallBack<MutableList<String>>
+    ) {
+        remoteRepo.getListLikedOfUser(userId, callBack)
     }
 
-    override fun saveUserLoginData(user: User, callBack: FoodyDataSource.DataCallBack<UserResponse>) {
-        remoteRepo.saveUserLoginData(user,callBack)
+    override fun saveUserLoginData(
+        user: User,
+        callBack: FoodyDataSource.DataCallBack<UserResponse>
+    ) {
+        remoteRepo.saveUserLoginData(user, callBack)
     }
 
     override fun getAllCommentFollowQuanAn(
@@ -29,13 +35,20 @@ class FoodyRepository @Inject constructor(
         remoteRepo.getAllCommentFollowQuanAn(idQuanan, callback)
     }
 
+    override fun addQuanAnMyself(idKhuVuc : String,
+        quanAn: QuanAn,
+        callback: FoodyDataSource.DataCallBack<MutableList<String>>
+    ) {
+        remoteRepo.addQuanAnMyself(idKhuVuc,quanAn, callback)
+    }
+
     override fun writeCommentToDataBase(
         idQuanAn: QuanAn,
         binhluan: BinhLuan,
         callBack: FoodyDataSource.DataCallBack<String>
     ) {
         remoteRepo.writeCommentToDataBase(
-            idQuanAn,binhluan, callBack
+            idQuanAn, binhluan, callBack
         )
     }
 
@@ -48,9 +61,9 @@ class FoodyRepository @Inject constructor(
 
     override fun getQuanAns(
         province: Int,
-        page: Int,
+        page: Int,valueAt : String,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
-        remoteRepo.getQuanAns(province, page, callback)
+        remoteRepo.getQuanAns(province, page,valueAt, callback)
     }
 }

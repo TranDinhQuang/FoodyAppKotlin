@@ -154,10 +154,10 @@ class OverviewFragment : BaseFragment() {
            recycler_menu.visibility = View.GONE
            text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
         if (thucDon.monAns.size > 0) {
-            monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns)
+            monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns,MonAnAdapter.TYPE_VIEW)
             recycler_menu.adapter = monAnAdapter
         } else if (thucDon.nuocUongs.size > 0) {
-            nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs)
+            nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs,NuocUongAdapter.TYPE_VIEW)
             recycler_menu.adapter = nuocUongAdapter
         }
     }
