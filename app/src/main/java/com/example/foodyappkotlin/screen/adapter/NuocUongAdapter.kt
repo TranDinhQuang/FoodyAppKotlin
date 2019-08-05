@@ -28,6 +28,7 @@ class NuocUongAdapter(val context: Context, val nuocUongs: MutableList<NuocUong>
 
     override fun onBindViewHolder(p0: NuocUongAdapter.ViewHolder, p1: Int) {
         if(type == NuocUongAdapter.TYPE_ORDER){
+            var number_order = 0
             p0.itemView.layout_value.visibility = View.VISIBLE
             p0.itemView.img_minus.setOnClickListener {
                 if (number_order > 0) {

@@ -14,6 +14,8 @@ interface FoodyDataSource {
     }
 
     interface Remote {
+        fun searchQuanAn(idKhuVuc : String,textSearch : String,type : Int,callback: DataCallBack<MutableList<QuanAn>>)
+
         fun addQuanAnMyself(idKhuVuc : String,quanAn: QuanAn,callback: DataCallBack<MutableList<String>>)
 
         fun getQuanAns(province: Int, page: Int,valueAt : String, callback: DataCallBack<MutableList<QuanAn>>)
@@ -30,7 +32,7 @@ interface FoodyDataSource {
 
         fun saveUserLoginData(user : User,callBack: DataCallBack<UserResponse>)
 
-        fun getListLikedOfUser(userId : String,callBack: DataCallBack<MutableList<String>>)
+        fun getUser(userId : String,callBack: DataCallBack<UserResponse>)
 
     }
 }

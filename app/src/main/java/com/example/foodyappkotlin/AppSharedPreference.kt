@@ -3,6 +3,8 @@ package com.example.foodyappkotlin
 import android.content.SharedPreferences
 import android.location.Location
 import android.util.Log
+import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.response.UserResponse
 import javax.inject.Inject
 
 class AppSharedPreference @Inject constructor(private val sharedPreferences: SharedPreferences) {
@@ -21,6 +23,8 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
     private var userName: String? = null
 
     private lateinit var location: Location
+
+    private lateinit var user: UserResponse
 
 
 
@@ -68,5 +72,13 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
 
     fun getLocation() : Location{
         return location
+    }
+
+    fun setUser(user: UserResponse) {
+        this.user = user
+    }
+
+    fun getUser() : UserResponse{
+        return user
     }
 }

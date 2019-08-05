@@ -22,6 +22,7 @@ import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
 import com.example.foodyappkotlin.screen.main.fragment.home.HomeFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
+import com.example.foodyappkotlin.screen.main.fragment.search.SearchFragment
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.layout_main_activity.*
 import javax.inject.Inject
@@ -53,17 +54,17 @@ class MainActivity : BaseActivity() {
                     pushFragmentWithoutBackStack(R.id.frame_layout,ODauFragment.getInstance())
                     return true
                 }
-                R.id.navigation_notify -> {
+                R.id.navigation_restaurent -> {
 //                    toolbar.setTitle("My Gifts")
                     pushFragmentWithoutBackStack(R.id.frame_layout,QuanAnCuaToiFragment.newInstance())
                     return true
                 }
                 R.id.navigation_profile -> {
-//                    toolbar.setTitle("Profile")
                     return true
                 }
-                R.id.navigation_save -> {
+                R.id.navigation_search -> {
 //                    toolbar.setTitle("Profile")
+                    pushFragmentWithoutBackStack(R.id.frame_layout,SearchFragment.newInstance())
                     return true
                 }
             }

@@ -23,6 +23,7 @@ import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
+import com.example.foodyappkotlin.util.DateUtils
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
@@ -128,11 +129,7 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
         text_location.text = quanAn.diachi
 
 //        text_distance
-        if (compareTimes(quanAn.giomocua, quanAn.giodongcua)) {
-            text_status.text = "Đang mở cửa: ${quanAn.giomocua} - ${quanAn.giodongcua}"
-        } else {
-            text_status.text = "Đang đóng cửa: Mở cửa vào lúc ${quanAn.giomocua}"
-        }
+            text_status.text = "Mở cửa:${DateUtils.convertMinuteToHours(quanAn.giomocua)} - Đóng cửa:${DateUtils.convertMinuteToHours(quanAn.giodongcua)}"
 
 /*
         detailViewModel.thucdon.observe(this, Observer<ThucDon> { item ->

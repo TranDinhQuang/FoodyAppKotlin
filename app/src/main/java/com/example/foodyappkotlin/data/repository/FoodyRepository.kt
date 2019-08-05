@@ -14,11 +14,20 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
-    override fun getListLikedOfUser(
-        userId: String,
-        callBack: FoodyDataSource.DataCallBack<MutableList<String>>
+    override fun searchQuanAn(
+        idKhuVuc: String,
+        textSearch: String,
+        type: Int,
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
-        remoteRepo.getListLikedOfUser(userId, callBack)
+        remoteRepo.searchQuanAn(idKhuVuc,textSearch,type,callback)
+    }
+
+    override fun getUser(
+        userId: String,
+        callBack: FoodyDataSource.DataCallBack<UserResponse>
+    ) {
+        remoteRepo.getUser(userId, callBack)
     }
 
     override fun saveUserLoginData(
