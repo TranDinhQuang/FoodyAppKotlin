@@ -19,6 +19,15 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
 
+    companion object {
+        val SORT_BY_KEY_DESC = 1
+        val SORT_BY_KEY_ASC = 2
+        val SORT_BY_DATE_DESC = 3
+        val SORT_BY_DATE_ASC = 4
+        val FILLTER_BY_NAME = 5
+        val FILLTER_BY_ADDRESS = 6
+    }
+
     override fun getListLikedOfUser(
         userId: String,
         callBack: FoodyDataSource.DataCallBack<MutableList<String>>
@@ -148,8 +157,10 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             } else {
                 var num_comment = quanAn.num_comments + 1
                 var num_image = quanAn.num_images + binhluan.hinhanh.size
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("num_comments").setValue(num_comment)
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("num_images").setValue(num_image)
+                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
+                    .child("num_comments").setValue(num_comment)
+                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
+                    .child("num_images").setValue(num_image)
                 callBack.onSuccess("Data saved successfully!")
             }
         }
@@ -322,4 +333,58 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         dataSnapshotHinhAnhQuanAn.addListenerForSingleValueEvent(hinhanhListener)
         return hinhanhquanans
     }
+
+    override fun searchQuanAn(
+        idKhuVuc: String,
+        textSearch: String,
+        type: Int,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+        val refSearch = nodeRoot.child("quanans").child(idKhuVuc).orderByChild("tenquanan")
+            .startAt("[a-zA-Z0-9]*")
+
+        refSearch.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val quanAn = p0.getValue(QuanAn::class.java)
+                if (quanAn != null) {
+                    callback.onSuccess(quanAn)
+                }
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+
+            }
+        })
+    }
+    /*firebaseDatabase.getReference("parent")
+    .orderByChild("childNode")
+        .startAt("[a-zA-Z0-9]*")
+        .endAt(searchString)*/
+
+
+/*
+    private fun searchQuanAn(textSearch : String,type : Int,idKhuVuc : String){
+        val refSearch = nodeRoot.child("quanans").child(idKhuVuc).orderByChild("tenquanan").equalTo(textSearch)
+        *//*firebaseDatabase.getReference("parent")
+            .orderByChild("childNode")
+            .startAt("[a-zA-Z0-9]*")
+            .endAt(searchString)*//*
+
+        *//*c2
+        * var query = 'text'
+databaseReference.orderByChild('search_name')
+             .startAt(`%${query}%`)
+             .endAt(query+"\uf8ff")
+             .once("value")*//*
+    }*/
 }

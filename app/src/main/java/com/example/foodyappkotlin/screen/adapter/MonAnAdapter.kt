@@ -12,7 +12,6 @@ import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
 class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>, val type: Int,val view : MonAnAdapter.MonAnOnClickListener) :
     RecyclerView.Adapter<MonAnAdapter.ViewHolder>() {
-    var number_order: Int = 0
 
     companion object {
         val TYPE_VIEW = 1
@@ -29,6 +28,7 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>, val typ
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
         if (type == TYPE_ORDER) {
+            var number_order = 0
             p0.itemView.layout_value.visibility = View.VISIBLE
             p0.itemView.img_minus.setOnClickListener {
                 if (number_order > 0) {

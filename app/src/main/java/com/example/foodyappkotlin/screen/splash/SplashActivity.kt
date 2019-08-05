@@ -56,7 +56,7 @@ class SplashActivity : BaseActivity() {
             } catch (ignored: Exception) {
                 ignored.printStackTrace()
             }
-        }, 5000)  //
+        }, 2000)  //
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -69,7 +69,6 @@ class SplashActivity : BaseActivity() {
             }
         }
     }
-
 
     private fun getLocationPermission() {
         if (ContextCompat.checkSelfPermission(

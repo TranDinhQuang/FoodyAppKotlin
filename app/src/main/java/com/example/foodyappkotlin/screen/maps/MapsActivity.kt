@@ -1,26 +1,43 @@
 package com.example.foodyappkotlin.screen.maps
 
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import com.example.foodyappkotlin.common.BaseActivity
+import com.google.android.gms.common.GooglePlayServicesRepairableException
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.places.AutocompleteFilter
 import com.google.android.gms.location.places.GeoDataClient
+import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.PlaceDetectionClient
+import com.google.android.gms.location.places.ui.PlaceAutocomplete
+import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
+import com.google.android.gms.location.places.ui.PlacePicker
+import com.google.android.gms.location.places.ui.PlaceSelectionListener
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
+import java.lang.StringBuilder
+import java.util.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback {
     lateinit var mMap: GoogleMap
     lateinit var mCameraPosition: CameraPosition
+
+    var builder = PlacePicker.IntentBuilder()
 
     // The entry points to the Places API.
     private var mGeoDataClient: GeoDataClient? = null
@@ -34,18 +51,47 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         val TAG: String = "MAPS_ACTIVITY"
         val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1
         val DEFAULT_ZOOM = 15
+
+        val PLACE_AUTOCOMPLETE_REQUEST_CODE = 0
         private val mDefaultLocation = LatLng(-33.8523341, 151.2106085)
+
+        val PLACE_PICKER_REQUEST = 2
+
+        var AUTOCOMPLETE_REQUEST_CODE = 3
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(com.example.foodyappkotlin.R.layout.activity_maps)
         getLocationPermission()
+
+        val autocompleteFragment = supportFragmentManager
+            .findFragmentById(com.example.foodyappkotlin.R.id.place_autocomplete_fragment) as PlaceAutocompleteFragment?
+
+        var typeFilter =
+            AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
+                .build()
+
+        if (autocompleteFragment != null) {
+            autocompleteFragment.setFilter(typeFilter)
+            autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+                override fun onPlaceSelected(p0: Place?) {
+                    Log.d(TAG, "Place: ${p0!!.name}")
+                }
+
+                override fun onError(p0: Status?) {
+                    Log.d(TAG, "An error occurred: $p0")
+                }
+
+            })
+        }
+
         val mapFragment = supportFragmentManager
             .findFragmentById(com.example.foodyappkotlin.R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
     }
+
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
@@ -53,14 +99,31 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
+        callPlaceAutocompleteActivityIntent()
+
+        mMap.setOnMapClickListener {
+            // Creating a marker
+            val markerOptions = MarkerOptions()
+
+            // Setting the position for the marker
+            markerOptions.position(it)
+
+            // Setting the title for the marker.
+            // This will be displayed on taping the marker
+            markerOptions.title("${it.latitude} - ${it.longitude}")
+            getAddress(it.latitude,it.longitude)
+            // Clears the previously touched position
+            googleMap.clear()
+
+            // Animating to the touched position
+            googleMap.animateCamera(CameraUpdateFactory.newLatLng(it))
+
+            // Placing a marker on the touched position
+            googleMap.addMarker(markerOptions)
+        }
     }
 
     private fun getLocationPermission() {
-        /*
-            * Request location permission, so that we can get the location of the
-            * device. The result of the permission request is handled by a callback,
-            * onRequestPermissionsResult.
-            */
         if (ContextCompat.checkSelfPermission(
                 this.applicationContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -95,11 +158,11 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
     fun updateLocationUI() {
         try {
             if (mLocationPermissionGranted) {
-                mMap.setMyLocationEnabled(true)
-                mMap.getUiSettings().isMyLocationButtonEnabled = true
+                mMap.isMyLocationEnabled = true
+                mMap.uiSettings.isMyLocationButtonEnabled = true
             } else {
-                mMap.setMyLocationEnabled(false)
-                mMap.getUiSettings().isMyLocationButtonEnabled = false
+                mMap.isMyLocationEnabled = false
+                mMap.uiSettings.isMyLocationButtonEnabled = false
                 mLastKnownLocation = null
                 getLocationPermission()
             }
@@ -108,10 +171,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    fun getDeviceLocation() {/*
-      * Get the best and most recent location of the device, which may be null in rare
-      * cases when a location is not available.
-      */
+    fun getDeviceLocation() {
         try {
             if (mLocationPermissionGranted) {
                 val locationResult = mFusedLocationProviderClient.lastLocation
@@ -144,5 +204,68 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         } catch (e: SecurityException) {
             print(e.message)
         }
+    }
+
+    private fun callPlaceAutocompleteActivityIntent() {
+        try {
+            val intent =
+                PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
+                    .build(this)
+            startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE)
+        } catch (e: GooglePlayServicesRepairableException) {
+            print(e.message)
+        }
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            when (resultCode) {
+                RESULT_OK -> {
+                    val place = PlaceAutocomplete.getPlace(this, data)
+                    Log.d(TAG, "Place:$place")
+                }
+                PlaceAutocomplete.RESULT_ERROR -> {
+                    val status = PlaceAutocomplete.getStatus(this, data)
+                    Log.d(TAG, status.statusMessage)
+                }
+                RESULT_CANCELED -> {
+                    Log.d(TAG, "Cencel")
+                }
+            }
+        }
+    }
+
+    fun getAddress(latitude : Double,longitude : Double){
+         val geo = Geocoder(applicationContext, Locale.getDefault())
+                val addresses = geo.getFromLocation(latitude, longitude, 1)
+                if (addresses.isEmpty()) {
+                    //yourtextfieldname.setText("Waiting for Location");
+//                    markerOptions.title("Waiting for Location")
+                   // markerOptions.title("Current Position");
+                }
+                else {
+                    if (addresses.size > 0) {
+                        addresses.forEach {
+                            Log.d("kiemtra","dia chi ${it.getAddressLine(0)}")
+                        }
+                        val returnAddress = addresses[0]
+                   /*     var localityString = returnAddress.locality
+                        var city = returnAddress.countryName
+                        var region_code = returnAddress.countryCode
+                        var zipcode = returnAddress.getPostalCode()
+                        var str = StringBuilder()
+                        str.append(addresses.get(0).getAddressLine(1)+" "+addresses.get(0).getAddressLine(2) + " ")
+                        str.append("$localityString ")
+                        str.append("$city ")
+                        str.append("$region_code ")
+                        str.append("$zipcode ")*/
+    //                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
+//                        markerOptions.title(str.toString())
+                        //Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
+                    }
+                }
     }
 }

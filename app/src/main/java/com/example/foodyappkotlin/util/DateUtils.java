@@ -125,4 +125,24 @@ public class DateUtils {
         calendar.setTimeInMillis(date);
         return Calendar.getInstance().get(Calendar.YEAR) == calendar.get(Calendar.YEAR);
     }
+
+    public static String convertMinuteToHours(Long minute) {
+        Long hours = minute / 60; //since both are ints, you get an int
+        Long minutes = minute % 60;
+        StringBuilder builderTime = new StringBuilder();
+        if (hours < 10) {
+            builderTime.append("0");
+            builderTime.append(hours);
+        } else {
+            builderTime.append(hours);
+        }
+        builderTime.append(":");
+        if (minutes < 10) {
+            builderTime.append("0");
+            builderTime.append(minutes);
+        } else {
+            builderTime.append(minutes);
+        }
+        return builderTime.toString();
+    }
 }

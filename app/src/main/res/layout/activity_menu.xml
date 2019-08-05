@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/dp_24"
-        android:text="Tổng giá : 100.000 đ"
+        android:text="0 VND"
         android:textSize="@dimen/dp_20" />
 
     <android.support.v7.widget.RecyclerView
