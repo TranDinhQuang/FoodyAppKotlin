@@ -28,25 +28,31 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         val FILLTER_BY_ADDRESS = 6
     }
 
-    override fun getListLikedOfUser(
+    override fun getUser(
         userId: String,
-        callBack: FoodyDataSource.DataCallBack<MutableList<String>>
+        callBack: FoodyDataSource.DataCallBack<UserResponse>
     ) {
-        val ref = nodeRoot.child("thanhviens").child(userId).child("liked")
-        ref.addListenerForSingleValueEvent(object : ValueEventListener {
+        Log.d("kiemtra","$userId id_user")
+        val ref = nodeRoot.child("thanhviens").child(userId)
+
+        ref.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                var listLiked: ArrayList<String> = ArrayList()
-                if (p0.hasChildren()) {
-                    p0.children.forEach {
-                        listLiked.add(it.value as String)
-                    }
-                    callBack.onSuccess(listLiked)
-                    ref.removeEventListener(this)
+                val userResponse  = p0.getValue(UserResponse::class.java)
+                if (userResponse != null) {
+                    callBack.onSuccess(userResponse)
                 }
+                ref.removeEventListener(this)
+               /* if (p0.hasChildren()) {
+                    val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
+                    if (userResponse != null) {
+                        callBack.onSuccess(userResponse)
+                    }
+                    ref.removeEventListener(this)
+                }*/
             }
 
         })
@@ -81,6 +87,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                             user.taikhoan,
                             user.tenhienthi,
                             user.hinhanh,
+                            HashMap(),
                             HashMap(),
                             user.permission
                         )
@@ -117,6 +124,8 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 if (comment != null) {
                     binhluans.add(comment)
                     callback.onSuccess(comment)
+                }else{
+                    callback.onFailure("Không có dữ liệu")
                 }
             }
 
@@ -200,71 +209,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
-
-/*    override fun getQuanAns(
-        province: Int,
-        page: Int,
-        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
-    ) {
-        var quanans: ArrayList<QuanAn> = ArrayList()
-        var hinhanhquanans: ArrayList<String> = ArrayList()
-        var binhluans = ArrayList<BinhLuan>()
-        var thucdons = ThucDon(ArrayList(), ArrayList())
-
-
-        val postListener = object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                Log.d("kiemtra","$province - $page")
-                val dataSnapshotQuanAn = p0.child("quanans").child("KV$province").child("PAGE$page")
-                dataSnapshotQuanAn.children.sortedByDescending { it.key }.forEach {
-                    var quanan = it.getValue(QuanAn::class.java)
-                    if (quanan != null) {
-                        quanan.id = it.key!!
-                        val dataSnapshotHinhAnh = p0.child("hinhanhquanans").child(quanan.id)
-                        val dataSnapshotBinhLuan = p0.child("binhluans").child(quanan.id)
-                        if (quanan.thucdon != "") {
-                            val dataSnapshotThucDon = p0.child("thucdons").child(quanan.thucdon)
-                            for (item in dataSnapshotThucDon.child("MONAN").children) {
-                                var monAn = item.getValue(MonAn::class.java)
-                                if (monAn != null) {
-                                    thucdons.monAns.add(monAn)
-                                }
-                            }
-                            for (item in dataSnapshotThucDon.child("NUOCUONG").children) {
-                                var nuocUong = item.getValue(NuocUong::class.java)
-                                if (nuocUong != null) {
-                                    thucdons.nuocUongs.add(nuocUong)
-                                }
-                            }
-                        }
-                        for (itemhinhanh in dataSnapshotHinhAnh.children) {
-                            hinhanhquanans.add(itemhinhanh.value as String)
-                        }
-                        dataSnapshotBinhLuan.children.sortedByDescending { it.key }.forEach {
-                            binhluans.add(it.getValue(BinhLuan::class.java)!!)
-                        }
-                        quanan.thucdons = thucdons
-                        quanan.hinhanhquanans.addAll(hinhanhquanans)
-                        quanan.binhluans.addAll(binhluans)
-                        quanans.add(quanan)
-                        hinhanhquanans.clear()
-                        binhluans.clear()
-                        thucdons.monAns.clear()
-                        thucdons.nuocUongs.clear()
-                    }
-                }
-                var gson = Gson()
-                Log.d("data", gson.toJson(quanans))
-                callback.onSuccess(quanans)
-                nodeRoot.removeEventListener(this)
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-                callback.onFailure(p0.message)
-            }
-        }
-        nodeRoot.addValueEventListener(postListener)
-    }*/
 
     override fun getQuanAns(
         province: Int,
@@ -362,25 +306,4 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
         })
     }
-    /*firebaseDatabase.getReference("parent")
-    .orderByChild("childNode")
-        .startAt("[a-zA-Z0-9]*")
-        .endAt(searchString)*/
-
-
-/*
-    private fun searchQuanAn(textSearch : String,type : Int,idKhuVuc : String){
-        val refSearch = nodeRoot.child("quanans").child(idKhuVuc).orderByChild("tenquanan").equalTo(textSearch)
-        *//*firebaseDatabase.getReference("parent")
-            .orderByChild("childNode")
-            .startAt("[a-zA-Z0-9]*")
-            .endAt(searchString)*//*
-
-        *//*c2
-        * var query = 'text'
-databaseReference.orderByChild('search_name')
-             .startAt(`%${query}%`)
-             .endAt(query+"\uf8ff")
-             .once("value")*//*
-    }*/
 }

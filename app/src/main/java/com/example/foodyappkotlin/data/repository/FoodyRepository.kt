@@ -23,11 +23,11 @@ class FoodyRepository @Inject constructor(
         remoteRepo.searchQuanAn(idKhuVuc,textSearch,type,callback)
     }
 
-    override fun getListLikedOfUser(
+    override fun getUser(
         userId: String,
-        callBack: FoodyDataSource.DataCallBack<MutableList<String>>
+        callBack: FoodyDataSource.DataCallBack<UserResponse>
     ) {
-        remoteRepo.getListLikedOfUser(userId, callBack)
+        remoteRepo.getUser(userId, callBack)
     }
 
     override fun saveUserLoginData(

@@ -32,7 +32,7 @@ interface FoodyDataSource {
 
         fun saveUserLoginData(user : User,callBack: DataCallBack<UserResponse>)
 
-        fun getListLikedOfUser(userId : String,callBack: DataCallBack<MutableList<String>>)
+        fun getUser(userId : String,callBack: DataCallBack<UserResponse>)
 
     }
 }

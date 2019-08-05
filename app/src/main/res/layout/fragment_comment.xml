@@ -20,7 +20,6 @@
         android:layout_below="@id/btn_review"
         android:clipToPadding="false"
         android:padding="@dimen/dp_16"
-        android:visibility="gone"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
     <include
