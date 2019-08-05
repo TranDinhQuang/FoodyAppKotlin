@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.models.MonAn
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.di.module.GlideApp
@@ -33,7 +34,8 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class OverviewFragment : BaseFragment() {
+class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocUongAdapter.NuocUongOnClickListener{
+
     lateinit var inputParser: SimpleDateFormat
     lateinit var detailViewModel: DetailViewModel
     lateinit var monAnAdapter: MonAnAdapter
@@ -154,10 +156,10 @@ class OverviewFragment : BaseFragment() {
            recycler_menu.visibility = View.GONE
            text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
         if (thucDon.monAns.size > 0) {
-            monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns,MonAnAdapter.TYPE_VIEW)
+            monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns,MonAnAdapter.TYPE_VIEW,this)
             recycler_menu.adapter = monAnAdapter
         } else if (thucDon.nuocUongs.size > 0) {
-            nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs,NuocUongAdapter.TYPE_VIEW)
+            nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs,NuocUongAdapter.TYPE_VIEW,this)
             recycler_menu.adapter = nuocUongAdapter
         }
     }
@@ -194,4 +196,9 @@ class OverviewFragment : BaseFragment() {
         }
     }
 
+    override fun monAnCalculatorMoney(money: Long) {
+    }
+
+    override fun nuocUongCalculatorMoney(money: Long) {
+    }
 }

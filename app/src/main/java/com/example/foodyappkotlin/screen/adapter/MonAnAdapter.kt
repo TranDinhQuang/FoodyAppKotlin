@@ -8,9 +8,12 @@ import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.MonAn
 import kotlinx.android.synthetic.main.item_menu_order.view.*
+import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
-class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>,val type  :Int) :
+class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>, val type: Int,val view : MonAnAdapter.MonAnOnClickListener) :
     RecyclerView.Adapter<MonAnAdapter.ViewHolder>() {
+    var number_order: Int = 0
+
     companion object {
         val TYPE_VIEW = 1
         val TYPE_ORDER = 2
@@ -25,9 +28,21 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>,val type
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        if(type == TYPE_ORDER){
+        if (type == TYPE_ORDER) {
             p0.itemView.layout_value.visibility = View.VISIBLE
-        }else{
+            p0.itemView.img_minus.setOnClickListener {
+                if (number_order > 0) {
+                    number_order--
+                    view.monAnCalculatorMoney(-monAns[p1].gia)
+                }
+                p0.itemView.txt_number_order.text = "$number_order"
+            }
+            p0.itemView.img_plus.setOnClickListener {
+                number_order++
+                view.monAnCalculatorMoney(monAns[p1].gia)
+                p0.itemView.txt_number_order.text = "$number_order"
+            }
+        } else {
             p0.itemView.layout_value.visibility = View.GONE
         }
         p0.itemView.text_food_name.text = monAns[p1].ten
@@ -35,4 +50,8 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>,val type
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface MonAnOnClickListener{
+        fun monAnCalculatorMoney(money : Long)
+    }
 }

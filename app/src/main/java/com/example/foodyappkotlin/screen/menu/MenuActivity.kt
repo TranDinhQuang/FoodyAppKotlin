@@ -13,8 +13,11 @@ import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_menu.*
 import javax.inject.Inject
+import java.text.DecimalFormat
 
-class MenuActivity : BaseActivity() {
+
+class MenuActivity : BaseActivity(),MonAnAdapter.MonAnOnClickListener,NuocUongAdapter.NuocUongOnClickListener{
+    var sum_money : Long = 0
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -34,10 +37,11 @@ class MenuActivity : BaseActivity() {
     }
 
     fun initData(thucDon: ThucDon){
-        val monAnAdapter = MonAnAdapter(this,thucDon.monAns,MonAnAdapter.TYPE_ORDER)
-        val nuocUongAdapter = NuocUongAdapter(this,thucDon.nuocUongs,NuocUongAdapter.TYPE_ORDER)
+        val monAnAdapter = MonAnAdapter(this,thucDon.monAns,MonAnAdapter.TYPE_ORDER,this)
+        val nuocUongAdapter = NuocUongAdapter(this,thucDon.nuocUongs,NuocUongAdapter.TYPE_ORDER,this)
         recycler_menu_monan.adapter = monAnAdapter
         recycler_menu_nuocuong.adapter = nuocUongAdapter
+
     }
 
     fun callApi(){
@@ -49,7 +53,21 @@ class MenuActivity : BaseActivity() {
             override fun onFailure(message: String) {
 
             }
-
         })
+    }
+
+    fun calculatorAllItem(money : Long){
+        sum_money += money
+        val formatter = DecimalFormat("#,###")
+        val formattedNumber = formatter.format(sum_money)
+        sum_value.text = "$formattedNumber VND"
+    }
+
+    override fun nuocUongCalculatorMoney(money: Long) {
+        calculatorAllItem(money)
+    }
+
+    override fun monAnCalculatorMoney(money: Long) {
+        calculatorAllItem(money)
     }
 }
