@@ -32,7 +32,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         userId: String,
         callBack: FoodyDataSource.DataCallBack<UserResponse>
     ) {
-        Log.d("kiemtra","$userId id_user")
+        Log.d("kiemtra", "$userId id_user")
         val ref = nodeRoot.child("thanhviens").child(userId)
 
         ref.addValueEventListener(object : ValueEventListener {
@@ -41,21 +41,54 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val userResponse  = p0.getValue(UserResponse::class.java)
+                val userResponse = p0.getValue(UserResponse::class.java)
                 if (userResponse != null) {
                     callBack.onSuccess(userResponse)
                 }
                 ref.removeEventListener(this)
-               /* if (p0.hasChildren()) {
-                    val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
-                    if (userResponse != null) {
-                        callBack.onSuccess(userResponse)
-                    }
-                    ref.removeEventListener(this)
-                }*/
+                /* if (p0.hasChildren()) {
+                     val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
+                     if (userResponse != null) {
+                         callBack.onSuccess(userResponse)
+                     }
+                     ref.removeEventListener(this)
+                 }*/
             }
 
         })
+    }
+
+    override fun getThaoLuanIntoComment(
+        idQuanan: String,
+        idBinhLuan: String,
+        callback: FoodyDataSource.DataCallBack<ThaoLuan>
+    ) {
+        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
+        refThaoLuan.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val thaoluan = p0.getValue(ThaoLuan::class.java)
+                if (thaoluan != null) {
+                    callback.onSuccess(thaoluan)
+                } else {
+                    callback.onFailure("Không có dữ liệu")
+                }
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+
+        })
+
     }
 
     override fun addQuanAnMyself(
@@ -124,7 +157,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 if (comment != null) {
                     binhluans.add(comment)
                     callback.onSuccess(comment)
-                }else{
+                } else {
                     callback.onFailure("Không có dữ liệu")
                 }
             }

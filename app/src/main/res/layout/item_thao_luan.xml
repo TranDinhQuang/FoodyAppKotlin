@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dp_5">
+
+    <ImageView
+        android:id="@+id/img_avatar"
+        android:layout_width="@dimen/dp_24"
+        android:layout_height="@dimen/dp_24"
+        android:layout_alignTop="@id/txt_user_name"
+        android:layout_alignBottom="@id/txt_noi_dung"
+        android:src="@drawable/placeholder" />
+
+    <TextView
+        android:id="@+id/txt_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/img_avatar"
+        android:padding="@dimen/dp_5"
+        android:text="Quang tran"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/txt_noi_dung"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_user_name"
+        android:layout_toRightOf="@id/img_avatar"
+        android:padding="@dimen/dp_5"
+        android:text="Quang tran"
+        android:textSize="@dimen/sp_12" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/txt_noi_dung"
+        android:layout_alignLeft="@id/txt_noi_dung"
+        android:paddingLeft="@dimen/dp_8"
+        android:paddingRight="@dimen/dp_8"
+        android:text="Xóa"
+        android:textColor="@color/red"
+        android:textSize="@dimen/dp_8" />
+</RelativeLayout>

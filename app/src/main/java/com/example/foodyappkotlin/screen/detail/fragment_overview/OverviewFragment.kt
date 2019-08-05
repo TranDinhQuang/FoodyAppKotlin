@@ -9,12 +9,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
-import com.example.foodyappkotlin.data.models.BinhLuan
-import com.example.foodyappkotlin.data.models.MonAn
-import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.models.ThucDon
+import com.example.foodyappkotlin.data.models.*
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
@@ -22,6 +20,7 @@ import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
+import com.example.foodyappkotlin.screen.detail.fragment_detail_comment.FragmentDetailComment
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.example.foodyappkotlin.util.DateUtils
 import com.google.firebase.storage.FirebaseStorage
@@ -35,7 +34,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
-class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocUongAdapter.NuocUongOnClickListener{
+class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocUongAdapter.NuocUongOnClickListener,CommentAdapter.CommentOnCLickListerner{
 
     lateinit var inputParser: SimpleDateFormat
     lateinit var detailViewModel: DetailViewModel
@@ -43,10 +42,16 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     lateinit var nuocUongAdapter: NuocUongAdapter
     lateinit var commentAdapter: CommentAdapter
 
+    var idQuanAn : String = ""
+
     val storage = FirebaseStorage.getInstance().reference
 
     @Inject
     lateinit var mActivity: DetailEatingActivity
+
+
+    @Inject
+    lateinit var appSharedPreference: AppSharedPreference
 
     companion object {
         private const val INPUT_FORMAT = "HH:mm"
@@ -101,6 +106,7 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     }
 
     fun findQuanAnData(quanAn: QuanAn) {
+        idQuanAn = quanAn.id
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference
             val hinhAnhQuanAn = ArrayList<String>()
@@ -130,32 +136,20 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
 
 //        text_distance
             text_status.text = "Mở cửa:${DateUtils.convertMinuteToHours(quanAn.giomocua)} - Đóng cửa:${DateUtils.convertMinuteToHours(quanAn.giodongcua)}"
-
-/*
-        detailViewModel.thucdon.observe(this, Observer<ThucDon> { item ->
-            run {
-                if (item!!.monAns.size > 0) {
-                    monAnAdapter = MonAnAdapter(activity!!, item.monAns)
-                    recycler_menu.adapter = monAnAdapter
-                } else if (item!!.nuocUongs.size > 0) {
-                    nuocUongAdapter = NuocUongAdapter(activity!!, item.nuocUongs)
-                    recycler_menu.adapter = nuocUongAdapter
-                }
-            }
-        })*/
         recycler_menu.isNestedScrollingEnabled = false
     }
 
     fun findThucDonData(thucDon: ThucDon) {
-        /*   recycler_menu.visibility = View.VISIBLE
+           recycler_menu.visibility = View.VISIBLE
            text_menu_viewmore.text = "Xem thêm"
-           findThucDonData(item.thucdons)
            recycler_menu.visibility = View.GONE
-           text_menu_viewmore.text = "Quán ăn chưa có thực đơn"*/
+           text_menu_viewmore.text = "Quán ăn chưa có thực đơn"
+
         if (thucDon.monAns.size > 0) {
             monAnAdapter = MonAnAdapter(activity!!, thucDon.monAns,MonAnAdapter.TYPE_VIEW,this)
             recycler_menu.adapter = monAnAdapter
-        } else if (thucDon.nuocUongs.size > 0) {
+        }
+        if (thucDon.nuocUongs.size > 0) {
             nuocUongAdapter = NuocUongAdapter(activity!!, thucDon.nuocUongs,NuocUongAdapter.TYPE_VIEW,this)
             recycler_menu.adapter = nuocUongAdapter
         }
@@ -163,33 +157,10 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
 
     fun findCommentData(binhluans: ArrayList<BinhLuan>) {
         if (!binhluans.isEmpty()) {
-            val gson = Gson()
-            Log.d("data", gson.toJson(binhluans))
-            commentAdapter = CommentAdapter(activity!!, binhluans, ArrayList())
+            commentAdapter = CommentAdapter(activity!!, binhluans,appSharedPreference.getUser().liked,this)
             recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
             recycler_user_comment.adapter = commentAdapter
             recycler_user_comment.isNestedScrollingEnabled = false
-        }
-    }
-
-    fun compareTimes(timeOpen: String, timeClose: String): Boolean {
-        val now = Calendar.getInstance()
-        val hour = now.get(Calendar.HOUR)
-        val minute = now.get(Calendar.MINUTE)
-        var date: Date = parseDate("$hour:$minute")
-        val timeOne = parseDate(timeOpen)
-        val timeTwo = parseDate(timeClose)
-        if (timeOne.before(date) && timeTwo.after(date)) {
-            return true
-        }
-        return false
-    }
-
-    private fun parseDate(date: String): Date {
-        return try {
-            inputParser.parse(date)
-        } catch (e: java.text.ParseException) {
-            Date(0)
         }
     }
 
@@ -197,5 +168,11 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     }
 
     override fun nuocUongCalculatorMoney(money: Long) {
+    }
+
+    override fun onClickItemCommentListerner(binhLuan : BinhLuan) {
+        if(idQuanAn != ""){
+            mActivity.pushFragment(R.id.layout_food_detail,FragmentDetailComment.newInstance(idQuanAn,binhLuan))
+        }
     }
 }

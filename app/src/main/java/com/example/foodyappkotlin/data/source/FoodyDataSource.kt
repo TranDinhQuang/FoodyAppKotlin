@@ -1,9 +1,6 @@
 package com.example.foodyappkotlin.data.source
 
-import com.example.foodyappkotlin.data.models.BinhLuan
-import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.models.ThucDon
-import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.models.*
 import com.example.foodyappkotlin.data.response.UserResponse
 
 interface FoodyDataSource {
@@ -14,6 +11,8 @@ interface FoodyDataSource {
     }
 
     interface Remote {
+        fun getThaoLuanIntoComment(idQuanan: String,idBinhLuan: String,callback: DataCallBack<ThaoLuan>)
+
         fun searchQuanAn(idKhuVuc : String,textSearch : String,type : Int,callback: DataCallBack<MutableList<QuanAn>>)
 
         fun addQuanAnMyself(idKhuVuc : String,quanAn: QuanAn,callback: DataCallBack<MutableList<String>>)

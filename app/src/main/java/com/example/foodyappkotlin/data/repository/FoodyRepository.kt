@@ -1,9 +1,6 @@
 package com.example.foodyappkotlin.data.repository
 
-import com.example.foodyappkotlin.data.models.BinhLuan
-import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.models.ThucDon
-import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.models.*
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.haipq.miniweather.data.source.Remote
@@ -14,6 +11,14 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
+    override fun getThaoLuanIntoComment(
+        idQuanan: String,
+        idBinhLuan: String,
+        callback: FoodyDataSource.DataCallBack<ThaoLuan>
+    ) {
+        remoteRepo.getThaoLuanIntoComment(idQuanan,idBinhLuan,callback)
+    }
+
     override fun searchQuanAn(
         idKhuVuc: String,
         textSearch: String,

@@ -14,7 +14,3 @@ data class BinhLuan(
     var hinhanh: HashMap<String, String> = HashMap()
 ) : Serializable
 
-data class ThaoLuan(
-    var mauser: String = "",
-    var noidung: String = ""
-) : Serializable

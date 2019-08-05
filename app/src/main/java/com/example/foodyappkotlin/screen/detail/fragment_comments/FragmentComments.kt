@@ -13,14 +13,14 @@ import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
-import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.item_empty_value.*
 import javax.inject.Inject
 
-class FragmentComments : BaseFragment() {
+class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
+
     lateinit var commentAdapter: CommentAdapter
     lateinit var detailViewModel: DetailViewModel
     lateinit var comments: MutableList<BinhLuan>
@@ -54,64 +54,37 @@ class FragmentComments : BaseFragment() {
     }
 
     private fun initData() {
-        mPresenter = CommentsPresenter(repository,this)
+        mPresenter = CommentsPresenter(repository, this)
 
         detailViewModel = activity?.run {
             ViewModelProviders.of(this).get(DetailViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        val listLiked =ArrayList<String>(appSharedPreference.getUser().liked.values)
 
-        commentAdapter = if(listLiked.isNotEmpty()){
-            CommentAdapter(activity!!, ArrayList(),listLiked)
-        }else{
-            CommentAdapter(activity!!, ArrayList(),ArrayList())
-        }
+        commentAdapter = CommentAdapter(activity!!, ArrayList(),  appSharedPreference.getUser().liked,this)
         recycler_comments.adapter = commentAdapter
-        detailViewModel.quanan.observe(this,Observer<QuanAn>{
-                item ->
+        detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             if (item != null) {
                 mPresenter.getAllComment(item.id)
             }
         })
-
-        /* repository.getListLikedOfUser(appSharedPreference.getToken()!!,
-             object : FoodyDataSource.DataCallBack<MutableList<String>> {
-                 override fun onSuccess(data: MutableList<String>) {
-                     commentAdapter = CommentAdapter(activity!!, ArrayList(), data)
-                     recycler_comments.visibility = View.VISIBLE
-                     recycler_comments.adapter = commentAdapter
-                     repository.getAllCommentFollowQuanAn(
-                         detailViewModel.quanan.value!!.id,
-                         object : FoodyDataSource.DataCallBack<BinhLuan> {
-                             override fun onSuccess(data: BinhLuan) {
-                                 commentAdapter.onDataChanged(data)
-                             }
-
-                             override fun onFailure(message: String) {
-                                 recycler_comments.visibility = View.GONE
-                                 layout_empty.visibility = View.VISIBLE
-                             }
-                         })
-                 }
-
-                 override fun onFailure(message: String) {
-                 }
-
-             })*/
     }
 
-    fun getAllCommentSuccess(data: BinhLuan){
-        if(recycler_comments.visibility == View.GONE){
+    fun getAllCommentSuccess(data: BinhLuan) {
+        if (recycler_comments.visibility == View.GONE) {
             recycler_comments.visibility = View.VISIBLE
         }
         commentAdapter.onDataChanged(data)
     }
 
-    fun getAllCommentFailure(message : String){
-        if(commentAdapter.comments.isEmpty()){
+    fun getAllCommentFailure(message: String) {
+        if (commentAdapter.comments.isEmpty()) {
             recycler_comments.visibility = View.GONE
             layout_empty.visibility = View.VISIBLE
         }
+    }
+
+    override fun onClickItemCommentListerner(binhLuan: BinhLuan) {
+
     }
 }
