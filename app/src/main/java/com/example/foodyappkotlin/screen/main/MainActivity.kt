@@ -54,17 +54,17 @@ class MainActivity : BaseActivity() {
                     pushFragmentWithoutBackStack(R.id.frame_layout,ODauFragment.getInstance())
                     return true
                 }
-                R.id.navigation_notify -> {
+                R.id.navigation_restaurent -> {
 //                    toolbar.setTitle("My Gifts")
                     pushFragmentWithoutBackStack(R.id.frame_layout,QuanAnCuaToiFragment.newInstance())
                     return true
                 }
                 R.id.navigation_profile -> {
-                       pushFragmentWithoutBackStack(R.id.frame_layout,SearchFragment.newInstance())
                     return true
                 }
-                R.id.navigation_save -> {
+                R.id.navigation_search -> {
 //                    toolbar.setTitle("Profile")
+                    pushFragmentWithoutBackStack(R.id.frame_layout,SearchFragment.newInstance())
                     return true
                 }
             }

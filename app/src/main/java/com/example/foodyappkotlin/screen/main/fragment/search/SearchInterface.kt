@@ -5,7 +5,7 @@ import com.example.foodyappkotlin.data.source.FoodyDataSource
 
 interface SearchInterface {
     interface View {
-        fun searchSuccess(quanAn: QuanAn)
+        fun searchSuccess(quanAn: MutableList<QuanAn>)
         fun searchFailure(message: String)
     }
 

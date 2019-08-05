@@ -14,7 +14,7 @@ interface FoodyDataSource {
     }
 
     interface Remote {
-        fun searchQuanAn(idKhuVuc : String,textSearch : String,type : Int,callback: DataCallBack<QuanAn>)
+        fun searchQuanAn(idKhuVuc : String,textSearch : String,type : Int,callback: DataCallBack<MutableList<QuanAn>>)
 
         fun addQuanAnMyself(idKhuVuc : String,quanAn: QuanAn,callback: DataCallBack<MutableList<String>>)
 

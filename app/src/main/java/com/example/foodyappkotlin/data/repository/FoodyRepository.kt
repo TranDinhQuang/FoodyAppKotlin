@@ -18,7 +18,7 @@ class FoodyRepository @Inject constructor(
         idKhuVuc: String,
         textSearch: String,
         type: Int,
-        callback: FoodyDataSource.DataCallBack<QuanAn>
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         remoteRepo.searchQuanAn(idKhuVuc,textSearch,type,callback)
     }

@@ -11,8 +11,8 @@ class SearchPresenter(val repository: FoodyRepository) : SearchInterface.Present
         textSearch: String,
         type: Int
     ) {
-        repository.searchQuanAn(idKhuVuc,textSearch,type,object : FoodyDataSource.DataCallBack<QuanAn>{
-            override fun onSuccess(data: QuanAn) {
+        repository.searchQuanAn(idKhuVuc,textSearch,type,object : FoodyDataSource.DataCallBack<MutableList<QuanAn>>{
+            override fun onSuccess(data: MutableList<QuanAn>) {
                 view.searchSuccess(data)
             }
 

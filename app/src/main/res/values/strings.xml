@@ -77,4 +77,6 @@
     <string name="txt_post">Đăng</string>
     <string name="txt_title">Tiêu đề</string>
     <string name="txt_empty_list">Danh sách rỗng</string>
+    <string name="title_search">Search</string>
+    <string name="title_restaurent">Restaurent</string>
 </resources>

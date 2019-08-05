@@ -7,6 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.di.module.GlideApp
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.android.synthetic.main.item_odau.view.*
+import kotlinx.android.synthetic.main.item_search.view.*
 
 class SearchAdapter(
     val context: Context,
@@ -14,6 +18,9 @@ class SearchAdapter(
     val view: SearchAdapter.SearchOnClickListener
 ) :
     RecyclerView.Adapter<SearchAdapter.ViewHolder>() {
+
+    val storage = FirebaseStorage.getInstance().reference
+
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): SearchAdapter.ViewHolder {
         return ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_search, p0, false))
@@ -24,11 +31,22 @@ class SearchAdapter(
     }
 
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
+        val hinhAnhQuanAns = ArrayList<String>(quanAns[p1].hinhanhs.values)
+        val storageRef = storage.child("monan").child(hinhAnhQuanAns[0])
 
+        p0.itemView.txt_ten_quan_an.text = quanAns[p1].tenquanan
+        p0.itemView.txt_dia_chi.text = quanAns[p1].diachi
+        GlideApp.with(context)
+            .load(storageRef)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(p0.itemView.img_quan_an)
     }
 
-    fun addQuanAn(quanAn: QuanAn) {
-        quanAns.add(quanAn)
+    fun addAllQuanAn(datas: MutableList<QuanAn>) {
+        quanAns.clear()
+        quanAns.addAll(datas)
         notifyDataSetChanged()
     }
 

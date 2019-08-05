@@ -338,31 +338,27 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         idKhuVuc: String,
         textSearch: String,
         type: Int,
-        callback: FoodyDataSource.DataCallBack<QuanAn>
+        callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
-        val refSearch = nodeRoot.child("quanans").child(idKhuVuc).orderByChild("tenquanan")
-            .startAt("[a-zA-Z0-9]*")
+        val quanans: ArrayList<QuanAn> = ArrayList()
 
-        refSearch.addChildEventListener(object : ChildEventListener {
+        val refSearch = nodeRoot.child("quanans").child(idKhuVuc)
+        refSearch.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-
+                refSearch.removeEventListener(this)
+                callback.onFailure(p0.message)
             }
 
-            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-            }
+            override fun onDataChange(p0: DataSnapshot) {
 
-            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-            }
-
-            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val quanAn = p0.getValue(QuanAn::class.java)
-                if (quanAn != null) {
-                    callback.onSuccess(quanAn)
+                p0.children.forEach {
+                    val quanAn = it.getValue(QuanAn::class.java)
+                    if (quanAn != null && quanAn.tenquanan.toLowerCase().contains(textSearch.trim().toLowerCase())) {
+                        quanans.add(quanAn)
+                    }
                 }
-            }
-
-            override fun onChildRemoved(p0: DataSnapshot) {
-
+                callback.onSuccess(quanans)
+                refSearch.removeEventListener(this)
             }
         })
     }

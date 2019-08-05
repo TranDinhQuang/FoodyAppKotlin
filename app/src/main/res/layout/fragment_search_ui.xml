@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/edt_search"
-        android:src="@drawable/ic_search_black_24dp" />
+        android:src="@drawable/ic_search_24dp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_quanans"

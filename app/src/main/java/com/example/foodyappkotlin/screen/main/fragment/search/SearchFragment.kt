@@ -58,12 +58,12 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
         edt_search.addTextChangedListener(this)
     }
 
-    override fun searchSuccess(quanAn: QuanAn) {
-        mSearchAdapter.addQuanAn(quanAn)
+    override fun searchSuccess(datas: MutableList<QuanAn>) {
+        mSearchAdapter.addAllQuanAn(datas)
     }
 
     override fun searchFailure(message: String) {
-        Log.d("kiemtra", "searchFailure")
+        Log.d("kiemtra", message)
     }
 
     override fun afterTextChanged(p0: Editable?) {
