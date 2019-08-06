@@ -13,6 +13,7 @@ import javax.inject.Inject
 import javax.inject.Named
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.view.inputmethod.InputMethodManager
 
 
 abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
@@ -41,6 +42,14 @@ abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> {
         return childFragmentInjector
+    }
+
+    fun showKeyBoard(){
+
+    }
+
+    fun hideKeyBoard(){
+
     }
 
     fun showAlertListerner(title : String,message : String,listerner : DialogInterface.OnClickListener ){

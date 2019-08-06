@@ -63,7 +63,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         idBinhLuan: String,
         callback: FoodyDataSource.DataCallBack<ThaoLuan>
     ) {
-        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
+        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan)
         refThaoLuan.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
@@ -86,9 +86,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
             override fun onChildRemoved(p0: DataSnapshot) {
             }
-
         })
-
     }
 
     override fun addQuanAnMyself(

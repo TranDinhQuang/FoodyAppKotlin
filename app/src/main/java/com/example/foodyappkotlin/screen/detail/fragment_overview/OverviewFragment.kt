@@ -42,7 +42,7 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     lateinit var nuocUongAdapter: NuocUongAdapter
     lateinit var commentAdapter: CommentAdapter
 
-    var idQuanAn : String = ""
+    private lateinit var mQuanAn : QuanAn
 
     val storage = FirebaseStorage.getInstance().reference
 
@@ -106,7 +106,7 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     }
 
     fun findQuanAnData(quanAn: QuanAn) {
-        idQuanAn = quanAn.id
+        mQuanAn = quanAn
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference
             val hinhAnhQuanAn = ArrayList<String>()
@@ -171,8 +171,8 @@ class OverviewFragment : BaseFragment() ,MonAnAdapter.MonAnOnClickListener,NuocU
     }
 
     override fun onClickItemCommentListerner(binhLuan : BinhLuan) {
-        if(idQuanAn != ""){
-            mActivity.pushFragment(R.id.layout_food_detail,FragmentDetailComment.newInstance(idQuanAn,binhLuan))
+        if(mQuanAn.id != ""){
+            mActivity.pushFragment(R.id.layout_food_detail,FragmentDetailComment.newInstance(mQuanAn,binhLuan))
         }
     }
 }
