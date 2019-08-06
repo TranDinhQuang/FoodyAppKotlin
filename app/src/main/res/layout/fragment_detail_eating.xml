@@ -42,6 +42,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:background="@drawable/bg_line_bottom"
                     android:padding="@dimen/dp_10">
 
                     <android.support.constraint.ConstraintLayout
@@ -148,6 +149,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:background="@drawable/bg_line_bottom"
                     android:padding="@dimen/dp_10">
 
                     <TextView
@@ -200,15 +202,16 @@
                         android:id="@+id/text_view_all_comment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/dp_20"
                         android:gravity="center"
                         android:padding="@dimen/dp_5"
-                        android:layout_marginBottom="@dimen/dp_20"
                         android:text="@string/txt_viewmore"
                         android:textColor="@color/blue" />
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
     </android.support.v4.widget.NestedScrollView>
+
     <include
         android:id="@+id/layout_feature"
         layout="@layout/layout_feature" />

@@ -1,6 +1,7 @@
 package com.example.foodyappkotlin.data.source
 
 import com.example.foodyappkotlin.data.models.*
+import com.example.foodyappkotlin.data.request.QuanAnRequest
 import com.example.foodyappkotlin.data.response.UserResponse
 
 interface FoodyDataSource {
@@ -17,7 +18,7 @@ interface FoodyDataSource {
 
         fun addQuanAnMyself(idKhuVuc : String,quanAn: QuanAn,callback: DataCallBack<MutableList<String>>)
 
-        fun getQuanAns(province: Int, page: Int,valueAt : String, callback: DataCallBack<MutableList<QuanAn>>)
+        fun getQuanAns(quanAnRequest: QuanAnRequest, callback: DataCallBack<MutableList<QuanAn>>)
 
         fun getAllCommentFollowQuanAn(idQuanan: String, callback: DataCallBack<BinhLuan>)
 

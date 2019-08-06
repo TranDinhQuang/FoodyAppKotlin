@@ -1,6 +1,7 @@
 package com.example.foodyappkotlin.screen.main.fragment
 
 import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.request.QuanAnRequest
 
 interface ODauInterface {
     interface View{
@@ -10,6 +11,6 @@ interface ODauInterface {
     }
 
     interface Presenter{
-        fun getQuanAns(khuvuc : Int,page : Int,valueAt : String)
+        fun getQuanAns(quanAnRequest: QuanAnRequest)
     }
 }

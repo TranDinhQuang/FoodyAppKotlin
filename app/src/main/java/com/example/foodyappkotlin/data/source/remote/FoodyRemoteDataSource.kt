@@ -3,6 +3,7 @@ package com.example.foodyappkotlin.data.source.remote
 import android.net.Uri
 import android.util.Log
 import com.example.foodyappkotlin.data.models.*
+import com.example.foodyappkotlin.data.request.QuanAnRequest
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.google.firebase.database.*
@@ -242,31 +243,44 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     }
 
     override fun getQuanAns(
-        province: Int,
-        page: Int, valueAt: String,
+        quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         val quanans: ArrayList<QuanAn> = ArrayList()
-        Log.d("kiemtra", "page $page")
-        var refQuanAn = if (page == 1) {
-            nodeRoot.child("quanans").child("KV$province").orderByKey().limitToFirst(10)
+        Log.d("kiemtra", "page ${quanAnRequest.page}")
+    /*    var refQuanAn = if (quanAnRequest.page == 1) {
+            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
         } else {
-            nodeRoot.child("quanans").child("KV$province").orderByKey().startAt(valueAt)
+            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").startAt(quanAnRequest.valueAt)
                 .limitToFirst(11)
-        }
+        }*/
+        var refQuanAn = nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").limitToFirst(100)
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                p0.children.forEach {
-                    var quanan = it.getValue(QuanAn::class.java)
-                    if (quanan != null) {
-                        quanans.add(quanan)
+                when(quanAnRequest.typeCall){
+                    FoodyRemoteDataSource.SORT_BY_DATE_ASC ->{
+                        p0.children.forEach {
+                            var quanan = it.getValue(QuanAn::class.java)
+                            if (quanan != null) {
+                                quanans.add(quanan)
+                            }
+                        }
+                    }
+                    FoodyRemoteDataSource.SORT_BY_DATE_DESC -> {
+                        p0.children.reversed().forEach {
+                            var quanan = it.getValue(QuanAn::class.java)
+                            if (quanan != null) {
+                                quanans.add(quanan)
+                            }
+                        }
                     }
                 }
                 var gson = Gson()
                 Log.d("data", gson.toJson(quanans))
-                if (page != 1) {
+             /*   if (quanAnRequest.page != 1) {
                     quanans.removeAt(0)
-                }
+                }*/
                 callback.onSuccess(quanans)
                 refQuanAn.removeEventListener(this)
             }
@@ -285,28 +299,11 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener {
             // Handle unsuccessful uploads
-            Log.d("kiemtra", "tai anh that bai")
+            Log.d("kiemtra", "Tải ảnh thất bại")
         }.addOnSuccessListener {
-            Log.d("kiemtra", "tai anh thanh cong")
+            Log.d("kiemtra", "tải ảnh thành công")
             // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
         }
-    }
-
-    private fun getHinhAnhQuanAn(idQuanAn: String): ArrayList<String> {
-        val dataSnapshotHinhAnhQuanAn = nodeRoot.child("hinhanhquanans").child(idQuanAn)
-        val hinhanhquanans: ArrayList<String> = ArrayList()
-        val hinhanhListener = object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                for (item in p0.children) {
-                    hinhanhquanans.add(item.value as String)
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-            }
-        }
-        dataSnapshotHinhAnhQuanAn.addListenerForSingleValueEvent(hinhanhListener)
-        return hinhanhquanans
     }
 
     override fun searchQuanAn(

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Spinner
+            android:id="@+id/spiner_khuvuc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_ten_quan_an"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/spiner_khuvuc">
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_name_restaurent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/til_dia_chi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/til_ten_quan_an">
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/hint_address_restaurent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <Switch
+            android:id="@+id/switch_giao_hang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/til_dia_chi" />
+
+        <LinearLayout
+            android:id="@+id/layout_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/switch_giao_hang"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/edt_time_open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_time_open" />
+
+            <EditText
+                android:id="@+id/edt_time_close"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/hint_time_close" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/txt_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/layout_time"
+            android:text="@string/txt_image"
+            android:textSize="@dimen/dp_20"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_image_quan_an"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_image" />
+
+        <TextView
+            android:id="@+id/txt_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/recycler_image_quan_an"
+            android:text="@string/txt_menu_restaurent"
+            android:textSize="@dimen/dp_20"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_menu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/txt_menu" />
+    </RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

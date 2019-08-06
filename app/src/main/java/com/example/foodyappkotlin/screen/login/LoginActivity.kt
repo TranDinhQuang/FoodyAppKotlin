@@ -103,7 +103,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
                 } else {
                     Log.w(TAG, "signInWithCredential:failure", task.exception)
                 }
-
             }
     }
 

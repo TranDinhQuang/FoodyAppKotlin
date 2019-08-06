@@ -86,8 +86,9 @@ class OdauAdapter(
             if (quanan.binhluans.size >= 2) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
                 v.text_cmt_two.text = listBinhLuan[1].noidung
-            } else {
+            } else if(quanan.binhluans.size == 1){
                 v.text_cmt_one.text = listBinhLuan[0].noidung
+                v.text_cmt_two.visibility = View.GONE
             }
         } else {
             v.group.visibility = View.GONE
@@ -96,8 +97,9 @@ class OdauAdapter(
         v.layout_item_eating.setOnClickListener {
             onItemClick.onItemClickListener(quanan)
         }
-        v.text_comment.text = "${quanan.num_comments} bình luận"
-        v.text_take_picture.text = "${quanan.num_images} hình ảnh"
+
+        v.text_comment.text = "${quanan.binhluans.size} bình luận"
+        v.text_take_picture.text = "${quanan.hinhanhs.size} hình ảnh"
         v.text_point.text = quanan.danhgia.toString()
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
@@ -138,6 +140,7 @@ class OdauAdapter(
     }
 
     fun addAllItem(quanans: MutableList<QuanAn>) {
+        mListQuanAn.clear()
         mListQuanAn.addAll(quanans)
         notifyDataSetChanged()
     }

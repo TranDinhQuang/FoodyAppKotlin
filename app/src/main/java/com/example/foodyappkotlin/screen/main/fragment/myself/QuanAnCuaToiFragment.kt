@@ -9,10 +9,16 @@ import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.screen.adapter.RestaurentMyselfAdapter
+import com.example.foodyappkotlin.screen.main.MainActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_my_restaurent.*
+import javax.inject.Inject
 
 class QuanAnCuaToiFragment : BaseFragment() {
+
+    @Inject
+    lateinit var mActivity : MainActivity
+
     companion object {
         fun newInstance(): Fragment {
             val quanAnCuaToiFragment = QuanAnCuaToiFragment()
@@ -39,5 +45,8 @@ class QuanAnCuaToiFragment : BaseFragment() {
         recycler_restaurent_myself.layoutManager = linearLayoutManager
         var restaurentMyselfAdapter = RestaurentMyselfAdapter(activityContext, ArrayList())
         recycler_restaurent_myself.adapter = restaurentMyselfAdapter
+        btn_add.setOnClickListener {
+            mActivity.pushFragment(R.id.frame_layout,PostQuanAnFragment.newInstance())
+        }
     }
 }
