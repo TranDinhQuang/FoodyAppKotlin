@@ -110,7 +110,7 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                     thaoLuan.taikhoan = appSharedPreference.getUser().taikhoan
                     thaoLuan.hinhanh = appSharedPreference.getUser().hinhanh
                     thaoLuan.noidung = edt_comment.text.trim().toString()
-                    nodeRoot.child("binhluans").child(mQuanAn.id).push().setValue(thaoLuan)
+                    nodeRoot.child("binhluans").child(mQuanAn.id).child(binhLuan.id).push().setValue(thaoLuan)
                         .addOnCompleteListener {
                             binhLuan.num_comment += 1
                        /*     nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}")

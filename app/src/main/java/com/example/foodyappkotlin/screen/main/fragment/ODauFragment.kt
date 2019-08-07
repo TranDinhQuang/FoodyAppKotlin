@@ -75,6 +75,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         quanAnRequest = QuanAnRequest()
         quanAnRequest.idKhuVuc = "KV1"
         quanAnRequest.page = 1
+
         spinner_fillter!!.onItemSelectedListener = this
         val adapterSpinner =
             ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items)

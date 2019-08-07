@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.maps
 
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Address
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.activity_maps.*
 import java.lang.StringBuilder
 import java.util.*
 
@@ -58,6 +60,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         val PLACE_PICKER_REQUEST = 2
 
         var AUTOCOMPLETE_REQUEST_CODE = 3
+
+        fun newInstance(context: Context): Intent {
+            return Intent(context, MapsActivity::class.java)
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -65,7 +71,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(com.example.foodyappkotlin.R.layout.activity_maps)
         getLocationPermission()
 
-        val autocompleteFragment = supportFragmentManager
+/*        val autocompleteFragment = supportFragmentManager
             .findFragmentById(com.example.foodyappkotlin.R.id.place_autocomplete_fragment) as PlaceAutocompleteFragment?
 
         var typeFilter =
@@ -84,7 +90,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
                 }
 
             })
-        }
+        }*/
 
         val mapFragment = supportFragmentManager
             .findFragmentById(com.example.foodyappkotlin.R.id.map) as SupportMapFragment?
@@ -121,6 +127,10 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             // Placing a marker on the touched position
             googleMap.addMarker(markerOptions)
         }
+
+        btn_ok.setOnClickListener {
+            finish()
+        }
     }
 
     private fun getLocationPermission() {
@@ -147,7 +157,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         mLocationPermissionGranted = false
         when (requestCode) {
             (PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) -> {
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true
                 }
             }

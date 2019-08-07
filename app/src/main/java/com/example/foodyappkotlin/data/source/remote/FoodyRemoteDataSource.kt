@@ -2,8 +2,12 @@ package com.example.foodyappkotlin.data.source.remote
 
 import android.net.Uri
 import android.util.Log
-import com.example.foodyappkotlin.data.models.*
+import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.models.ThaoLuan
+import com.example.foodyappkotlin.data.models.User
 import com.example.foodyappkotlin.data.request.QuanAnRequest
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.google.firebase.database.*
@@ -64,7 +68,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         idBinhLuan: String,
         callback: FoodyDataSource.DataCallBack<ThaoLuan>
     ) {
-        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan)
+        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
         refThaoLuan.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
 
@@ -208,23 +212,19 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     }
 
     //Cần sửa lại
-    override fun getThucDons(maThucDon: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
-        var thucdons = ThucDon(ArrayList(), ArrayList())
-
+    override fun getThucDons(
+        maThucDon: String,
+        callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>
+    ) {
         val thucDonRef = nodeRoot.child("thucdons").child(maThucDon)
+        var thucdons: MutableList<ThucDonResponse> = ArrayList()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                val dataSnapshot = p0.child("MONAN")
-                for (item in dataSnapshot.children) {
-                    var monAn = item.getValue(MonAn::class.java)
-                    if (monAn != null) {
-                        thucdons.monAns.add(monAn)
-                    }
-                }
-                for (item in p0.child("NUOCUONG").children) {
-                    var nuocUong = item.getValue(NuocUong::class.java)
-                    if (nuocUong != null) {
-                        thucdons.nuocUongs.add(nuocUong)
+                for (item in p0.children) {
+                    var item = item.getValue(ThucDonResponse::class.java)
+                    if (item != null) {
+                        thucdons.add(item)
                     }
                 }
                 callback.onSuccess(thucdons)
@@ -242,24 +242,50 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
+    override fun getQuanAnsFollowId(
+        quanAnRequest: QuanAnRequest,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+        val quanans: ArrayList<QuanAn> = ArrayList()
+        var refQuanAn =
+            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).child(quanAnRequest.idQuanAn)
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                var quanan = p0.getValue(QuanAn::class.java)
+                var gson = Gson()
+                Log.d("data", gson.toJson(quanan))
+                if (quanan != null) {
+                    callback.onSuccess(quanan)
+                }
+                refQuanAn.removeEventListener(this)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                callback.onFailure(p0.message)
+            }
+        }
+        refQuanAn.addValueEventListener(postListener)
+    }
+
     override fun getQuanAns(
         quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         val quanans: ArrayList<QuanAn> = ArrayList()
-        Log.d("kiemtra", "page ${quanAnRequest.page}")
-    /*    var refQuanAn = if (quanAnRequest.page == 1) {
+        /*    var refQuanAn = if (quanAnRequest.page == 1) {
+                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
+            } else {
+                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").startAt(quanAnRequest.valueAt)
+                    .limitToFirst(11)
+            }*/
+        var refQuanAn =
             nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
-        } else {
-            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").startAt(quanAnRequest.valueAt)
-                .limitToFirst(11)
-        }*/
-        var refQuanAn = nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").limitToFirst(100)
+                .limitToFirst(100)
 
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                when(quanAnRequest.typeCall){
-                    FoodyRemoteDataSource.SORT_BY_DATE_ASC ->{
+                when (quanAnRequest.typeCall) {
+                    FoodyRemoteDataSource.SORT_BY_DATE_ASC -> {
                         p0.children.forEach {
                             var quanan = it.getValue(QuanAn::class.java)
                             if (quanan != null) {
@@ -278,9 +304,9 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 }
                 var gson = Gson()
                 Log.d("data", gson.toJson(quanans))
-             /*   if (quanAnRequest.page != 1) {
-                    quanans.removeAt(0)
-                }*/
+                /*   if (quanAnRequest.page != 1) {
+                       quanans.removeAt(0)
+                   }*/
                 callback.onSuccess(quanans)
                 refQuanAn.removeEventListener(this)
             }

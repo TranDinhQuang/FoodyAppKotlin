@@ -83,7 +83,13 @@
     <string name="hint_name_restaurent">Tên quán ăn</string>
     <string name="hint_address_restaurent">Địa chỉ quán ăn</string>
     <string name="hint_time_open">Giờ mở cửa</string>
-    <string name="hint_time_close">Giờ mở cửa</string>
-    <string name="txt_image">Hình ảnh quán ăn</string>
+    <string name="hint_time_close">Giờ đóng cửa</string>
+    <string name="txt_add_image">Thêm hình ảnh quán ăn</string>
     <string name="txt_menu_restaurent">Menu Quán Ăn</string>
+    <string name="txt_take_picture">Chụp hình</string>
+    <string name="txt_open_library">Mở thư viện</string>
+    <string name="txt_order_setting">Giao hàng</string>
+    <string name="hint_name_food">Tên món ăn</string>
+    <string name="hint_how_much">Giá tiền</string>
+    <string name="txt_add_food_to_menu">Thêm món ăn vào menu</string>
 </resources>

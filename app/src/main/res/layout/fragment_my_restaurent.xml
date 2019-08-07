@@ -4,18 +4,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_restaurent_myself"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/btn_add_restaurent" />
-
     <android.support.v7.widget.CardView
         android:id="@+id/btn_add_restaurent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="@dimen/dp_20">
+        android:layout_alignParentTop="true">
 
         <Button
             android:id="@+id/btn_add"
@@ -24,4 +17,11 @@
             android:background="@color/red4"
             android:text="@string/add_restaurent" />
     </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_restaurent_myself"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_below="@id/btn_add_restaurent" />
 </RelativeLayout>

@@ -116,6 +116,10 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
         notifyDataSetChanged()
     }
 
+    fun clearAllData(){
+        comments.clear()
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface CommentOnCLickListerner{

@@ -2,6 +2,7 @@ package com.example.foodyappkotlin.data.repository
 
 import com.example.foodyappkotlin.data.models.*
 import com.example.foodyappkotlin.data.request.QuanAnRequest
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.haipq.miniweather.data.source.Remote
@@ -12,6 +13,13 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
+    override fun getQuanAnsFollowId(
+        quanAnRequest: QuanAnRequest,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+        remoteRepo.getQuanAnsFollowId(quanAnRequest,callback)
+    }
+
     override fun getThaoLuanIntoComment(
         idQuanan: String,
         idBinhLuan: String,
@@ -71,7 +79,7 @@ class FoodyRepository @Inject constructor(
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
+    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>) {
         remoteRepo.getThucDons(maQuanAn, callback)
     }
 

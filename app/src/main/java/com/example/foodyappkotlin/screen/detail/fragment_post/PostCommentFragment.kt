@@ -14,7 +14,6 @@ import android.provider.Settings
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
-import android.support.v7.app.AlertDialog
 import android.support.v7.widget.GridLayoutManager
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,11 +31,6 @@ import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.view.ItemOffsetDecoration
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import kotlinx.android.synthetic.main.fragment_post_comment.*
 import java.io.File
 import java.io.IOException
@@ -224,7 +218,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
         }
         return true
     }
-
+/*
     private fun showPermissionDialog() {
         Dexter.withActivity(mActivity).withPermissions().withListener(
             object : MultiplePermissionsListener {
@@ -263,7 +257,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
         }
         builder.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
         builder.show()
-    }
+    }*/
 
     private fun openSettings() {
         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)

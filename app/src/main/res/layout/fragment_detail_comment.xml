@@ -1,209 +1,216 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/image_avatar_user"
-                android:layout_width="@dimen/dp_34"
-                android:layout_height="@dimen/dp_34" />
-
-            <TextView
-                android:id="@+id/text_name_user"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/text_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="title"
-            android:textAllCaps="true"
-            android:textSize="@dimen/sp_18"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/text_content_comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dp_5"
-            android:text="content" />
-
-        <include layout="@layout/multiimage_layout" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:background="#ECECEC" />
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/dp_5">
-
-            <TextView
-                android:id="@+id/txt_num_like"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dp_10"
-                android:text="30 like" />
-
-            <TextView
-                android:id="@+id/divider"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/txt_num_like"
-                android:paddingLeft="@dimen/dp_10"
-                android:paddingRight="@dimen/dp_10"
-                android:text="-" />
-
-            <TextView
-                android:id="@+id/txt_num_comment"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/divider"
-                android:text="20 comment" />
-
-            <TextView
-                android:id="@+id/txt_num_share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:paddingRight="@dimen/dp_10"
-                android:text="20 share" />
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/dp_5"
-            android:weightSum="3">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/layout_like"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/img_like"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:src="@drawable/ic_like" />
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/image_avatar_user"
+                    android:layout_width="@dimen/dp_34"
+                    android:layout_height="@dimen/dp_34" />
 
                 <TextView
-                    android:id="@+id/sum_like"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/text_name_user"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawablePadding="@dimen/dp_5"
-                    android:padding="@dimen/dp_5"
-                    android:paddingRight="@dimen/dp_5"
-                    android:text="Like" />
+                    android:textStyle="bold" />
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/layout_comment"
+            <TextView
+                android:id="@+id/text_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:text="title"
+                android:textAllCaps="true"
+                android:textSize="@dimen/sp_18"
+                android:textStyle="bold" />
 
-
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:src="@drawable/ic_speech_bubble" />
-
-                <TextView
-                    android:id="@+id/sum_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:padding="@dimen/dp_5"
-                    android:paddingRight="@dimen/dp_5"
-                    android:text="Comment" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_share"
+            <TextView
+                android:id="@+id/text_content_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center">
+                android:layout_marginTop="@dimen/dp_5"
+                android:text="content" />
 
-                <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginRight="@dimen/dp_10"
-                    android:src="@drawable/ic_share" />
+            <include layout="@layout/multiimage_layout" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="#ECECEC" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5">
 
                 <TextView
+                    android:id="@+id/txt_num_like"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:padding="@dimen/dp_5"
-                    android:text="Share" />
+                    android:paddingLeft="@dimen/dp_10"
+                    android:text="30 like" />
+
+                <TextView
+                    android:id="@+id/divider"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/txt_num_like"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingRight="@dimen/dp_10"
+                    android:text="-" />
+
+                <TextView
+                    android:id="@+id/txt_num_comment"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/divider"
+                    android:text="20 comment" />
+
+                <TextView
+                    android:id="@+id/txt_num_share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:paddingRight="@dimen/dp_10"
+                    android:text="20 share" />
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="@dimen/dp_5"
+                android:weightSum="3">
+
+                <LinearLayout
+                    android:id="@+id/layout_like"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/img_like"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:src="@drawable/ic_like" />
+
+                    <TextView
+                        android:id="@+id/sum_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:drawablePadding="@dimen/dp_5"
+                        android:padding="@dimen/dp_5"
+                        android:paddingRight="@dimen/dp_5"
+                        android:text="Like" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_comment"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:src="@drawable/ic_speech_bubble" />
+
+                    <TextView
+                        android:id="@+id/sum_comment"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:padding="@dimen/dp_5"
+                        android:paddingRight="@dimen/dp_5"
+                        android:text="Comment" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/layout_share"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginRight="@dimen/dp_10"
+                        android:src="@drawable/ic_share" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:padding="@dimen/dp_5"
+                        android:text="Share" />
+                </LinearLayout>
             </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="#ECECEC" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_thao_luan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="true"
+                android:paddingBottom="@dimen/dp_20"
+                app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="@dimen/dp_10"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:background="#ECECEC" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_thao_luan"
+        <RelativeLayout
+            android:id="@+id/layout_post_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
-    </LinearLayout>
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:weightSum="5">
 
-    <RelativeLayout
-        android:id="@+id/layout_post_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="5"
-        android:visibility="gone"
-        android:layout_alignParentBottom="true">
+            <EditText
+                android:id="@+id/edt_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/btn_post"
+                android:backgroundTint="@color/red"
+                android:imeOptions="actionDone"
+                android:textColor="@color/gray" />
 
-        <EditText
-            android:id="@+id/edt_comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:imeOptions="actionDone"
-            android:textColor="@color/gray"
-            android:layout_toLeftOf="@id/btn_post"
-            android:backgroundTint="@color/red" />
-
-        <Button
-            android:id="@+id/btn_post"
-            android:text="Post"
-            android:layout_width="60dp"
-            android:layout_alignParentRight="true"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btn_post"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Post" />
+        </RelativeLayout>
     </RelativeLayout>
-</RelativeLayout>
+</android.support.v4.widget.NestedScrollView>

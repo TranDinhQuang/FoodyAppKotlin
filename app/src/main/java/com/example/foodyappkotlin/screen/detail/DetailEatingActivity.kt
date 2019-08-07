@@ -11,6 +11,7 @@ import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import dagger.android.AndroidInjection
@@ -64,7 +65,7 @@ class DetailEatingActivity : BaseActivity(),
         pushFragmentWithoutBackStack(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 
-    override fun thucDonsSuccess(thucdon: ThucDon) {
+    override fun thucDonsSuccess(thucdon: MutableList<ThucDonResponse>) {
 //        this.pushFragment(R.id.layout_food_detail, OverviewFragment.newInstance())
     }
 
