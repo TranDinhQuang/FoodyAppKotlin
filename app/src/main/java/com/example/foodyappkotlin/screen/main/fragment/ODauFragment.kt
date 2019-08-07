@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.main.fragment
 
+import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -36,7 +37,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     private lateinit var quanAnRequest: QuanAnRequest
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
-    var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi")
+    var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi","Yêu thích")
 
     private var isLoading: Boolean = false
 
@@ -122,6 +123,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
             }
             2 ->{
                 quanAnRequest.page = 1
+                quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_NEAR_ME
+                mODauPresenter.getQuanAns(quanAnRequest)
             }
 
         }
@@ -139,11 +142,19 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun QuanAnsSuccess(quanans: MutableList<QuanAn>) {
         isLoading = false
         progressBar.visibility = View.GONE
-   /*     if (quanAnRequest.page != 1) {
-            lOdauAdapter.removeItemLast()
-        }*/
-        mQuanans.addAll(quanans)
-        lOdauAdapter.addAllItem(quanans)
+        if(quanAnRequest.typeCall == FoodyRemoteDataSource.SORT_NEAR_ME){
+           val quanAnFilter = ArrayList<QuanAn>()
+            quanans.forEach {
+                if(distance(it.latitude,it.longitude,appSharedPreference.getLocation()) < 5.0){
+                        quanAnFilter.add(it)
+                    }
+            }
+            mQuanans.addAll(quanAnFilter)
+            lOdauAdapter.addAllItem(quanAnFilter)
+        }else{
+            mQuanans.addAll(quanans)
+            lOdauAdapter.addAllItem(quanans)
+        }
     }
 
     override fun onItemClickListener(quanAn: QuanAn) {
@@ -153,5 +164,18 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
 
     override fun startActivityMenu() {
         startActivity(MenuActivity.newInstance(context!!))
+    }
+
+
+    private fun distance(lat1: Double, long1: Double, location:Location): Double {
+        val loc1 = Location("")
+        loc1.latitude = lat1
+        loc1.longitude = long1
+
+        val loc2 = Location("")
+        loc2.latitude = location.latitude
+        loc2.longitude = location.longitude
+        val distance = Math.round(loc1.distanceTo(loc2) / 1000 * 100) / 100.0
+        return distance
     }
 }

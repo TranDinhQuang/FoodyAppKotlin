@@ -13,7 +13,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -90,7 +89,8 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 mAdapterImages.setImagePost(mPhotoPath)
             }
             if (requestCode == GET_LOCATION) {
-                Log.d("kiemtra", "get location")
+                val result = data!!.getStringExtra("result")
+                edt_dia_chi.setText(result)
             }
         }
     }

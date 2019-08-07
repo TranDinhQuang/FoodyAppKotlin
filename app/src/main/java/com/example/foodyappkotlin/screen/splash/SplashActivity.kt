@@ -50,6 +50,7 @@ class SplashActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
+        delayTime()
         if (appSharedPreferences.getToken() == "") {
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
@@ -61,7 +62,6 @@ class SplashActivity : BaseActivity() {
                 //ShowAlert
             }
         }
-        delayTime()
     }
 
     private fun delayTime() {

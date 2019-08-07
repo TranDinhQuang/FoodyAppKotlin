@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.math.round
+import kotlin.math.roundToInt
 
 class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.MonAnOnClickListener,
     NuocUongAdapter.NuocUongOnClickListener, CommentAdapter.CommentOnCLickListerner {
@@ -111,10 +113,10 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         text_view_all_comment.setOnClickListener {
             mActivity.pushFragment(R.id.layout_food_detail, FragmentComments.newInstance())
         }
-        swiperefresh.setOnRefreshListener {
+/*        swiperefresh.setOnRefreshListener {
             commentAdapter.clearAllData()
             reloadBinhLuanQuanAn()
-        }
+        }*/
     }
 
     fun reloadBinhLuanQuanAn() {
@@ -136,7 +138,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             diemQuanAn += it.value.chamdiem
         }
         diemQuanAn /= quanAn.binhluans.size
-        text_point.text = "${diemQuanAn * 2}"
+        text_point.text = "${(round(diemQuanAn) * 2)}"
 
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference
@@ -170,7 +172,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             "Mở cửa:${DateUtils.convertMinuteToHours(quanAn.giomocua)} - Đóng cửa:${DateUtils.convertMinuteToHours(
                 quanAn.giodongcua
             )}"
-        recycler_menu.isNestedScrollingEnabled = false
+//        recycler_menu.isNestedScrollingEnabled = false
     }
 
     fun getAllCommentFollowQuanAn() {
@@ -206,6 +208,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     }
 
 
+/*
     fun findThucDonData(thucDons: MutableList<ThucDonResponse>) {
         recycler_menu.visibility = View.VISIBLE
         text_menu_viewmore.text = "Xem thêm"
@@ -217,6 +220,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             recycler_menu.adapter = monAnAdapter
         }
     }
+*/
 
     fun findCommentData(binhluans: ArrayList<BinhLuan>) {
         commentAdapter =
@@ -248,7 +252,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     override fun getAllCommentSuccess(comment: BinhLuan) {
         commentAdapter.onDataChanged(comment)
-        swiperefresh.isRefreshing = false
+//        swiperefresh.isRefreshing = false
     }
 
     override fun getAllCommentFailure(message: String) {

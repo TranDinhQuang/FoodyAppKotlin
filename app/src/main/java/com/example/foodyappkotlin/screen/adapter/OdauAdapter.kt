@@ -11,7 +11,9 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.item_odau.view.*
+import kotlin.math.round
 
 class OdauAdapter(
     var quanans: MutableList<QuanAn>,val locationDevider : Location,
@@ -100,9 +102,15 @@ class OdauAdapter(
 
         v.text_comment.text = "${quanan.binhluans.size} bình luận"
         v.text_take_picture.text = "${quanan.hinhanhs.size} hình ảnh"
-        v.text_point.text = quanan.danhgia.toString()
+        var diemQuanAn = 0F
+        quanan.binhluans.mapNotNull {
+            diemQuanAn += it.value.chamdiem
+        }
+        diemQuanAn /= quanan.binhluans.size
+        v.text_point.text ="${(round(diemQuanAn) * 2)}"
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
+
         if(locationDevider != null){
             v.text_distance.text = "${distance(locationDevider.latitude,locationDevider.longitude,quanan.latitude,quanan.longitude)} km"
         }
