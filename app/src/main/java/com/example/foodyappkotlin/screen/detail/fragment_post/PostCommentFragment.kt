@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +42,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
     PicturePostAdapter.OnClickListener {
 
     private var quanAn: QuanAn? = null
+    private var binhLuan: BinhLuan? = null
 
     private lateinit var photoURI: Uri
     private lateinit var mAdapter: PicturePostAdapter
@@ -62,6 +62,10 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
     lateinit var presenter: PostCommentInterface.Presenter
 
     companion object {
+        val ADD_COMMENT = 0
+        val EDIT_COMMENT = 1
+
+
         val REQUEST_TAKE_PHOTO = 101
         val REQUEST_GALLERY_PHOTO = 102
 
@@ -143,7 +147,6 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
             showAlertMessage("Thiếu thông tin", "Bạn cần chọn và nhập đầy đủ các thông tin")
         } else {
             var binhLuan = BinhLuan()
-            Log.d("kiemtra", "token ${appSharedPreference.getToken()}")
             binhLuan.mauser = appSharedPreference.getToken()!!
             binhLuan.tieude = txtTitleComment.text.toString()
             binhLuan.noidung = txtContentComment.text.toString()

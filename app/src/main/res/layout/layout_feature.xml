@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_50"
+    android:layout_height="@dimen/dp_40"
     android:background="#99000000"
     android:paddingLeft="@dimen/dp_2"
     android:paddingTop="@dimen/dp_8"
+    android:gravity="center"
     android:paddingRight="@dimen/dp_2"
-    android:paddingBottom="@dimen/dp_8"
-    android:weightSum="5">
+    android:paddingBottom="@dimen/dp_8">
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:visibility="gone"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -33,6 +34,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:visibility="gone"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -52,21 +54,24 @@
     <LinearLayout
         android:id="@+id/ln_post_comment"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="vertical">
+
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="@dimen/dp_16"
-            android:layout_height="@dimen/dp_16"
-            android:src="@drawable/chat" />
+            android:layout_marginLeft="@dimen/dp_20"
+            android:layout_width="@dimen/dp_26"
+            android:layout_height="@dimen/dp_26"
+            android:src="@drawable/ic_mode_comment_24dp" />
 
         <TextView
+            android:layout_marginLeft="@dimen/dp_20"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="bình luận"
-            android:textSize="@dimen/sp_12"
+            android:layout_height="match_parent"
+            android:text="Đánh giá quán ăn"
+            android:gravity="center"
+            android:textSize="@dimen/sp_14"
             android:textColor="@color/gray3" />
     </LinearLayout>
 
@@ -75,6 +80,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <ImageView
@@ -94,6 +100,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:visibility="gone"
         android:gravity="center"
         android:orientation="vertical">
 

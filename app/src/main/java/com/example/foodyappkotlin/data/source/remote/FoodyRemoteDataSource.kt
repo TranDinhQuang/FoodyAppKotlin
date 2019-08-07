@@ -158,7 +158,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     ) {
         var dataRef =
             nodeRoot.child("quanans").child("KV1").child(idQuanan).child("binhluans").orderByKey()
-                .limitToFirst(1000)
+                .limitToLast(1000)
         var binhluans = ArrayList<BinhLuan>()
 
         val childEventListener = object : ChildEventListener {
@@ -171,9 +171,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     callback.onFailure("Không có dữ liệu")
                 }
             }
-
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -207,13 +205,14 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             if (databaseError != null) {
                 callBack.onFailure("Data could not be saved " + databaseError.message)
             } else {
-                var num_comment = quanAn.num_comments + 1
+                callBack.onSuccess("Data saved successfully!")
+            /*    var num_comment = quanAn.num_comments + 1
                 var num_image = quanAn.num_images + binhluan.hinhanh.size
                 nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                     .child("num_comments").setValue(num_comment)
                 nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                     .child("num_images").setValue(num_image)
-                callBack.onSuccess("Data saved successfully!")
+                callBack.onSuccess("Data saved successfully!")*/
             }
         }
     }

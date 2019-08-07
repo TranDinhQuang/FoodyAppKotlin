@@ -11,12 +11,11 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.item_odau.view.*
 import kotlin.math.round
 
 class OdauAdapter(
-    var quanans: MutableList<QuanAn>,val locationDevider : Location,
+    var quanans: MutableList<QuanAn>, val locationDevider: Location,
     val itemClickListener: OdauAdapter.OnClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -62,7 +61,7 @@ class OdauAdapter(
 
     override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
         if (p0 is ViewHolderItem) {
-            bindData(p0.itemView, mListQuanAn[p1],locationDevider, itemClickListener)
+            bindData(p0.itemView, mListQuanAn[p1], locationDevider, itemClickListener)
         } else {
 
         }
@@ -72,28 +71,36 @@ class OdauAdapter(
         return if (mListQuanAn[position].id == "") VIEW_TYPE_LOADING else VIEW_TYPE_ITEM
     }
 
-    private fun bindData(v: View, quanan: QuanAn,locationDevider: Location, onItemClick: OdauAdapter.OnClickListener) {
+    private fun bindData(
+        v: View,
+        quanan: QuanAn,
+        locationDevider: Location,
+        onItemClick: OdauAdapter.OnClickListener
+    ) {
 
         var storageRef: StorageReference = storage.child("error")
-        val hinhAnhQuanAn= ArrayList<String>()
-        quanan.hinhanhs.forEach{
+        val hinhAnhQuanAn = ArrayList<String>()
+        quanan.hinhanhs.forEach {
             hinhAnhQuanAn.add(it.value)
         }
-        if(hinhAnhQuanAn.size > 0){
+        if (hinhAnhQuanAn.size > 0) {
             storageRef = storage.child("monan").child(hinhAnhQuanAn[0])
         }
         if (quanan.binhluans.isNotEmpty()) {
             var listBinhLuan = ArrayList<BinhLuan>(quanan.binhluans.values)
             v.group.visibility = View.VISIBLE
+            v.group2.visibility = View.VISIBLE
             if (quanan.binhluans.size >= 2) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
                 v.text_cmt_two.text = listBinhLuan[1].noidung
-            } else if(quanan.binhluans.size == 1){
+            } else if (quanan.binhluans.size == 1) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
-                v.text_cmt_two.visibility = View.GONE
+                v.group2.visibility = View.GONE
+
             }
         } else {
             v.group.visibility = View.GONE
+            v.group2.visibility = View.GONE
         }
 
         v.layout_item_eating.setOnClickListener {
@@ -102,25 +109,32 @@ class OdauAdapter(
 
         v.text_comment.text = "${quanan.binhluans.size} bình luận"
         v.text_take_picture.text = "${quanan.hinhanhs.size} hình ảnh"
-        var diemQuanAn = 0F
+        var diemQuanAn = 0.0
         quanan.binhluans.mapNotNull {
             diemQuanAn += it.value.chamdiem
         }
-        diemQuanAn /= quanan.binhluans.size
-        v.text_point.text ="${(round(diemQuanAn) * 2)}"
+        if (diemQuanAn > 0) {
+            diemQuanAn /= quanan.binhluans.size
+        }
+        v.text_point.text = "${(round(diemQuanAn))}"
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
 
-        if(locationDevider != null){
-            v.text_distance.text = "${distance(locationDevider.latitude,locationDevider.longitude,quanan.latitude,quanan.longitude)} km"
+        if (locationDevider != null) {
+            v.text_distance.text = "${distance(
+                locationDevider.latitude,
+                locationDevider.longitude,
+                quanan.latitude,
+                quanan.longitude
+            )} km"
         }
 
-        if(quanan.giaohang){
+        if (quanan.giaohang) {
             v.button_order.visibility = View.VISIBLE
             v.button_order.setOnClickListener {
                 itemClickListener.startActivityMenu()
             }
-        }else{
+        } else {
             v.button_order.visibility = View.GONE
         }
 
@@ -135,7 +149,7 @@ class OdauAdapter(
     }
 
 
-    fun distance(lat1 : Double,long1 : Double,lat2 : Double,long2 : Double) : Double{
+    fun distance(lat1: Double, long1: Double, lat2: Double, long2: Double): Double {
         val loc1 = Location("")
         loc1.latitude = lat1
         loc1.longitude = long1
@@ -143,7 +157,7 @@ class OdauAdapter(
         val loc2 = Location("")
         loc2.latitude = lat2
         loc2.longitude = long2
-        val distance =  Math.round(loc1.distanceTo(loc2)/1000 * 100) / 100.0
+        val distance = Math.round(loc1.distanceTo(loc2) / 1000 * 100) / 100.0
         return distance
     }
 
