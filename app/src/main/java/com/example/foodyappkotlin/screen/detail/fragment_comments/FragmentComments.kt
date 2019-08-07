@@ -13,18 +13,22 @@ import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
-import com.example.foodyappkotlin.data.response.UserResponse
+import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
+import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.item_empty_value.*
 import javax.inject.Inject
 
-class FragmentComments : BaseFragment() {
+class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
+
     lateinit var commentAdapter: CommentAdapter
     lateinit var detailViewModel: DetailViewModel
     lateinit var comments: MutableList<BinhLuan>
     lateinit var mPresenter: CommentsPresenter
+    lateinit var dataRef : Query
+    lateinit var childEventListener: ChildEventListener
 
     @Inject
     lateinit var repository: FoodyRepository
@@ -50,68 +54,85 @@ class FragmentComments : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         initData()
     }
 
     private fun initData() {
-        mPresenter = CommentsPresenter(repository,this)
+        mPresenter = CommentsPresenter(repository, this)
 
         detailViewModel = activity?.run {
             ViewModelProviders.of(this).get(DetailViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
-        val listLiked =ArrayList<String>(appSharedPreference.getUser().liked.values)
 
-        commentAdapter = if(listLiked.isNotEmpty()){
-            CommentAdapter(activity!!, ArrayList(),listLiked)
-        }else{
-            CommentAdapter(activity!!, ArrayList(),ArrayList())
-        }
+        commentAdapter = CommentAdapter(activity!!, ArrayList(),  appSharedPreference.getUser().liked,this)
         recycler_comments.adapter = commentAdapter
-        detailViewModel.quanan.observe(this,Observer<QuanAn>{
-                item ->
+        detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             if (item != null) {
-                mPresenter.getAllComment(item.id)
+//                mPresenter.getAllComment(item.id)
+                getAllCommentFollowQuanAn(item.id)
             }
         })
-
-        /* repository.getListLikedOfUser(appSharedPreference.getToken()!!,
-             object : FoodyDataSource.DataCallBack<MutableList<String>> {
-                 override fun onSuccess(data: MutableList<String>) {
-                     commentAdapter = CommentAdapter(activity!!, ArrayList(), data)
-                     recycler_comments.visibility = View.VISIBLE
-                     recycler_comments.adapter = commentAdapter
-                     repository.getAllCommentFollowQuanAn(
-                         detailViewModel.quanan.value!!.id,
-                         object : FoodyDataSource.DataCallBack<BinhLuan> {
-                             override fun onSuccess(data: BinhLuan) {
-                                 commentAdapter.onDataChanged(data)
-                             }
-
-                             override fun onFailure(message: String) {
-                                 recycler_comments.visibility = View.GONE
-                                 layout_empty.visibility = View.VISIBLE
-                             }
-                         })
-                 }
-
-                 override fun onFailure(message: String) {
-                 }
-
-             })*/
     }
 
-    fun getAllCommentSuccess(data: BinhLuan){
-        if(recycler_comments.visibility == View.GONE){
+    fun getAllCommentFollowQuanAn(idQuanAn : String) {
+        dataRef =
+            FirebaseDatabase.getInstance().reference.child("quanans").child("KV1").child(idQuanAn).child("binhluans")
+        var binhluans = ArrayList<BinhLuan>()
+
+        childEventListener = object : ChildEventListener {
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val comment = p0.getValue(BinhLuan::class.java)
+                if (comment != null) {
+                    binhluans.add(comment)
+                    getAllCommentSuccess(comment)
+                } else {
+                }
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        }
+        dataRef.addChildEventListener(childEventListener)
+    }
+
+    fun getAllCommentSuccess(data: BinhLuan) {
+        if (recycler_comments.visibility == View.GONE) {
             recycler_comments.visibility = View.VISIBLE
         }
         commentAdapter.onDataChanged(data)
     }
 
-    fun getAllCommentFailure(message : String){
-        if(commentAdapter.comments.isEmpty()){
+    fun getAllCommentFailure(message: String) {
+        if (commentAdapter.comments.isEmpty()) {
             recycler_comments.visibility = View.GONE
             layout_empty.visibility = View.VISIBLE
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if(dataRef != null){
+            dataRef.removeEventListener(childEventListener)
+        }
+
+    }
+
+    override fun onClickItemCommentListerner(binhLuan: BinhLuan) {
+
     }
 }

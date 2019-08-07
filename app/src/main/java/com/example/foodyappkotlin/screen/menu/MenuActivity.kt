@@ -7,6 +7,7 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.models.ThucDon
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
@@ -36,18 +37,15 @@ class MenuActivity : BaseActivity(),MonAnAdapter.MonAnOnClickListener,NuocUongAd
         callApi()
     }
 
-    fun initData(thucDon: ThucDon){
-        val monAnAdapter = MonAnAdapter(this,thucDon.monAns,MonAnAdapter.TYPE_ORDER,this)
-        val nuocUongAdapter = NuocUongAdapter(this,thucDon.nuocUongs,NuocUongAdapter.TYPE_ORDER,this)
+    fun initData(thucDons: MutableList<ThucDonResponse>){
+        val monAnAdapter = MonAnAdapter(this,thucDons,MonAnAdapter.TYPE_ORDER,this)
         recycler_menu_monan.adapter = monAnAdapter
-        recycler_menu_nuocuong.adapter = nuocUongAdapter
-
     }
 
     fun callApi(){
-        foodyRepository.getThucDons("MATHUCDON1",object : FoodyDataSource.DataCallBack<ThucDon>{
-            override fun onSuccess(data: ThucDon) {
-                initData(data)
+        foodyRepository.getThucDons("MATHUCDON1",object : FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>{
+            override fun onSuccess(datas: MutableList<ThucDonResponse>) {
+                initData(datas)
             }
 
             override fun onFailure(message: String) {

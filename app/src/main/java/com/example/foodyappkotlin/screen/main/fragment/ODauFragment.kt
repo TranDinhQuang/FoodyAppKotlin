@@ -14,6 +14,8 @@ import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.request.QuanAnRequest
+import com.example.foodyappkotlin.data.source.remote.FoodyRemoteDataSource
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.menu.MenuActivity
@@ -31,11 +33,11 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     private lateinit var mView: View
     private lateinit var mODauPresenter: ODauPresenter
     private lateinit var mQuanans: MutableList<QuanAn>
+    private lateinit var quanAnRequest: QuanAnRequest
     private lateinit var scrollListener: EndlessRecyclerViewScrollListener
 
     var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi")
 
-    private var mPage = 1
     private var isLoading: Boolean = false
 
     @Inject
@@ -62,10 +64,18 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         initView()
     }
 
     private fun initView() {
+        quanAnRequest = QuanAnRequest()
+        quanAnRequest.idKhuVuc = "KV1"
+        quanAnRequest.page = 1
+
         spinner_fillter!!.onItemSelectedListener = this
         val adapterSpinner =
             ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items)
@@ -73,29 +83,48 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         spinner_fillter!!.adapter = adapterSpinner
 
         progressBar.visibility = View.VISIBLE
+
         mQuanans = ArrayList()
         mODauPresenter = ODauPresenter(foodyRepository, this)
-        mODauPresenter.getQuanAns(1, mPage, "")
+
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mView.recycler_quan_an.layoutManager = linearLayoutManager
         lOdauAdapter = OdauAdapter(ArrayList(), appSharedPreference.getLocation(), this)
         mView.recycler_quan_an.adapter = lOdauAdapter
-        scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
+
+     /*   scrollListener = object : EndlessRecyclerViewScrollListener(linearLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int, view: RecyclerView?) {
                 if (!isLoading) {
-                    mPage += 1
-                    Log.d("XXX", " onLoadMore page $mPage totalItemsCount $totalItemsCount")
+                    quanAnRequest.page  += 1
+                    Log.d("XXX", " onLoadMore page ${quanAnRequest.page}  totalItemsCount $totalItemsCount")
                     isLoading = true
-                    mODauPresenter.getQuanAns(1, mPage, mQuanans[mQuanans.size - 1].id)
+                    quanAnRequest.valueAt = mQuanans[mQuanans.size - 1].id
+                    mODauPresenter.getQuanAns(quanAnRequest)
                     lOdauAdapter.addLoading()
                 }
             }
         }
 
-        mView.recycler_quan_an.addOnScrollListener(scrollListener)
+        mView.recycler_quan_an.addOnScrollListener(scrollListener)*/
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        when(p2){
+            0 ->{
+                quanAnRequest.page = 1
+                quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_ASC
+                mODauPresenter.getQuanAns(quanAnRequest)
+            }
+            1->{
+                quanAnRequest.page = 1
+                quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_DESC
+                mODauPresenter.getQuanAns(quanAnRequest)
+            }
+            2 ->{
+                quanAnRequest.page = 1
+            }
+
+        }
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -110,9 +139,9 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun QuanAnsSuccess(quanans: MutableList<QuanAn>) {
         isLoading = false
         progressBar.visibility = View.GONE
-        if (mPage != 1) {
+   /*     if (quanAnRequest.page != 1) {
             lOdauAdapter.removeItemLast()
-        }
+        }*/
         mQuanans.addAll(quanans)
         lOdauAdapter.addAllItem(quanans)
     }

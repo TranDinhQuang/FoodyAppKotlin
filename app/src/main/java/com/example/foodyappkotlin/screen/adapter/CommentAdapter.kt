@@ -16,7 +16,7 @@ import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
-class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var listLiked : MutableList<String>) :
+class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var listLiked : Map<String,String>,val view :  CommentAdapter.CommentOnCLickListerner) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
@@ -40,14 +40,14 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
         }
-        if(listLiked.isNotEmpty()){
-            listLiked.forEach {
-                Log.d("kiemtra","${it} - ${comments[p1].id}")
-                if(it == comments[p1].id){
-                    p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
-                    return
-                }
-            }
+        listLiked.filterValues {
+           it == comments[p1].id
+        }.mapNotNull {
+            p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
+        }
+
+        p0.itemView.layout_comment.setOnClickListener {
+            view.onClickItemCommentListerner(comments[p1])
         }
     }
 
@@ -116,5 +116,13 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
         notifyDataSetChanged()
     }
 
+    fun clearAllData(){
+        comments.clear()
+    }
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface CommentOnCLickListerner{
+       fun onClickItemCommentListerner(binhLuan : BinhLuan)
+    }
 }

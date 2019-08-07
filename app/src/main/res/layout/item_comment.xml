@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/layout_comment"
     android:orientation="vertical">
 
     <LinearLayout
@@ -158,4 +159,10 @@
                 android:text="Share" />
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_5"
+        android:background="#ECECEC" />
 </LinearLayout>

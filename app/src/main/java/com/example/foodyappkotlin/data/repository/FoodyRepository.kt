@@ -1,9 +1,8 @@
 package com.example.foodyappkotlin.data.repository
 
-import com.example.foodyappkotlin.data.models.BinhLuan
-import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.models.ThucDon
-import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.models.*
+import com.example.foodyappkotlin.data.request.QuanAnRequest
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.haipq.miniweather.data.source.Remote
@@ -14,13 +13,28 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
+    override fun getQuanAnsFollowId(
+        quanAnRequest: QuanAnRequest,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+        remoteRepo.getQuanAnsFollowId(quanAnRequest,callback)
+    }
+
+    override fun getThaoLuanIntoComment(
+        idQuanan: String,
+        idBinhLuan: String,
+        callback: FoodyDataSource.DataCallBack<ThaoLuan>
+    ) {
+        remoteRepo.getThaoLuanIntoComment(idQuanan, idBinhLuan, callback)
+    }
+
     override fun searchQuanAn(
         idKhuVuc: String,
         textSearch: String,
         type: Int,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
-        remoteRepo.searchQuanAn(idKhuVuc,textSearch,type,callback)
+        remoteRepo.searchQuanAn(idKhuVuc, textSearch, type, callback)
     }
 
     override fun getUser(
@@ -44,11 +58,12 @@ class FoodyRepository @Inject constructor(
         remoteRepo.getAllCommentFollowQuanAn(idQuanan, callback)
     }
 
-    override fun addQuanAnMyself(idKhuVuc : String,
+    override fun addQuanAnMyself(
+        idKhuVuc: String,
         quanAn: QuanAn,
         callback: FoodyDataSource.DataCallBack<MutableList<String>>
     ) {
-        remoteRepo.addQuanAnMyself(idKhuVuc,quanAn, callback)
+        remoteRepo.addQuanAnMyself(idKhuVuc, quanAn, callback)
     }
 
     override fun writeCommentToDataBase(
@@ -64,15 +79,14 @@ class FoodyRepository @Inject constructor(
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
+    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>) {
         remoteRepo.getThucDons(maQuanAn, callback)
     }
 
     override fun getQuanAns(
-        province: Int,
-        page: Int,valueAt : String,
+        quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
-        remoteRepo.getQuanAns(province, page,valueAt, callback)
+        remoteRepo.getQuanAns(quanAnRequest, callback)
     }
 }

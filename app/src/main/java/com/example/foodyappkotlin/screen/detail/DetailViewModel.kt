@@ -10,7 +10,13 @@ import com.example.foodyappkotlin.data.response.UserResponse
 class DetailViewModel : ViewModel() {
     val quanan = MutableLiveData<QuanAn>()
 
+    val binhLuan = MutableLiveData<BinhLuan>()
+
     fun setQuanan(item: QuanAn) {
         quanan.value = item
+    }
+
+    fun setBinhluan(item: BinhLuan) {
+        binhLuan.value = item
     }
 }

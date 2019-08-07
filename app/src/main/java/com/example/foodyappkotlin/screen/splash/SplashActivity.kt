@@ -84,6 +84,8 @@ class SplashActivity : BaseActivity() {
             (MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true
+                }else{
+                    getLocationPermission()
                 }
             }
         }

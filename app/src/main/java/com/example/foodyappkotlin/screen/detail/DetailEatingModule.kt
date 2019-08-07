@@ -5,6 +5,7 @@ import com.example.foodyappkotlin.common.BaseActivityModule
 import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.di.scope.FragmentScoped
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
+import com.example.foodyappkotlin.screen.detail.fragment_detail_comment.FragmentDetailComment
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewModule
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
@@ -32,6 +33,10 @@ abstract class DetailEatingModule {
     @FragmentScoped
     @ContributesAndroidInjector
     internal abstract fun commentsFragment(): FragmentComments
+
+    @FragmentScoped
+    @ContributesAndroidInjector
+    internal abstract fun detailComment(): FragmentDetailComment
 }
 
 /*

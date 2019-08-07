@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.MonAn
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import kotlinx.android.synthetic.main.item_menu_order.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
-class MonAnAdapter(val context: Context, val monAns: MutableList<MonAn>, val type: Int,val view : MonAnAdapter.MonAnOnClickListener) :
+class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse>, val type: Int,val view : MonAnAdapter.MonAnOnClickListener) :
     RecyclerView.Adapter<MonAnAdapter.ViewHolder>() {
 
     companion object {

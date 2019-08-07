@@ -24,20 +24,4 @@ data class QuanAn(
     var hinhanhs: HashMap<String, String> = HashMap(),
     var binhluans: HashMap<String, BinhLuan> = HashMap(),
     var thucdons : ThucDon = ThucDon(ArrayList(),ArrayList())
-) : Serializable {
-    constructor(
-        id: String,
-        tenquanan: String,
-        diachi: String,
-        giaohang: Boolean,
-        giodongcua: String,
-        giomocua: String,
-        num_images: Long,
-        num_comments: Long,
-        danhgia: Double,
-        tienich: List<String>,
-        hinhanhquanans: ArrayList<String>,
-        binhluans: ArrayList<BinhLuan>,
-        thucdons : ThucDon
-    ) : this()
-}
+) : Serializable

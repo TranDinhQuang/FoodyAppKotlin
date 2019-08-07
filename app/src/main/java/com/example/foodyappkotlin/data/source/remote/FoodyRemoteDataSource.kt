@@ -2,7 +2,12 @@ package com.example.foodyappkotlin.data.source.remote
 
 import android.net.Uri
 import android.util.Log
-import com.example.foodyappkotlin.data.models.*
+import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.models.ThaoLuan
+import com.example.foodyappkotlin.data.models.User
+import com.example.foodyappkotlin.data.request.QuanAnRequest
+import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.response.UserResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.google.firebase.database.*
@@ -32,7 +37,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         userId: String,
         callBack: FoodyDataSource.DataCallBack<UserResponse>
     ) {
-        Log.d("kiemtra","$userId id_user")
+        Log.d("kiemtra", "$userId id_user")
         val ref = nodeRoot.child("thanhviens").child(userId)
 
         ref.addValueEventListener(object : ValueEventListener {
@@ -41,20 +46,51 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-                val userResponse  = p0.getValue(UserResponse::class.java)
+                val userResponse = p0.getValue(UserResponse::class.java)
                 if (userResponse != null) {
                     callBack.onSuccess(userResponse)
                 }
                 ref.removeEventListener(this)
-               /* if (p0.hasChildren()) {
-                    val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
-                    if (userResponse != null) {
-                        callBack.onSuccess(userResponse)
-                    }
-                    ref.removeEventListener(this)
-                }*/
+                /* if (p0.hasChildren()) {
+                     val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
+                     if (userResponse != null) {
+                         callBack.onSuccess(userResponse)
+                     }
+                     ref.removeEventListener(this)
+                 }*/
             }
 
+        })
+    }
+
+    override fun getThaoLuanIntoComment(
+        idQuanan: String,
+        idBinhLuan: String,
+        callback: FoodyDataSource.DataCallBack<ThaoLuan>
+    ) {
+        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
+        refThaoLuan.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val thaoluan = p0.getValue(ThaoLuan::class.java)
+                if (thaoluan != null) {
+                    callback.onSuccess(thaoluan)
+                } else {
+                    callback.onFailure("Không có dữ liệu")
+                }
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
         })
     }
 
@@ -124,7 +160,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 if (comment != null) {
                     binhluans.add(comment)
                     callback.onSuccess(comment)
-                }else{
+                } else {
                     callback.onFailure("Không có dữ liệu")
                 }
             }
@@ -176,23 +212,19 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     }
 
     //Cần sửa lại
-    override fun getThucDons(maThucDon: String, callback: FoodyDataSource.DataCallBack<ThucDon>) {
-        var thucdons = ThucDon(ArrayList(), ArrayList())
-
+    override fun getThucDons(
+        maThucDon: String,
+        callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>
+    ) {
         val thucDonRef = nodeRoot.child("thucdons").child(maThucDon)
+        var thucdons: MutableList<ThucDonResponse> = ArrayList()
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                val dataSnapshot = p0.child("MONAN")
-                for (item in dataSnapshot.children) {
-                    var monAn = item.getValue(MonAn::class.java)
-                    if (monAn != null) {
-                        thucdons.monAns.add(monAn)
-                    }
-                }
-                for (item in p0.child("NUOCUONG").children) {
-                    var nuocUong = item.getValue(NuocUong::class.java)
-                    if (nuocUong != null) {
-                        thucdons.nuocUongs.add(nuocUong)
+                for (item in p0.children) {
+                    var item = item.getValue(ThucDonResponse::class.java)
+                    if (item != null) {
+                        thucdons.add(item)
                     }
                 }
                 callback.onSuccess(thucdons)
@@ -210,32 +242,71 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
+    override fun getQuanAnsFollowId(
+        quanAnRequest: QuanAnRequest,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+        val quanans: ArrayList<QuanAn> = ArrayList()
+        var refQuanAn =
+            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).child(quanAnRequest.idQuanAn)
+        val postListener = object : ValueEventListener {
+            override fun onDataChange(p0: DataSnapshot) {
+                var quanan = p0.getValue(QuanAn::class.java)
+                var gson = Gson()
+                Log.d("data", gson.toJson(quanan))
+                if (quanan != null) {
+                    callback.onSuccess(quanan)
+                }
+                refQuanAn.removeEventListener(this)
+            }
+
+            override fun onCancelled(p0: DatabaseError) {
+                callback.onFailure(p0.message)
+            }
+        }
+        refQuanAn.addValueEventListener(postListener)
+    }
+
     override fun getQuanAns(
-        province: Int,
-        page: Int, valueAt: String,
+        quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         val quanans: ArrayList<QuanAn> = ArrayList()
-        Log.d("kiemtra", "page $page")
-        var refQuanAn = if (page == 1) {
-            nodeRoot.child("quanans").child("KV$province").orderByKey().limitToFirst(10)
-        } else {
-            nodeRoot.child("quanans").child("KV$province").orderByKey().startAt(valueAt)
-                .limitToFirst(11)
-        }
+        /*    var refQuanAn = if (quanAnRequest.page == 1) {
+                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
+            } else {
+                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").startAt(quanAnRequest.valueAt)
+                    .limitToFirst(11)
+            }*/
+        var refQuanAn =
+            nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
+                .limitToFirst(100)
+
         val postListener = object : ValueEventListener {
             override fun onDataChange(p0: DataSnapshot) {
-                p0.children.forEach {
-                    var quanan = it.getValue(QuanAn::class.java)
-                    if (quanan != null) {
-                        quanans.add(quanan)
+                when (quanAnRequest.typeCall) {
+                    FoodyRemoteDataSource.SORT_BY_DATE_ASC -> {
+                        p0.children.forEach {
+                            var quanan = it.getValue(QuanAn::class.java)
+                            if (quanan != null) {
+                                quanans.add(quanan)
+                            }
+                        }
+                    }
+                    FoodyRemoteDataSource.SORT_BY_DATE_DESC -> {
+                        p0.children.reversed().forEach {
+                            var quanan = it.getValue(QuanAn::class.java)
+                            if (quanan != null) {
+                                quanans.add(quanan)
+                            }
+                        }
                     }
                 }
                 var gson = Gson()
                 Log.d("data", gson.toJson(quanans))
-                if (page != 1) {
-                    quanans.removeAt(0)
-                }
+                /*   if (quanAnRequest.page != 1) {
+                       quanans.removeAt(0)
+                   }*/
                 callback.onSuccess(quanans)
                 refQuanAn.removeEventListener(this)
             }
@@ -254,28 +325,11 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener {
             // Handle unsuccessful uploads
-            Log.d("kiemtra", "tai anh that bai")
+            Log.d("kiemtra", "Tải ảnh thất bại")
         }.addOnSuccessListener {
-            Log.d("kiemtra", "tai anh thanh cong")
+            Log.d("kiemtra", "tải ảnh thành công")
             // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
         }
-    }
-
-    private fun getHinhAnhQuanAn(idQuanAn: String): ArrayList<String> {
-        val dataSnapshotHinhAnhQuanAn = nodeRoot.child("hinhanhquanans").child(idQuanAn)
-        val hinhanhquanans: ArrayList<String> = ArrayList()
-        val hinhanhListener = object : ValueEventListener {
-            override fun onDataChange(p0: DataSnapshot) {
-                for (item in p0.children) {
-                    hinhanhquanans.add(item.value as String)
-                }
-            }
-
-            override fun onCancelled(p0: DatabaseError) {
-            }
-        }
-        dataSnapshotHinhAnhQuanAn.addListenerForSingleValueEvent(hinhanhListener)
-        return hinhanhquanans
     }
 
     override fun searchQuanAn(
