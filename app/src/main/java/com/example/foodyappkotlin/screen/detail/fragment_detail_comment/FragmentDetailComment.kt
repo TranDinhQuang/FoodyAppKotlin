@@ -14,11 +14,9 @@ import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThaoLuan
 import com.example.foodyappkotlin.data.repository.FoodyRepository
-import com.example.foodyappkotlin.data.response.ThaoLuanResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.ThaoLuanAdapter
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_detail_comment.*
@@ -80,16 +78,16 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                     appSharedPreference.getUser().liked.put(binhLuan.id, binhLuan.id)
                     img_like.setImageResource(R.drawable.ic_like_red)
                     binhLuan.num_like += 1
-                   /* nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
-                        .child("binhluans").child(binhLuan.id).child("num_comment")
-                        .setValue(binhLuan.num_like)*/
+                    /* nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
+                         .child("binhluans").child(binhLuan.id).child("num_comment")
+                         .setValue(binhLuan.num_like)*/
                 } else {
                     appSharedPreference.getUser().liked.values.remove(binhLuan.id)
                     img_like.setImageResource(R.drawable.ic_like)
                     binhLuan.num_like -= 1
-                /*    nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
-                        .child("binhluans").child(binhLuan.id).child("num_comment")
-                        .setValue(binhLuan.num_like)*/
+                    /*    nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
+                            .child("binhluans").child(binhLuan.id).child("num_comment")
+                            .setValue(binhLuan.num_like)*/
                 }
                 nodeRoot.child("thanhviens").child(appSharedPreference.getToken()!!).child("liked")
                     .setValue(appSharedPreference.getUser().liked)
@@ -110,14 +108,16 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                     thaoLuan.taikhoan = appSharedPreference.getUser().taikhoan
                     thaoLuan.hinhanh = appSharedPreference.getUser().hinhanh
                     thaoLuan.noidung = edt_comment.text.trim().toString()
-                    nodeRoot.child("binhluans").child(mQuanAn.id).child(binhLuan.id).push().setValue(thaoLuan)
+                    nodeRoot.child("binhluans").child(mQuanAn.id).child(binhLuan.id).push()
+                        .setValue(thaoLuan)
                         .addOnCompleteListener {
                             binhLuan.num_comment += 1
-                       /*     nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}")
-                                .child(mQuanAn.id)
-                                .child("binhluans").child(binhLuan.id).child("num_comment")
-                                .setValue(binhLuan.num_comment)*/
+                            /*     nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}")
+                                     .child(mQuanAn.id)
+                                     .child("binhluans").child(binhLuan.id).child("num_comment")
+                                     .setValue(binhLuan.num_comment)*/
                             txt_num_comment.text = "${binhLuan.num_share} share"
+                            edt_comment.setText("")
                             layout_post_comment.visibility = View.GONE
                         }
                 } else {
@@ -131,8 +131,8 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
         mPresenter = DetailCommentPresenter(repository)
         thaoLuanAdapter = ThaoLuanAdapter(activityContext, ArrayList())
         recycler_thao_luan.adapter = thaoLuanAdapter
-        mPresenter.getThaoLuan(mQuanAn.id, binhLuan.id, this)
-
+//        mPresenter.getThaoLuan(mQuanAn.id, binhLuan.id, this)
+        getThaoLuanIntoComment(mQuanAn.id, binhLuan.id)
         text_title.text = binhLuan.tieude
         text_content_comment.text = binhLuan.noidung
         text_title.text = binhLuan.tieude
@@ -149,10 +149,42 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             img_like.setImageResource(R.drawable.ic_like_red)
             isLiked = true
         }
-        layout_like.setOnClickListener(this)
+        if (binhLuan.mauser == appSharedPreference.getToken())
+            layout_like.setOnClickListener(this)
         layout_comment.setOnClickListener(this)
         layout_share.setOnClickListener(this)
         btn_post.setOnClickListener(this)
+    }
+
+    fun getThaoLuanIntoComment(
+        idQuanan: String,
+        idBinhLuan: String
+    ) {
+        val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
+        refThaoLuan.addChildEventListener(object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val thaoluan = p0.getValue(ThaoLuan::class.java)
+                if (thaoluan != null) {
+                    getThaoLuanSuccess(thaoluan)
+                } else {
+                    getThaoLuanFailure("Không có dữ liệu")
+                }
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+        })
     }
 
     override fun getThaoLuanSuccess(data: ThaoLuan) {
@@ -223,4 +255,8 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             .into(img)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+
+    }
 }

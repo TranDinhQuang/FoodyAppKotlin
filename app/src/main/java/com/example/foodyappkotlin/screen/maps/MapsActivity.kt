@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.maps
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -36,8 +37,11 @@ import java.util.*
 
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback {
+    var address = ""
+
     lateinit var mMap: GoogleMap
     lateinit var mCameraPosition: CameraPosition
+
 
     var builder = PlacePicker.IntentBuilder()
 
@@ -117,7 +121,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             // Setting the title for the marker.
             // This will be displayed on taping the marker
             markerOptions.title("${it.latitude} - ${it.longitude}")
-            getAddress(it.latitude,it.longitude)
+            address = getAddress(it.latitude, it.longitude)
             // Clears the previously touched position
             googleMap.clear()
 
@@ -129,6 +133,9 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
 
         btn_ok.setOnClickListener {
+            val returnIntent = Intent()
+            returnIntent.putExtra("result",address)
+            setResult(Activity.RESULT_OK, returnIntent)
             finish()
         }
     }
@@ -248,34 +255,22 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    fun getAddress(latitude : Double,longitude : Double){
-         val geo = Geocoder(applicationContext, Locale.getDefault())
-                val addresses = geo.getFromLocation(latitude, longitude, 1)
-                if (addresses.isEmpty()) {
-                    //yourtextfieldname.setText("Waiting for Location");
+    fun getAddress(latitude: Double, longitude: Double) : String{
+        var addressString = ""
+        val geo = Geocoder(applicationContext, Locale.getDefault())
+        val addresses = geo.getFromLocation(latitude, longitude, 1)
+        if (addresses.isEmpty()) {
+            //yourtextfieldname.setText("Waiting for Location");
 //                    markerOptions.title("Waiting for Location")
-                   // markerOptions.title("Current Position");
+            // markerOptions.title("Current Position");
+        } else {
+            if (addresses.size > 0) {
+                addresses.forEach {
+                    addressString = it.getAddressLine(0)
+                    Log.d("kiemtra", "dia chi ${it.getAddressLine(0)}")
                 }
-                else {
-                    if (addresses.size > 0) {
-                        addresses.forEach {
-                            Log.d("kiemtra","dia chi ${it.getAddressLine(0)}")
-                        }
-                        val returnAddress = addresses[0]
-                   /*     var localityString = returnAddress.locality
-                        var city = returnAddress.countryName
-                        var region_code = returnAddress.countryCode
-                        var zipcode = returnAddress.getPostalCode()
-                        var str = StringBuilder()
-                        str.append(addresses.get(0).getAddressLine(1)+" "+addresses.get(0).getAddressLine(2) + " ")
-                        str.append("$localityString ")
-                        str.append("$city ")
-                        str.append("$region_code ")
-                        str.append("$zipcode ")*/
-    //                    yourtextfieldname.setText(addresses.get(0).getFeatureName() + ", " + addresses.get(0).getLocality() +", " + addresses.get(0).getAdminArea() + ", " + addresses.get(0).getCountryName());
-//                        markerOptions.title(str.toString())
-                        //Toast.makeText(getApplicationContext(), "Address:- " + addresses.get(0).getFeatureName() + addresses.get(0).getAdminArea() + addresses.get(0).getLocality(), Toast.LENGTH_LONG).show();
-                    }
-                }
+            }
+        }
+        return addressString
     }
 }

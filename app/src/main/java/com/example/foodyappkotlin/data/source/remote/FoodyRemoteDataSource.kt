@@ -1,7 +1,9 @@
 package com.example.foodyappkotlin.data.source.remote
 
+import android.location.Location
 import android.net.Uri
 import android.util.Log
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThaoLuan
@@ -15,6 +17,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.gson.Gson
 import java.io.File
+import javax.inject.Inject
 import javax.inject.Singleton
 
 
@@ -24,6 +27,9 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
 
+    @Inject
+    lateinit var appSharedPreference: AppSharedPreference
+
     companion object {
         val SORT_BY_KEY_DESC = 1
         val SORT_BY_KEY_ASC = 2
@@ -31,6 +37,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         val SORT_BY_DATE_ASC = 4
         val FILLTER_BY_NAME = 5
         val FILLTER_BY_ADDRESS = 6
+        val SORT_NEAR_ME = 7
     }
 
     override fun getUser(
@@ -151,7 +158,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     ) {
         var dataRef =
             nodeRoot.child("quanans").child("KV1").child(idQuanan).child("binhluans").orderByKey()
-                .limitToFirst(1000)
+                .limitToLast(1000)
         var binhluans = ArrayList<BinhLuan>()
 
         val childEventListener = object : ChildEventListener {
@@ -164,9 +171,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     callback.onFailure("Không có dữ liệu")
                 }
             }
-
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -200,13 +205,14 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             if (databaseError != null) {
                 callBack.onFailure("Data could not be saved " + databaseError.message)
             } else {
-                var num_comment = quanAn.num_comments + 1
+                callBack.onSuccess("Data saved successfully!")
+            /*    var num_comment = quanAn.num_comments + 1
                 var num_image = quanAn.num_images + binhluan.hinhanh.size
                 nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                     .child("num_comments").setValue(num_comment)
                 nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                     .child("num_images").setValue(num_image)
-                callBack.onSuccess("Data saved successfully!")
+                callBack.onSuccess("Data saved successfully!")*/
             }
         }
     }
@@ -246,7 +252,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<QuanAn>
     ) {
-        val quanans: ArrayList<QuanAn> = ArrayList()
         var refQuanAn =
             nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).child(quanAnRequest.idQuanAn)
         val postListener = object : ValueEventListener {
@@ -295,6 +300,14 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     }
                     FoodyRemoteDataSource.SORT_BY_DATE_DESC -> {
                         p0.children.reversed().forEach {
+                            var quanan = it.getValue(QuanAn::class.java)
+                            if (quanan != null) {
+                                quanans.add(quanan)
+                            }
+                        }
+                    }
+                    FoodyRemoteDataSource.SORT_NEAR_ME -> {
+                        p0.children.forEach {
                             var quanan = it.getValue(QuanAn::class.java)
                             if (quanan != null) {
                                 quanans.add(quanan)
