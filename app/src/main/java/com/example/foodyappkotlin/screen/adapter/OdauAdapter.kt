@@ -102,12 +102,11 @@ class OdauAdapter(
 
         v.text_comment.text = "${quanan.binhluans.size} bình luận"
         v.text_take_picture.text = "${quanan.hinhanhs.size} hình ảnh"
-        var diemQuanAn = 0F
+        var diemQuanAn = 0.0
         quanan.binhluans.mapNotNull {
-            diemQuanAn += it.value.chamdiem
+            diemQuanAn += it.value.chamdiem / 2
         }
-        diemQuanAn /= quanan.binhluans.size
-        v.text_point.text ="${(round(diemQuanAn) * 2)}"
+        v.text_point.text ="${(round(diemQuanAn))}"
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
 

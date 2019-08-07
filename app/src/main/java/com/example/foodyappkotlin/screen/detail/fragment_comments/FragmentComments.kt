@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,6 @@ import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
-import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.google.firebase.database.*
@@ -21,13 +21,13 @@ import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.item_empty_value.*
 import javax.inject.Inject
 
-class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
+class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner {
 
     lateinit var commentAdapter: CommentAdapter
     lateinit var detailViewModel: DetailViewModel
     lateinit var comments: MutableList<BinhLuan>
     lateinit var mPresenter: CommentsPresenter
-    lateinit var dataRef : Query
+    lateinit var dataRef: Query
     lateinit var childEventListener: ChildEventListener
 
     @Inject
@@ -69,7 +69,9 @@ class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
         } ?: throw Exception("Invalid Activity")
 
 
-        commentAdapter = CommentAdapter(activity!!, ArrayList(),  appSharedPreference.getUser().liked,this)
+        commentAdapter =
+            CommentAdapter(activity!!, ArrayList(),
+                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this)
         recycler_comments.adapter = commentAdapter
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             if (item != null) {
@@ -79,9 +81,10 @@ class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
         })
     }
 
-    fun getAllCommentFollowQuanAn(idQuanAn : String) {
+    fun getAllCommentFollowQuanAn(idQuanAn: String) {
         dataRef =
-            FirebaseDatabase.getInstance().reference.child("quanans").child("KV1").child(idQuanAn).child("binhluans")
+            FirebaseDatabase.getInstance().reference.child("quanans").child("KV1").child(idQuanAn)
+                .child("binhluans")
         var binhluans = ArrayList<BinhLuan>()
 
         childEventListener = object : ChildEventListener {
@@ -95,7 +98,6 @@ class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
             }
 
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
@@ -126,10 +128,16 @@ class FragmentComments : BaseFragment(),CommentAdapter.CommentOnCLickListerner {
 
     override fun onStop() {
         super.onStop()
-        if(dataRef != null){
+        if (dataRef != null) {
             dataRef.removeEventListener(childEventListener)
         }
 
+    }
+
+    override fun onClickEditComment(binhLuan: BinhLuan) {
+    }
+
+    override fun onClickDeleteComment(binhLuan: BinhLuan) {
     }
 
     override fun onClickItemCommentListerner(binhLuan: BinhLuan) {

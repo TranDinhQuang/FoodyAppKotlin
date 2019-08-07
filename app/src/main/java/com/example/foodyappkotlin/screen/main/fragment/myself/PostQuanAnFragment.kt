@@ -16,12 +16,16 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import com.example.foodyappkotlin.BuildConfig
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
+import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.response.ThucDonResponse
+import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.example.foodyappkotlin.screen.main.MainActivity
@@ -34,17 +38,24 @@ import java.io.IOException
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
-    PicturePostAdapter.OnClickListener, View.OnClickListener {
+    PicturePostAdapter.OnClickListener, View.OnClickListener, MonAnAdapter.MonAnOnClickListener {
 
     var list_of_items = arrayOf("Hà Nội", "Hồ Chí Minh")
 
+    lateinit var quanAn: QuanAn
+    var thucDonsRequest = HashMap<String, ThucDonResponse>()
+    var thucDon = ThucDonResponse()
     private lateinit var listImagePost: HashMap<String, String>
     private lateinit var mAdapterImages: PicturePostAdapter
+    private lateinit var mAdapterMenu: MonAnAdapter
     private lateinit var photoURI: Uri
 
     val ai = AtomicInteger(0)
+    val aiThucDon = AtomicInteger(0)
 
     @Inject
     lateinit var mActivity: MainActivity
@@ -52,6 +63,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     companion object {
         val REQUEST_TAKE_PHOTO = 101
         val REQUEST_GALLERY_PHOTO = 102
+        val REQUEST_GALLERY_PHOTO_MONAN = 105
         val GET_LOCATION = 103
 
         var permissions =
@@ -80,13 +92,17 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PostCommentFragment.REQUEST_TAKE_PHOTO) {
+            if (requestCode == PostQuanAnFragment.REQUEST_TAKE_PHOTO) {
 
-            } else if (requestCode == PostCommentFragment.REQUEST_GALLERY_PHOTO) {
+            } else if (requestCode == PostQuanAnFragment.REQUEST_GALLERY_PHOTO) {
                 val selectedImage = data!!.data
                 val mPhotoPath = getRealPathFromUri(selectedImage)
                 listImagePost.put("hinhanh$ai", mPhotoPath)
                 mAdapterImages.setImagePost(mPhotoPath)
+            }else if(requestCode == PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN){
+                val selectedImage = data!!.data
+                val mPhotoPath = getRealPathFromUri(selectedImage)
+                thucDon.hinhanh = mPhotoPath
             }
             if (requestCode == GET_LOCATION) {
                 val result = data!!.getStringExtra("result")
@@ -119,6 +135,12 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                     showPermissionDialog()
                 }
             }
+            R.id.btn_add_mon_an -> {
+                addMonAn()
+            }
+            R.id.layout_img_mon_an -> {
+                chooseGalleryMonAn()
+            }
         }
     }
 
@@ -131,6 +153,8 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         mAdapterImages = PicturePostAdapter(activityContext, this)
         recycler_image_quan_an.adapter = mAdapterImages
 
+        mAdapterMenu = MonAnAdapter(activityContext, ArrayList(), MonAnAdapter.TYPE_VIEW, this)
+        recycler_menu.adapter = mAdapterMenu
 
         spiner_khuvuc!!.onItemSelectedListener = this
         val adapterSpinner =
@@ -146,6 +170,27 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         edt_dia_chi.setOnClickListener(this)
         layout_take_photo.setOnClickListener(this)
         layout_open_library.setOnClickListener(this)
+        btn_add_mon_an.setOnClickListener(this)
+        layout_img_mon_an.setOnClickListener(this)
+    }
+
+    fun addMonAn() {
+        thucDon.ten = edt_ten_mon_an.text.toString()
+        if(edt_gia_tien.text.toString() != ""){
+            thucDon.gia = edt_gia_tien.text.toString().toLong()
+        }
+        if (thucDon.ten == "" || thucDon.hinhanh == "") {
+            showAlertMessage(
+                "Lỗi thực đơn",
+                "Không được để trống các giá trị trong thực đơn của bạn"
+            )
+        } else {
+            thucDonsRequest["monan$aiThucDon"] = thucDon
+            mAdapterMenu.addThucDon(thucDon)
+            edt_gia_tien.setText("")
+            edt_ten_mon_an.setText("")
+            thucDon = ThucDonResponse()
+        }
     }
 
 
@@ -160,7 +205,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                         file
                     )
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
-                startActivityForResult(takePictureIntent, PostCommentFragment.REQUEST_TAKE_PHOTO)
+                startActivityForResult(takePictureIntent, PostQuanAnFragment.REQUEST_TAKE_PHOTO)
             }
         }
     }
@@ -169,7 +214,13 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     private fun chooseGallery() {
         val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        startActivityForResult(pickPhoto, PostCommentFragment.REQUEST_GALLERY_PHOTO)
+        startActivityForResult(pickPhoto, PostQuanAnFragment.REQUEST_GALLERY_PHOTO)
+    }
+
+    private fun chooseGalleryMonAn() {
+        val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        startActivityForResult(pickPhoto, PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN)
     }
 
 
@@ -224,4 +275,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun removeImage(position: Int) {
 
     }
+
+    override fun monAnCalculatorMoney(money: Long) {
+
+    }
+
 }

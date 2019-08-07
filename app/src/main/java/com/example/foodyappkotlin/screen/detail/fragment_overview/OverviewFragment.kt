@@ -2,6 +2,7 @@ package com.example.foodyappkotlin.screen.detail.fragment_overview
 
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
+import android.content.DialogInterface
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -15,7 +16,6 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
@@ -37,20 +37,18 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.round
-import kotlin.math.roundToInt
 
 class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.MonAnOnClickListener,
     NuocUongAdapter.NuocUongOnClickListener, CommentAdapter.CommentOnCLickListerner {
 
     lateinit var inputParser: SimpleDateFormat
     lateinit var detailViewModel: DetailViewModel
-    lateinit var monAnAdapter: MonAnAdapter
     lateinit var commentAdapter: CommentAdapter
     lateinit var dataRef: Query
     lateinit var childEventListener: ChildEventListener
     private lateinit var mQuanAn: QuanAn
 
-    private var diemQuanAn = 0F
+    private var diemQuanAn = 0.0
     val storage = FirebaseStorage.getInstance().reference
 
     @Inject
@@ -135,10 +133,9 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             )} km"
         }
         quanAn.binhluans.mapNotNull {
-            diemQuanAn += it.value.chamdiem
+            diemQuanAn += it.value.chamdiem / 2
         }
-        diemQuanAn /= quanAn.binhluans.size
-        text_point.text = "${(round(diemQuanAn) * 2)}"
+        text_point.text = "${(round(diemQuanAn))}"
 
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference
@@ -189,19 +186,26 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
                     getAllCommentSuccess(comment)
                 } else {
                 }
+                Log.d("kiemtra","onChildAdded")
             }
 
             override fun onCancelled(p0: DatabaseError) {
-
+                Log.d("kiemtra","onCancelled")
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+                Log.d("kiemtra","onChildMoved")
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                Log.d("kiemtra","onChildChanged")
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+                val binhLuan = p0.getValue(BinhLuan::class.java)
+                if (binhLuan != null) {
+                    commentAdapter.removeComment(binhLuan)
+                }
             }
         }
         dataRef.addChildEventListener(childEventListener)
@@ -224,7 +228,8 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     fun findCommentData(binhluans: ArrayList<BinhLuan>) {
         commentAdapter =
-            CommentAdapter(activity!!, binhluans, appSharedPreference.getUser().liked, this)
+            CommentAdapter(activity!!, binhluans,
+                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this)
         recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
         recycler_user_comment.adapter = commentAdapter
         recycler_user_comment.isNestedScrollingEnabled = false
@@ -273,6 +278,18 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         childEventListener?.let {
             dataRef.removeEventListener(it)
         }
+    }
+
+    override fun onClickEditComment(binhLuan: BinhLuan) {
+//        mActivity.pushFragment(R.id.frame_layout,PostCommentFragment.newInstance())
+    }
+
+    override fun onClickDeleteComment(binhLuan: BinhLuan) {
+        showAlertListerner("Xác nhận xóa Comment!", "Bạn có muốn xóa comment này?",
+            DialogInterface.OnClickListener { _, _ ->
+                FirebaseDatabase.getInstance().reference.child("quanans")
+                    .child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id).child("binhluans").child(binhLuan.id).removeValue()
+            })
     }
 
     override fun onStop() {

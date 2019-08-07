@@ -5,10 +5,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.MonAn
 import com.example.foodyappkotlin.data.response.ThucDonResponse
+import com.example.foodyappkotlin.di.module.GlideApp
 import kotlinx.android.synthetic.main.item_menu_order.view.*
+import kotlinx.android.synthetic.main.item_odau.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
 
 class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse>, val type: Int,val view : MonAnAdapter.MonAnOnClickListener) :
@@ -44,10 +47,26 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse
                 p0.itemView.txt_number_order.text = "$number_order"
             }
         } else {
+            glideLoadImage(p0.itemView.img_food_menu,monAns[p1].hinhanh)
             p0.itemView.layout_value.visibility = View.GONE
         }
         p0.itemView.text_food_name.text = monAns[p1].ten
         p0.itemView.text_food_price.text = monAns[p1].gia.toString()
+    }
+
+    private fun glideLoadImage(img: ImageView, url: String) {
+        GlideApp.with(context)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
+    }
+
+
+    fun addThucDon(thucdon : ThucDonResponse){
+        monAns.add(thucdon)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

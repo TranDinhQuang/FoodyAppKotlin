@@ -11,6 +11,7 @@ data class BinhLuan(
     var tieude: String = "",
     var num_like: Long = 0,
     var num_share: Long = 0,
+    var user: String = "",
     var num_comment: Long = 0,
     var hinhanh: HashMap<String, String> = HashMap()
 ) : Serializable

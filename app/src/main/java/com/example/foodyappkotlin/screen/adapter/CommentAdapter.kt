@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.di.module.GlideApp
@@ -15,8 +16,9 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
+import javax.inject.Inject
 
-class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var listLiked : Map<String,String>,val view :  CommentAdapter.CommentOnCLickListerner) :
+class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var userId : String,var listLiked : Map<String,String>,val view :  CommentAdapter.CommentOnCLickListerner) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
@@ -44,6 +46,18 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
            it == comments[p1].id
         }.mapNotNull {
             p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
+        }
+
+        if(comments[p1].mauser == userId){
+            p0.itemView.layout_function.visibility = View.VISIBLE
+            p0.itemView.txt_edit_comment.setOnClickListener {
+                view.onClickEditComment(comments[p1])
+            }
+            p0.itemView.txt_delete_comment.setOnClickListener {
+                view.onClickDeleteComment(comments[p1])
+            }
+        }else{
+            p0.itemView.layout_function.visibility = View.GONE
         }
 
         p0.itemView.layout_comment.setOnClickListener {
@@ -116,13 +130,18 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
         notifyDataSetChanged()
     }
 
-    fun clearAllData(){
-        comments.clear()
+    fun removeComment(comment: BinhLuan){
+        comments.remove(comment)
+        notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface CommentOnCLickListerner{
        fun onClickItemCommentListerner(binhLuan : BinhLuan)
+
+        fun onClickEditComment(binhLuan: BinhLuan)
+
+        fun onClickDeleteComment(binhLuan: BinhLuan)
     }
 }
