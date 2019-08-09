@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
@@ -13,49 +14,61 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.ImageView
 import android.widget.Toast
 import com.example.foodyappkotlin.BuildConfig
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.response.ThucDonResponse
+import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
-import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.example.foodyappkotlin.screen.main.MainActivity
 import com.example.foodyappkotlin.screen.maps.MapsActivity
 import com.example.foodyappkotlin.view.ItemOffsetDecoration
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_add_restaurent.*
 import java.io.File
 import java.io.IOException
 import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     PicturePostAdapter.OnClickListener, View.OnClickListener, MonAnAdapter.MonAnOnClickListener {
-
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+    val storage = FirebaseStorage.getInstance().reference
+    var refThucDon = nodeRoot.child("thucdons").push()
+    var refQuanAn: DatabaseReference = nodeRoot.child("quanans")
+    var listernerThucDon: ValueEventListener? = null
+    var listernerQuanAn: ValueEventListener? = null
     var list_of_items = arrayOf("Hà Nội", "Hồ Chí Minh")
-
-    lateinit var quanAn: QuanAn
     var thucDonsRequest = HashMap<String, ThucDonResponse>()
     var thucDon = ThucDonResponse()
+
+    var numHinhAnhQuanAn = 0
+    var numThucDon = 0
+    var mLatitude = 21.008513
+    var mLongitude = 105.846314
+
     private lateinit var listImagePost: HashMap<String, String>
     private lateinit var mAdapterImages: PicturePostAdapter
     private lateinit var mAdapterMenu: MonAnAdapter
     private lateinit var photoURI: Uri
-
-    val ai = AtomicInteger(0)
-    val aiThucDon = AtomicInteger(0)
+    lateinit var quanAn: QuanAn
 
     @Inject
     lateinit var mActivity: MainActivity
@@ -92,20 +105,27 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PostQuanAnFragment.REQUEST_TAKE_PHOTO) {
+            when (requestCode) {
+                PostQuanAnFragment.REQUEST_TAKE_PHOTO -> {
+                }
+                PostQuanAnFragment.REQUEST_GALLERY_PHOTO -> {
+                    val selectedImage = data!!.data
+                    val mPhotoPath = getRealPathFromUri(selectedImage)
+                    uploadImageFileQuanAn(mPhotoPath)
 
-            } else if (requestCode == PostQuanAnFragment.REQUEST_GALLERY_PHOTO) {
-                val selectedImage = data!!.data
-                val mPhotoPath = getRealPathFromUri(selectedImage)
-                listImagePost.put("hinhanh$ai", mPhotoPath)
-                mAdapterImages.setImagePost(mPhotoPath)
-            }else if(requestCode == PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN){
-                val selectedImage = data!!.data
-                val mPhotoPath = getRealPathFromUri(selectedImage)
-                thucDon.hinhanh = mPhotoPath
+                }
+                PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN -> {
+                    val selectedImage = data!!.data
+                    val mPhotoPath = getRealPathFromUri(selectedImage)
+                    btn_add_mon_an.isEnabled  = false
+                    uploadImageFileThucDon(mPhotoPath)
+
+                }
             }
             if (requestCode == GET_LOCATION) {
                 val result = data!!.getStringExtra("result")
+                mLatitude = data.getDoubleExtra("latitude", 0.0)
+                mLongitude = data.getDoubleExtra("longitude", 0.0)
                 edt_dia_chi.setText(result)
             }
         }
@@ -141,6 +161,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             R.id.layout_img_mon_an -> {
                 chooseGalleryMonAn()
             }
+            R.id.btn_add_quan_an -> {
+                addQuanAnCuaToi()
+            }
         }
     }
 
@@ -162,7 +185,6 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spiner_khuvuc!!.adapter = adapterSpinner
 
-
         setOnClickListerner()
     }
 
@@ -172,11 +194,12 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         layout_open_library.setOnClickListener(this)
         btn_add_mon_an.setOnClickListener(this)
         layout_img_mon_an.setOnClickListener(this)
+        btn_add_quan_an.setOnClickListener(this)
     }
 
     fun addMonAn() {
         thucDon.ten = edt_ten_mon_an.text.toString()
-        if(edt_gia_tien.text.toString() != ""){
+        if (edt_gia_tien.text.toString() != "") {
             thucDon.gia = edt_gia_tien.text.toString().toLong()
         }
         if (thucDon.ten == "" || thucDon.hinhanh == "") {
@@ -185,11 +208,62 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 "Không được để trống các giá trị trong thực đơn của bạn"
             )
         } else {
-            thucDonsRequest["monan$aiThucDon"] = thucDon
+            thucDonsRequest["monan$numThucDon"] = thucDon
             mAdapterMenu.addThucDon(thucDon)
             edt_gia_tien.setText("")
             edt_ten_mon_an.setText("")
             thucDon = ThucDonResponse()
+            numThucDon += 1
+        }
+    }
+
+    fun addQuanAnCuaToi() {
+        if (edt_ten_quan_an.text.toString().trim() != "" && edt_dia_chi.text.toString().trim() != ""
+            && edt_time_open.text.toString().trim() != "" && edt_time_close.text.toString().trim() != ""
+            && listImagePost.size > 0 && thucDonsRequest.size > 0
+        ) {
+            refThucDon.setValue(thucDonsRequest).addOnSuccessListener {
+                quanAn = QuanAn()
+                quanAn.thucdon = refThucDon.key!!
+                quanAn.tenquanan = edt_ten_quan_an.text.toString().trim()
+                quanAn.diachi = edt_dia_chi.text.toString().trim()
+                quanAn.latitude = mLatitude
+                quanAn.longitude = mLongitude
+                quanAn.giomocua = edt_time_open.text.toString().trim().toLong()
+                quanAn.giodongcua = edt_time_close.text.toString().trim().toLong()
+                quanAn.hinhanhs = listImagePost
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    quanAn.giaohang = switch_giao_hang.showText
+                }
+                if (spiner_khuvuc.selectedItemPosition == 0) {
+                    quanAn.id_khuvuc = 1
+                } else {
+                    quanAn.id_khuvuc = 2
+                }
+                pushQuanAnToDataBase(quanAn)
+            }.addOnFailureListener {
+                showAlertMessage(
+                    "Hệ thống đang xảy ra lỗi",
+                    "Vui lòng thử lại"
+                )
+            }
+        } else {
+            showAlertMessage(
+                "Thiếu giá trị",
+                "Cần nhập đầy đủ các thông tin và hình ảnh,thực đơn cho quán ăn,Nhập lại?"
+            )
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+    }
+
+    fun pushQuanAnToDataBase(quanAn: QuanAn) {
+        if (quanAn.id_khuvuc.equals(1)) {
+            refQuanAn.child("KV1").push().setValue(quanAn)
+        }else{
+            refQuanAn.child("KV2").push().setValue(quanAn)
         }
     }
 
@@ -221,6 +295,44 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         val pickPhoto = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivityForResult(pickPhoto, PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN)
+    }
+
+    private fun uploadImageFileQuanAn(url: String) {
+        var file = Uri.fromFile(File(url))
+        var storageRef: StorageReference = storage.child("monan/${file.lastPathSegment}")
+        var uploadTask = storageRef.putFile(file)
+
+        uploadTask.addOnFailureListener {
+            showAlertMessage("Có lỗi","Tải ảnh quán ăn lên hệ thống thất bại,vui lòng thử lại")
+        }.addOnSuccessListener {
+            listImagePost["hinhanh$numHinhAnhQuanAn"] = file.lastPathSegment
+            numHinhAnhQuanAn += 1
+            mAdapterImages.setImagePost(url)
+        }
+    }
+
+    private fun uploadImageFileThucDon(url: String) {
+        var file = Uri.fromFile(File(url))
+        var storageRef: StorageReference = storage.child("monan/${file.lastPathSegment}")
+        var uploadTask = storageRef.putFile(file)
+
+        uploadTask.addOnFailureListener {
+            btn_add_mon_an.isEnabled  = true
+            showAlertMessage("Có lỗi","Tải ảnh món ăn lên hệ thống thất bại,vui lòng thử lại")
+        }.addOnSuccessListener {
+            btn_add_mon_an.isEnabled  = true
+            thucDon.hinhanh = url
+           glideLoadImage(img_mon_an,url)
+        }
+    }
+
+    private fun glideLoadImage(img: ImageView, url: String) {
+        GlideApp.with(activityContext)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
     }
 
 
@@ -270,6 +382,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+
     }
 
     override fun removeImage(position: Int) {

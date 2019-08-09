@@ -2,9 +2,13 @@ package com.example.foodyappkotlin.common
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.DialogInterface
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v7.app.AlertDialog
@@ -12,6 +16,12 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import com.example.foodyappkotlin.R
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -88,10 +98,71 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
         mFragmentTransition.commitAllowingStateLoss()
     }
 
-    fun showAlertMessage(title : String,message : String){
-        AlertDialog.Builder(applicationContext)
+    fun showAlertMessage(title: String, message: String) {
+        AlertDialog.Builder(this)
             .setTitle(title)
             .setMessage(message)
             .setNegativeButton("Đồng ý", null).show()
     }
+
+
+    fun showAlertListerner(
+        title: String,
+        message: String,
+        listerner: DialogInterface.OnClickListener
+    ) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
+    }
+
+    fun showPermissionDialog() {
+        Dexter.withActivity(this).withPermissions().withListener(
+            object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
+                    if (report != null) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                        }
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog()
+                        }
+                    }
+                }
+
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: MutableList<PermissionRequest>?,
+                    token: PermissionToken?
+                ) {
+                    token?.continuePermissionRequest()
+                }
+            }
+        ).withErrorListener { showSettingsDialog() }
+            .onSameThread()
+            .check()
+    }
+
+
+    fun showSettingsDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.message_need_permission))
+        builder.setMessage(getString(R.string.message_grant_permission))
+        builder.setPositiveButton(getString(R.string.label_setting)) { dialog, which ->
+            dialog.cancel()
+            openSettings()
+        }
+        builder.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
+        builder.show()
+    }
+
+    private fun openSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+        val uri = Uri.fromParts("package", this.packageName, null)
+        intent.data = uri
+        startActivityForResult(intent, 101)
+    }
+
 }

@@ -2,30 +2,29 @@ package com.example.foodyappkotlin.common
 
 import android.app.Activity
 import android.content.Context
-import android.os.Build
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
-import dagger.android.AndroidInjector
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.AndroidSupportInjection
-import dagger.android.support.HasSupportFragmentInjector
-import javax.inject.Inject
-import javax.inject.Named
 import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.provider.Settings
+import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.view.inputmethod.InputMethodManager
+import android.support.v7.app.AppCompatActivity
 import com.example.foodyappkotlin.R
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.AndroidSupportInjection
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
+import javax.inject.Named
 
 
-abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
+abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
 
     @Inject
     @Named(BaseActivityModule.ACTIVITY_CONTEXT)
@@ -53,27 +52,31 @@ abstract class BaseFragment: Fragment(), HasSupportFragmentInjector {
         return childFragmentInjector
     }
 
-    fun showKeyBoard(){
+    fun showKeyBoard() {
 
     }
 
-    fun hideKeyBoard(){
+    fun hideKeyBoard() {
 
     }
 
-    fun showAlertListerner(title : String,message : String,listerner : DialogInterface.OnClickListener ){
+    fun showAlertListerner(
+        title: String,
+        message: String,
+        listerner: DialogInterface.OnClickListener
+    ) {
         AlertDialog.Builder(activityContext)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
     }
 
 
-    fun showAlertMessage(title : String,message : String){
+    fun showAlertMessage(title: String, message: String) {
         AlertDialog.Builder(activityContext)
-                .setTitle(title)
-                .setMessage(message)
-                .setNegativeButton("Đồng ý", null).show()
+            .setTitle(title)
+            .setMessage(message)
+            .setNegativeButton("Đồng ý", null).show()
     }
 
 
