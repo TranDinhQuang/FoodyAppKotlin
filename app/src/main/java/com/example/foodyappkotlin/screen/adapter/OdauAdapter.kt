@@ -111,7 +111,7 @@ class OdauAdapter(
         v.text_take_picture.text = "${quanan.hinhanhs.size} hình ảnh"
         var diemQuanAn = 0.0
         quanan.binhluans.mapNotNull {
-            diemQuanAn += it.value.chamdiem
+            diemQuanAn += it.value.chamdiem / 2
         }
         if (diemQuanAn > 0) {
             diemQuanAn /= quanan.binhluans.size

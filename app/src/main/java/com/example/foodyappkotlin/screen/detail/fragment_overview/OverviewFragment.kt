@@ -131,7 +131,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             )} km"
         }
         quanAn.binhluans.mapNotNull {
-            diemQuanAn += it.value.chamdiem
+            diemQuanAn += it.value.chamdiem / 2
         }
         if (diemQuanAn > 0) {
             diemQuanAn /= quanAn.binhluans.size
@@ -146,7 +146,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         }else{
             button_order.visibility = View.GONE
         }
-
 
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference

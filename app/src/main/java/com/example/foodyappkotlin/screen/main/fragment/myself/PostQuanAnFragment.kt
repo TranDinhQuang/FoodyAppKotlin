@@ -18,6 +18,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
@@ -55,6 +56,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     var refQuanAn: DatabaseReference = nodeRoot.child("quanans")
     var listernerThucDon: ValueEventListener? = null
     var listernerQuanAn: ValueEventListener? = null
+
     var list_of_items = arrayOf("Hà Nội", "Hồ Chí Minh")
     var thucDonsRequest = HashMap<String, ThucDonResponse>()
     var thucDon = ThucDonResponse()
@@ -64,6 +66,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     var mLatitude = 21.008513
     var mLongitude = 105.846314
 
+    lateinit var quanAn: QuanAn
+    var thucDonsRequest = HashMap<String, ThucDonResponse>()
+    var thucDon = ThucDonResponse()
     private lateinit var listImagePost: HashMap<String, String>
     private lateinit var mAdapterImages: PicturePostAdapter
     private lateinit var mAdapterMenu: MonAnAdapter
