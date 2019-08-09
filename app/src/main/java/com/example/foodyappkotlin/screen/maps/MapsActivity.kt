@@ -38,7 +38,6 @@ import java.util.*
 
 class MapsActivity : BaseActivity(), OnMapReadyCallback {
     var address = ""
-
     lateinit var mMap: GoogleMap
     lateinit var mCameraPosition: CameraPosition
 
@@ -75,27 +74,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         setContentView(com.example.foodyappkotlin.R.layout.activity_maps)
         getLocationPermission()
 
-/*        val autocompleteFragment = supportFragmentManager
-            .findFragmentById(com.example.foodyappkotlin.R.id.place_autocomplete_fragment) as PlaceAutocompleteFragment?
-
-        var typeFilter =
-            AutocompleteFilter.Builder().setTypeFilter(AutocompleteFilter.TYPE_FILTER_ADDRESS)
-                .build()
-
-        if (autocompleteFragment != null) {
-            autocompleteFragment.setFilter(typeFilter)
-            autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-                override fun onPlaceSelected(p0: Place?) {
-                    Log.d(TAG, "Place: ${p0!!.name}")
-                }
-
-                override fun onError(p0: Status?) {
-                    Log.d(TAG, "An error occurred: $p0")
-                }
-
-            })
-        }*/
-
         val mapFragment = supportFragmentManager
             .findFragmentById(com.example.foodyappkotlin.R.id.map) as SupportMapFragment?
         mapFragment!!.getMapAsync(this)
@@ -109,7 +87,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
-        callPlaceAutocompleteActivityIntent()
+//        callPlaceAutocompleteActivityIntent()
 
         mMap.setOnMapClickListener {
             // Creating a marker
@@ -135,6 +113,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         btn_ok.setOnClickListener {
             val returnIntent = Intent()
             returnIntent.putExtra("result",address)
+            returnIntent.putExtra("latitude", mLastKnownLocation!!.latitude)
+            returnIntent.putExtra("longitude", mLastKnownLocation!!.longitude)
             setResult(Activity.RESULT_OK, returnIntent)
             finish()
         }
@@ -223,7 +203,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    private fun callPlaceAutocompleteActivityIntent() {
+/*    private fun callPlaceAutocompleteActivityIntent() {
         try {
             val intent =
                 PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_FULLSCREEN)
@@ -233,7 +213,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             print(e.message)
         }
 
-    }
+    }*/
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -260,9 +240,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         val geo = Geocoder(applicationContext, Locale.getDefault())
         val addresses = geo.getFromLocation(latitude, longitude, 1)
         if (addresses.isEmpty()) {
-            //yourtextfieldname.setText("Waiting for Location");
-//                    markerOptions.title("Waiting for Location")
-            // markerOptions.title("Current Position");
         } else {
             if (addresses.size > 0) {
                 addresses.forEach {

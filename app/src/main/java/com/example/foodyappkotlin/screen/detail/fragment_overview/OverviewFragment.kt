@@ -25,6 +25,7 @@ import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
 import com.example.foodyappkotlin.screen.detail.fragment_detail_comment.FragmentDetailComment
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
+import com.example.foodyappkotlin.screen.menu.MenuActivity
 import com.example.foodyappkotlin.util.DateUtils
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -53,9 +54,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     @Inject
     lateinit var mActivity: DetailEatingActivity
-
-    @Inject
-    lateinit var mPresenter: OverviewPresenter
 
     @Inject
     lateinit var appSharedPreference: AppSharedPreference
@@ -125,7 +123,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         mQuanAn = quanAn
 
         if (appSharedPreference.getLocation() != null) {
-            text_distance.text = "Cách bạn ${distance(
+            text_distance.text = "Cách bạn: ${distance(
                 appSharedPreference.getLocation().latitude,
                 appSharedPreference.getLocation().longitude,
                 quanAn.latitude,
@@ -135,7 +133,19 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         quanAn.binhluans.mapNotNull {
             diemQuanAn += it.value.chamdiem / 2
         }
+        if (diemQuanAn > 0) {
+            diemQuanAn /= quanAn.binhluans.size
+        }
         text_point.text = "${(round(diemQuanAn))}"
+        text_order.text = "giao hàng: ${quanAn.giaohang}"
+        if(quanAn.giaohang){
+            button_order.visibility = View.VISIBLE
+            button_order.setOnClickListener {
+                startActivity(MenuActivity.newInstance(context!!))
+            }
+        }else{
+            button_order.visibility = View.GONE
+        }
 
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference

@@ -1,8 +1,8 @@
 package com.example.foodyappkotlin.screen.login
 
-import android.arch.lifecycle.ViewModelProviders
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.util.Log
 import android.view.View
 import com.example.foodyappkotlin.AppSharedPreference
@@ -31,8 +31,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
     private lateinit var googleSignInClient: GoogleSignInClient
 
     lateinit var presenter: LoginInterface.Presenter
-
-    lateinit var detailViewModel: DetailViewModel
 
     @Inject
     lateinit var repository: FoodyRepository
@@ -72,9 +70,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
             try {
                 val account = task.getResult(ApiException::class.java)
                 firebaseAuthWithGoogle(account!!)
-
             } catch (e: ApiException) {
-                Log.w(TAG, "Google sign in failed", e)
+                progressBar.visibility = View.GONE
+                showAlertMessage("Yêu cầu thất bại","Vòng lòng kiểm tra lại các kết nối")
             }
         }
     }
@@ -90,8 +88,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
                     Log.d(TAG, "signInWithCredential:success")
                     val userGoogle = auth.currentUser
                     if (userGoogle != null) {
-                        var comment = ArrayList<String>()
-                        comment.add("-LlNKgQcWSeSiJPv9qRa")
                         val user = User(
                             userGoogle.email!!,
                             userGoogle.displayName!!,
@@ -101,7 +97,6 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
                         presenter.saveDataLogin(user)
                     }
                 } else {
-                    Log.w(TAG, "signInWithCredential:failure", task.exception)
                 }
             }
     }
@@ -138,12 +133,14 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
     }
 
     override fun userInfoSuccess(user: UserResponse) {
+        progressBar.visibility = View.GONE
         appSharedPreference.setToken(user.userId)
-        appSharedPreference.setUserName(user.tenhienthi)
+        appSharedPreference.setUser(user)
         startActivity(MainActivity.newInstance(this))
+        finish()
     }
 
     override fun serverFailure(msg: String) {
+        progressBar.visibility = View.GONE
     }
-
 }

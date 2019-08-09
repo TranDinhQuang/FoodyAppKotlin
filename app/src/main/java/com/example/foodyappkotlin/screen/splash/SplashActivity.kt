@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.view.View
 import android.widget.Toast
 import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.common.BaseActivity
@@ -19,6 +20,7 @@ import com.example.foodyappkotlin.screen.main.MainActivity
 import com.example.foodyappkotlin.screen.maps.MapsActivity
 import com.google.android.gms.maps.model.LatLng
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.fragment_odau.*
 import javax.inject.Inject
 
 
@@ -45,33 +47,33 @@ class SplashActivity : BaseActivity() {
         AndroidInjection.inject(this)
         getLocationPermission()
         mPresenter = SplashPresenter(foodyRepository, this)
-//        delayTime()
-    }
-
-    override fun onResume() {
-        super.onResume()
         delayTime()
-        if (appSharedPreferences.getToken() == "") {
-            val intent = Intent(applicationContext, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
-        } else {
-            if (checkNetWorkEnabled()) {
-                mPresenter.getUserLogin(appSharedPreferences.getToken()!!)
-            } else {
-                //ShowAlert
-            }
-        }
     }
 
     private fun delayTime() {
         mWaitHandler.postDelayed({
             try {
-
+                if(mLocationPermissionGranted){
+                    if (appSharedPreferences.getToken() == "") {
+                        progressBar.visibility = View.GONE
+                        val intent = Intent(applicationContext, LoginActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    } else {
+                        if (checkNetWorkEnabled()) {
+                            mPresenter.getUserLogin(appSharedPreferences.getToken()!!)
+                        } else {
+                            //show message
+                        }
+                    }
+                }
+                else{
+                    delayTime()
+                }
             } catch (ignored: Exception) {
                 ignored.printStackTrace()
             }
-        }, 2000)
+        }, 5000)
     }
 
     override fun onRequestPermissionsResult(

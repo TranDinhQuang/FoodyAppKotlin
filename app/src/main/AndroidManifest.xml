@@ -38,15 +38,15 @@
 
         <activity
             android:name=".screen.maps.MapsActivity"
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop"/>
         <activity
             android:name=".screen.main.MainActivity"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"></activity>
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
         <activity
             android:name=".screen.login.LoginActivity"
-            android:launchMode="singleTop"></activity>
-        <activity android:name=".screen.menu.MenuActivity"></activity>
+            android:launchMode="singleTop"/>
+        <activity android:name=".screen.menu.MenuActivity"/>
         <activity android:name=".screen.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

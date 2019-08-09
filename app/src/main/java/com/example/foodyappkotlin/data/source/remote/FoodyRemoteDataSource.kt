@@ -44,7 +44,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         userId: String,
         callBack: FoodyDataSource.DataCallBack<UserResponse>
     ) {
-        Log.d("kiemtra", "$userId id_user")
         val ref = nodeRoot.child("thanhviens").child(userId)
 
         ref.addValueEventListener(object : ValueEventListener {
@@ -58,13 +57,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     callBack.onSuccess(userResponse)
                 }
                 ref.removeEventListener(this)
-                /* if (p0.hasChildren()) {
-                     val userResponse = p0.children.elementAt(0).getValue(UserResponse::class.java)
-                     if (userResponse != null) {
-                         callBack.onSuccess(userResponse)
-                     }
-                     ref.removeEventListener(this)
-                 }*/
             }
 
         })
@@ -206,13 +198,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 callBack.onFailure("Data could not be saved " + databaseError.message)
             } else {
                 callBack.onSuccess("Data saved successfully!")
-            /*    var num_comment = quanAn.num_comments + 1
-                var num_image = quanAn.num_images + binhluan.hinhanh.size
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
-                    .child("num_comments").setValue(num_comment)
-                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
-                    .child("num_images").setValue(num_image)
-                callBack.onSuccess("Data saved successfully!")*/
             }
         }
     }
@@ -277,12 +262,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
     ) {
         val quanans: ArrayList<QuanAn> = ArrayList()
-        /*    var refQuanAn = if (quanAnRequest.page == 1) {
-                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
-            } else {
-                nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao").startAt(quanAnRequest.valueAt)
-                    .limitToFirst(11)
-            }*/
         var refQuanAn =
             nodeRoot.child("quanans").child(quanAnRequest.idKhuVuc).orderByChild("ngaytao")
                 .limitToFirst(100)

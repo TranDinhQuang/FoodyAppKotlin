@@ -231,6 +231,6 @@
             android:layout_below="@id/recycler_menu"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/txt_add_food_to_menu" />
+            android:text="@string/txt_add_restaurant" />
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>
