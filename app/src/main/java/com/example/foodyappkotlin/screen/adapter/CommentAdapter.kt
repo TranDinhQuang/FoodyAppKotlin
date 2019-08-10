@@ -36,8 +36,12 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
         p0.itemView.text_title.text = comments[p1].tieude
         p0.itemView.text_content_comment.text = comments[p1].noidung
         p0.itemView.text_title.text = comments[p1].tieude
-        p0.itemView.txt_num_like.text = "${comments[p1].num_like} like"
-        p0.itemView.txt_num_share.text = "${comments[p1].num_share} share"
+        p0.itemView.text_name_user.text = comments[p1].ten_user
+        p0.itemView.text_point.text = comments[p1].chamdiem.toString()
+        glideLoadImageLink(p0.itemView.image_avatar_user,comments[p1].hinhanh_user)
+
+/*        p0.itemView.txt_num_like.text = "${comments[p1].num_like} like"
+        p0.itemView.txt_num_share.text = "${comments[p1].num_share} share"*/
         if (comments[p1].hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
@@ -48,7 +52,7 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
             p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
         }
 
-        if(comments[p1].mauser == userId){
+        if(comments[p1].id_user == userId){
             p0.itemView.layout_function.visibility = View.VISIBLE
             p0.itemView.txt_edit_comment.setOnClickListener {
                 view.onClickEditComment(comments[p1])
@@ -117,6 +121,15 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
     }
 
     private fun glideLoadImage(img: ImageView, url: StorageReference) {
+        GlideApp.with(context)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
+    }
+
+    private fun glideLoadImageLink(img: ImageView, url: String) {
         GlideApp.with(context)
             .load(url)
             .error(R.drawable.placeholder)

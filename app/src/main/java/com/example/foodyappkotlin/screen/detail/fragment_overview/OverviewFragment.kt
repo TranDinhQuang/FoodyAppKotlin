@@ -80,7 +80,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         initData()
     }
 
-
     fun initData() {
         inputParser = SimpleDateFormat(INPUT_FORMAT, Locale.ENGLISH)
         detailViewModel = activity?.run {
@@ -137,6 +136,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             diemQuanAn /= quanAn.binhluans.size
         }
         text_point.text = "${(round(diemQuanAn))}"
+
         text_order.text = "giao hàng: ${quanAn.giaohang}"
         if(quanAn.giaohang){
             button_order.visibility = View.VISIBLE
@@ -197,19 +197,15 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
                     getAllCommentSuccess(comment)
                 } else {
                 }
-                Log.d("kiemtra","onChildAdded")
             }
 
             override fun onCancelled(p0: DatabaseError) {
-                Log.d("kiemtra","onCancelled")
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
-                Log.d("kiemtra","onChildMoved")
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-                Log.d("kiemtra","onChildChanged")
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
@@ -268,7 +264,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     override fun getAllCommentSuccess(comment: BinhLuan) {
         commentAdapter.onDataChanged(comment)
-//        swiperefresh.isRefreshing = false
     }
 
     override fun getAllCommentFailure(message: String) {
@@ -283,7 +278,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             )
         }
     }
-
 
     fun cleanupListener() {
         childEventListener?.let {

@@ -13,6 +13,13 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
+    override fun getQuanAnsFollowNguoiDang(
+        idKhuVuc: String,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+
+    }
+
     override fun getQuanAnsFollowId(
         quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<QuanAn>

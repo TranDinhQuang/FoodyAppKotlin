@@ -1,6 +1,5 @@
 package com.example.foodyappkotlin.data.source.remote
 
-import android.location.Location
 import android.net.Uri
 import android.util.Log
 import com.example.foodyappkotlin.AppSharedPreference
@@ -48,7 +47,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
         ref.addValueEventListener(object : ValueEventListener {
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onDataChange(p0: DataSnapshot) {
@@ -89,6 +87,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+
             }
         })
     }
@@ -163,6 +162,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                     callback.onFailure("Không có dữ liệu")
                 }
             }
+
             override fun onCancelled(p0: DatabaseError) {
             }
 
@@ -189,7 +189,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         binhluan.hinhanh.forEach {
             uploadImageFile(it.value)
             var file = Uri.fromFile(File(it.value))
-            hinhanhSuccess.put(it.key, file.lastPathSegment)
+            hinhanhSuccess[it.key] = file.lastPathSegment
         }
         binhluan.id = dataRef.key!!
         binhluan.hinhanh = hinhanhSuccess
@@ -257,6 +257,12 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         refQuanAn.addValueEventListener(postListener)
     }
 
+    override fun getQuanAnsFollowNguoiDang(
+        idKhuVuc: String,
+        callback: FoodyDataSource.DataCallBack<QuanAn>
+    ) {
+    }
+
     override fun getQuanAns(
         quanAnRequest: QuanAnRequest,
         callback: FoodyDataSource.DataCallBack<MutableList<QuanAn>>
@@ -296,9 +302,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
                 }
                 var gson = Gson()
                 Log.d("data", gson.toJson(quanans))
-                /*   if (quanAnRequest.page != 1) {
-                       quanans.removeAt(0)
-                   }*/
                 callback.onSuccess(quanans)
                 refQuanAn.removeEventListener(this)
             }

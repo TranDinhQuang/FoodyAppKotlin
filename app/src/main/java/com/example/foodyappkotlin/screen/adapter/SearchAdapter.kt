@@ -36,6 +36,10 @@ class SearchAdapter(
 
         p0.itemView.txt_ten_quan_an.text = quanAns[p1].tenquanan
         p0.itemView.txt_dia_chi.text = quanAns[p1].diachi
+        p0.itemView.layout_item_search.setOnClickListener {
+            view.onClickItemListerner(quanAns[p1])
+        }
+
         GlideApp.with(context)
             .load(storageRef)
             .error(R.drawable.placeholder)
@@ -54,5 +58,6 @@ class SearchAdapter(
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface SearchOnClickListener {
+        fun onClickItemListerner(quanAn: QuanAn)
     }
 }

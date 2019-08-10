@@ -23,6 +23,8 @@ interface FoodyDataSource {
 
         fun getQuanAnsFollowId(quanAnRequest: QuanAnRequest, callback: DataCallBack<QuanAn>)
 
+        fun getQuanAnsFollowNguoiDang(idKhuVuc : String, callback: DataCallBack<QuanAn>)
+
         fun getAllCommentFollowQuanAn(idQuanan: String, callback: DataCallBack<BinhLuan>)
 
         fun getThucDons(maQuanAn: String, callback: DataCallBack<MutableList<ThucDonResponse>>)

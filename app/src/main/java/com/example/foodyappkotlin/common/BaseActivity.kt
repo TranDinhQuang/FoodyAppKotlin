@@ -2,6 +2,7 @@ package com.example.foodyappkotlin.common
 
 import android.annotation.TargetApi
 import android.app.Activity
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
@@ -16,6 +17,7 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import com.example.foodyappkotlin.R
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -165,4 +167,12 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
         startActivityForResult(intent, 101)
     }
 
+    fun Activity.hideKeyboard() {
+        hideKeyboard(if (currentFocus == null) View(this) else currentFocus)
+    }
+
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
+    }
 }
