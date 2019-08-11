@@ -2,6 +2,8 @@ package com.example.foodyappkotlin.screen.main.fragment.myself
 
 import android.Manifest
 import android.app.Activity
+import android.app.TimePickerDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -14,7 +16,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +24,7 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.Toast
+import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.BuildConfig
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
@@ -42,6 +44,7 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_add_restaurent.*
+import kotlinx.android.synthetic.main.fragment_post_comment.*
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -54,7 +57,6 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
     var refThucDon = nodeRoot.child("thucdons").push()
-    var refQuanAn: DatabaseReference = nodeRoot.child("quanans")
     var listernerThucDon: ValueEventListener? = null
     var listernerQuanAn: ValueEventListener? = null
 
@@ -78,6 +80,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
     @Inject
     lateinit var mActivity: MainActivity
+
+    @Inject
+    lateinit var appSharedPreference: AppSharedPreference
 
     companion object {
         val REQUEST_TAKE_PHOTO = 101
@@ -129,7 +134,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 PostQuanAnFragment.REQUEST_GALLERY_PHOTO_MONAN -> {
                     val selectedImage = data!!.data
                     val mPhotoPath = getRealPathFromUri(selectedImage)
-                    btn_add_mon_an.isEnabled  = false
+                    btn_add_mon_an.isEnabled = false
                     uploadImageFileThucDon(mPhotoPath)
 
                 }
@@ -146,6 +151,8 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onClick(p0: View?) {
         when (p0!!.id) {
             R.id.edt_dia_chi -> {
+            }
+            R.id.img_open_google_maps -> {
                 startActivityForResult(MapsActivity.newInstance(activityContext), GET_LOCATION)
             }
             R.id.layout_take_photo -> {
@@ -196,7 +203,6 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items)
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spiner_khuvuc!!.adapter = adapterSpinner
-
         setOnClickListerner()
     }
 
@@ -207,6 +213,35 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         btn_add_mon_an.setOnClickListener(this)
         layout_img_mon_an.setOnClickListener(this)
         btn_add_quan_an.setOnClickListener(this)
+        img_open_google_maps.setOnClickListener(this)
+        edt_time_open.setOnClickListener {
+            hideKeyboard()
+            var mcurrentTime = Calendar.getInstance()
+            var hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
+            var minute = mcurrentTime.get(Calendar.MINUTE)
+            val mTimePicker = TimePickerDialog(
+                activityContext,
+                TimePickerDialog.OnTimeSetListener { p0, p1, p2 -> edt_time_open.setText("$p1:$p2") },
+                hour,
+                minute,
+                false
+            )
+            mTimePicker.show()
+        }
+        edt_time_close.setOnClickListener {
+            hideKeyboard()
+            var mcurrentTime = Calendar.getInstance()
+            var hour = mcurrentTime.get(Calendar.HOUR_OF_DAY)
+            var minute = mcurrentTime.get(Calendar.MINUTE)
+            val mTimePicker = TimePickerDialog(
+                activityContext,
+                TimePickerDialog.OnTimeSetListener { p0, p1, p2 -> edt_time_close.setText("$p1:$p2") },
+                hour,
+                minute,
+                false
+            )
+            mTimePicker.show()
+        }
     }
 
     fun addMonAn() {
@@ -236,13 +271,14 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         ) {
             refThucDon.setValue(thucDonsRequest).addOnSuccessListener {
                 quanAn = QuanAn()
+                quanAn.nguoidang = appSharedPreference.getUser().taikhoan
                 quanAn.thucdon = refThucDon.key!!
                 quanAn.tenquanan = edt_ten_quan_an.text.toString().trim()
                 quanAn.diachi = edt_dia_chi.text.toString().trim()
                 quanAn.latitude = mLatitude
                 quanAn.longitude = mLongitude
-                quanAn.giomocua = edt_time_open.text.toString().trim().toLong()
-                quanAn.giodongcua = edt_time_close.text.toString().trim().toLong()
+                quanAn.giomocua = convertStringToTime(edt_time_open.text.toString().trim())
+                quanAn.giodongcua = convertStringToTime(edt_time_close.text.toString().trim())
                 quanAn.hinhanhs = listImagePost
                 quanAn.ngaytao = DateUtils.getCurrentTime()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -268,15 +304,47 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         }
     }
 
+    fun convertStringToTime(timeString: String): Long {
+        val time = timeString.split(":")
+        val hours = time[0].trim()
+        val minutes = time[1].trim()
+        val timeLong = (hours.toLong() * 60) + minutes.toLong()
+        return timeLong
+    }
+
     override fun onStop() {
         super.onStop()
     }
 
     fun pushQuanAnToDataBase(quanAn: QuanAn) {
-        if (quanAn.id_khuvuc.equals(1)) {
-            refQuanAn.child("KV1").push().setValue(quanAn)
-        }else{
-            refQuanAn.child("KV2").push().setValue(quanAn)
+        if (quanAn.id_khuvuc == 1) {
+            val refQuanAn = nodeRoot.child("quanans").child("KV1").push()
+            quanAn.id = refQuanAn.key!!
+            refQuanAn.setValue(quanAn).addOnCompleteListener {
+                showAlertListernerOneclick(
+                    "Thành công",
+                    "Quán ăn của bạn đã được chúng tôi ghi nhận trên hệ thống",
+                    "Đóng",
+                    DialogInterface.OnClickListener { p0, p1 ->
+                        mActivity.popFragment()
+                    })
+            }.addOnFailureListener {
+                showAlertMessage("Có lỗi xảy ra","Vui lòng kiểm tra lại các kết nối 3G/4G/WIFI và thử lại")
+            }
+        } else {
+            val refQuanAn = nodeRoot.child("quanans").child("KV2").push()
+            quanAn.id = refQuanAn.key!!
+            refQuanAn.setValue(quanAn).addOnCompleteListener {
+                showAlertListernerOneclick(
+                    "Thành công",
+                    "Quán ăn của bạn đã được chúng tôi ghi nhận trên hệ thống",
+                    "Đóng",
+                    DialogInterface.OnClickListener { p0, p1 ->
+                        mActivity.popFragment()
+                    })
+            }.addOnFailureListener {
+                showAlertMessage("Có lỗi xảy ra","Vui lòng kiểm tra lại các kết nối 3G/4G/WIFI và thử lại")
+            }
         }
     }
 
@@ -316,7 +384,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         var uploadTask = storageRef.putFile(file)
 
         uploadTask.addOnFailureListener {
-            showAlertMessage("Có lỗi","Tải ảnh quán ăn lên hệ thống thất bại,vui lòng thử lại")
+            showAlertMessage("Có lỗi", "Tải ảnh quán ăn lên hệ thống thất bại,vui lòng thử lại")
         }.addOnSuccessListener {
             listImagePost["hinhanh$numHinhAnhQuanAn"] = file.lastPathSegment
             numHinhAnhQuanAn += 1
@@ -330,12 +398,12 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         var uploadTask = storageRef.putFile(file)
 
         uploadTask.addOnFailureListener {
-            btn_add_mon_an.isEnabled  = true
-            showAlertMessage("Có lỗi","Tải ảnh món ăn lên hệ thống thất bại,vui lòng thử lại")
+            btn_add_mon_an.isEnabled = true
+            showAlertMessage("Có lỗi", "Tải ảnh món ăn lên hệ thống thất bại,vui lòng thử lại")
         }.addOnSuccessListener {
-            btn_add_mon_an.isEnabled  = true
+            btn_add_mon_an.isEnabled = true
             thucDon.hinhanh = url
-           glideLoadImage(img_mon_an,url)
+            glideLoadImage(img_mon_an, url)
         }
     }
 

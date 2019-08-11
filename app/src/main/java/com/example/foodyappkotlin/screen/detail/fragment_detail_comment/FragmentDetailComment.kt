@@ -132,12 +132,6 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                 }
             }
             R.id.txt_delete_comment -> {
-                if (thongSo.num_comment > 0) {
-                    thongSo.num_comment -= 1
-                }
-                nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
-                    .child("num_comment")
-                    .setValue(thongSo.num_comment)
             }
         }
     }
@@ -203,20 +197,17 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                val thongSo = p0.getValue(ThongSoResponse::class.java)
-
-                if (thongSo != null) {
-                    txt_num_like.text = "${thongSo?.num_like} like"
-                    txt_num_comment.text = "${thongSo?.num_comment} comment"
-                    txt_num_share.text = "${thongSo?.num_share} share"
-                } else {
-                    txt_num_like.text = "0 like"
-                    txt_num_comment.text = "0 comment"
-                    txt_num_share.text = "0 share"
-                }
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                txt_num_like.text = "${thongSo?.num_like} like"
+                txt_num_comment.text = "${thongSo?.num_comment} comment"
+                txt_num_share.text = "${thongSo?.num_share} share"
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                txt_num_like.text = "${thongSo?.num_like} like"
+                txt_num_comment.text = "${thongSo?.num_comment} comment"
+                txt_num_share.text = "${thongSo?.num_share} share"
             }
 
         }
@@ -248,6 +239,12 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+                if (thongSo.num_comment > 0) {
+                    thongSo.num_comment -= 1
+                }
+                nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
+                    .child("num_comment")
+                    .setValue(thongSo.num_comment)
                 val thaoLuan = p0.getValue(ThaoLuan::class.java)
                 thaoLuanAdapter.removeThaoLuan(thaoLuan!!)
             }

@@ -9,6 +9,7 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
+import com.example.foodyappkotlin.screen.main.fragment.profile.ProfileFragment
 import com.example.foodyappkotlin.screen.main.fragment.search.SearchFragment
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.layout_main_activity.*
@@ -37,12 +38,10 @@ class MainActivity : BaseActivity() {
             override fun onNavigationItemSelected(item: MenuItem): Boolean {
                 when (item.itemId) {
                     R.id.navigation_home -> {
-//                    toolbar.setTitle("Shop")
                         pushFragmentWithoutBackStack(R.id.frame_layout, ODauFragment.getInstance())
                         return true
                     }
                     R.id.navigation_restaurent -> {
-//                    toolbar.setTitle("My Gifts")
                         pushFragmentWithoutBackStack(
                             R.id.frame_layout,
                             QuanAnCuaToiFragment.newInstance()
@@ -50,10 +49,13 @@ class MainActivity : BaseActivity() {
                         return true
                     }
                     R.id.navigation_profile -> {
+                        pushFragmentWithoutBackStack(
+                            R.id.frame_layout,
+                            ProfileFragment.newInstance()
+                        )
                         return true
                     }
                     R.id.navigation_search -> {
-//                    toolbar.setTitle("Profile")
                         pushFragmentWithoutBackStack(
                             R.id.frame_layout,
                             SearchFragment.newInstance()

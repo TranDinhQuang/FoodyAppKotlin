@@ -7,6 +7,7 @@ import com.example.foodyappkotlin.di.scope.FragmentScoped
 import com.example.foodyappkotlin.screen.main.fragment.home.HomeFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.PostQuanAnFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
+import com.example.foodyappkotlin.screen.main.fragment.profile.ProfileFragment
 import com.example.foodyappkotlin.screen.main.fragment.search.SearchFragment
 import dagger.Binds
 import dagger.Module
@@ -34,4 +35,8 @@ abstract class MainModule {
     @FragmentScoped
     @ContributesAndroidInjector
     internal abstract fun postQuanAnFragment(): PostQuanAnFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector
+    internal abstract fun profileFragment(): ProfileFragment
 }

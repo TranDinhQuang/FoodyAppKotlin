@@ -9,13 +9,12 @@
         android:layout_width="match_parent"
         android:background="@color/white_transparent"
         android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/txt_khuvuc"
+        <Spinner
+            android:id="@+id/spinner_fillter_khuvuc"
             android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
             android:layout_height="wrap_content"
-            android:text="Hà Nội"
-            />
+            android:padding="@dimen/dp_10" />
 
         <Spinner
             android:id="@+id/spinner_fillter"

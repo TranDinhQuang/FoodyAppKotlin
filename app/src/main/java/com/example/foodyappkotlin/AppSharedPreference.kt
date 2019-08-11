@@ -26,8 +26,6 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
 
     private lateinit var user: UserResponse
 
-
-
     fun getUserName(): String? {
         if (userName == null) {
             userName = sharedPreferences.getString(KeyUserName, "")
@@ -67,7 +65,14 @@ class AppSharedPreference @Inject constructor(private val sharedPreferences: Sha
     }
 
     fun setLocation(location: Location) {
-        this.location = location
+        val defaultLocation = Location("")
+        defaultLocation.latitude = 21.026047
+        defaultLocation.longitude =105.81267
+        if(location != null){
+            this.location = location
+        }else{
+            this.location  = defaultLocation
+        }
     }
 
     fun getLocation() : Location{

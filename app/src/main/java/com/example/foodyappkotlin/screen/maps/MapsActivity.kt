@@ -4,26 +4,21 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Address
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.util.Log
+import android.view.View
+import android.widget.RelativeLayout
 import com.example.foodyappkotlin.common.BaseActivity
-import com.google.android.gms.common.GooglePlayServicesRepairableException
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
-import com.google.android.gms.location.places.AutocompleteFilter
 import com.google.android.gms.location.places.GeoDataClient
-import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.PlaceDetectionClient
 import com.google.android.gms.location.places.ui.PlaceAutocomplete
-import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment
 import com.google.android.gms.location.places.ui.PlacePicker
-import com.google.android.gms.location.places.ui.PlaceSelectionListener
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -32,7 +27,6 @@ import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_maps.*
-import java.lang.StringBuilder
 import java.util.*
 
 
@@ -83,7 +77,6 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-
         getLocationPermission()
         updateLocationUI()
         getDeviceLocation()
@@ -100,6 +93,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             // This will be displayed on taping the marker
             markerOptions.title("${it.latitude} - ${it.longitude}")
             address = getAddress(it.latitude, it.longitude)
+            txt_show_pick_location.text = address
             // Clears the previously touched position
             googleMap.clear()
 
@@ -112,7 +106,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
 
         btn_ok.setOnClickListener {
             val returnIntent = Intent()
-            returnIntent.putExtra("result",address)
+            returnIntent.putExtra("result", address)
             returnIntent.putExtra("latitude", mLastKnownLocation!!.latitude)
             returnIntent.putExtra("longitude", mLastKnownLocation!!.longitude)
             setResult(Activity.RESULT_OK, returnIntent)
@@ -184,8 +178,16 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
                                 ), MapsActivity.DEFAULT_ZOOM.toFloat()
                             )
                         )
-                    } else {
+                        val markerOptions = MarkerOptions()
 
+                        // Setting the position for the marker
+                        markerOptions.position(
+                            LatLng(
+                                mLastKnownLocation!!.latitude,
+                                mLastKnownLocation!!.longitude
+                            )
+                        )
+                    } else {
                         mMap.moveCamera(
                             CameraUpdateFactory
                                 .newLatLngZoom(
@@ -235,7 +237,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         }
     }
 
-    fun getAddress(latitude: Double, longitude: Double) : String{
+    fun getAddress(latitude: Double, longitude: Double): String {
         var addressString = ""
         val geo = Geocoder(applicationContext, Locale.getDefault())
         val addresses = geo.getFromLocation(latitude, longitude, 1)
