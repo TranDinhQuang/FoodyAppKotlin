@@ -4,7 +4,9 @@ import android.support.v7.app.AppCompatActivity
 import com.example.foodyappkotlin.common.BaseActivityModule
 import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.di.scope.FragmentScoped
+import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
 import com.example.foodyappkotlin.screen.main.fragment.home.HomeFragment
+import com.example.foodyappkotlin.screen.main.fragment.myself.ChangingQuanAnFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.PostQuanAnFragment
 import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
 import com.example.foodyappkotlin.screen.main.fragment.profile.ProfileFragment
@@ -26,6 +28,10 @@ abstract class MainModule {
 
     @FragmentScoped
     @ContributesAndroidInjector
+    abstract fun oDauFragment(): ODauFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector
     internal abstract fun quanAnCuaToiFragment(): QuanAnCuaToiFragment
 
     @FragmentScoped
@@ -35,6 +41,10 @@ abstract class MainModule {
     @FragmentScoped
     @ContributesAndroidInjector
     internal abstract fun postQuanAnFragment(): PostQuanAnFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector
+    internal abstract fun changingQuanAnFragment(): ChangingQuanAnFragment
 
     @FragmentScoped
     @ContributesAndroidInjector

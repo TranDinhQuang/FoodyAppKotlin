@@ -15,7 +15,6 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.RestaurentMyselfAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
-import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import com.example.foodyappkotlin.screen.main.MainActivity
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
@@ -81,7 +80,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         mPresenter = QuanAnCuaToiPresenter(repository)
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         recycler_restaurent_myself.layoutManager = linearLayoutManager
-        mAdapterRestaurent = RestaurentMyselfAdapter(activityContext, ArrayList(),this)
+        mAdapterRestaurent = RestaurentMyselfAdapter(activityContext, ArrayList(), this)
         recycler_restaurent_myself.adapter = mAdapterRestaurent
         btn_add.setOnClickListener {
             mActivity.pushFragment(R.id.frame_layout, PostQuanAnFragment.newInstance())
@@ -149,7 +148,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     override fun editQuanAn(quanan: QuanAn) {
-        mActivity.pushFragment(R.id.frame_layout, PostQuanAnFragment.newInstance())
+        mActivity.pushFragment(R.id.frame_layout, ChangingQuanAnFragment.newInstance(quanan))
     }
 
     override fun deleteQuanAn(quanan: QuanAn) {

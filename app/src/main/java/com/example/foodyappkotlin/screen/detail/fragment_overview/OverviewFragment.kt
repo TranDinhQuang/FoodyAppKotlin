@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.detail.fragment_overview
 
+import android.annotation.SuppressLint
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.DialogInterface
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
@@ -20,6 +22,7 @@ import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
+import com.example.foodyappkotlin.screen.adapter.OverviewListImageAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
@@ -48,6 +51,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     lateinit var dataRef: Query
     lateinit var childEventListener: ChildEventListener
     private lateinit var mQuanAn: QuanAn
+    private lateinit var mListImageAdapter: OverviewListImageAdapter
 
     private var diemQuanAn = 0.0
     val storage = FirebaseStorage.getInstance().reference
@@ -89,16 +93,8 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             findQuanAnData(item!!)
             findCommentData(ArrayList())
-            /* if (item.binhluans.isNotEmpty()) {
-                 recycler_user_comment.visibility = View.VISIBLE
-                 text_view_all_comment.text = "Xem thêm"
-                 val binhluans = ArrayList<BinhLuan>(item.binhluans.values)
-                 findCommentData(binhluans)
-             } else {
-                 recycler_user_comment.visibility = View.GONE
-                 text_view_all_comment.text = "Hãy là người đầu tiên đánh giá quán ăn"
-             }*/
-//            findThucDonData(item.thucdons)
+            findListImageRecyclerView(item.hinhanhs)
+
         })
 
         ln_post_comment.setOnClickListener {
@@ -108,16 +104,39 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         text_view_all_comment.setOnClickListener {
             mActivity.pushFragment(R.id.layout_food_detail, FragmentComments.newInstance())
         }
-/*        swiperefresh.setOnRefreshListener {
-            commentAdapter.clearAllData()
-            reloadBinhLuanQuanAn()
-        }*/
+        text_menu_viewmore.setOnClickListener {
+            startActivity(MenuActivity.newInstance(context!!, mQuanAn.thucdon))
+        }
     }
 
-    fun reloadBinhLuanQuanAn() {
-        getAllCommentFollowQuanAn()
+    fun findListImageRecyclerView(listHinhAnhQuanAn: HashMap<String, String>) {
+        val hinhAnhsQuanAn = ArrayList<String>(listHinhAnhQuanAn.values)
+        val layoutManager = LinearLayoutManager(activityContext,LinearLayoutManager.HORIZONTAL,false)
+       recycler_list_image.layoutManager = layoutManager
+        mListImageAdapter = OverviewListImageAdapter(
+            activityContext,
+            hinhAnhsQuanAn,
+            object : OverviewListImageAdapter.OverviewListImageOnClickListener {
+                override fun imageOnlickListerner(url: String) {
+                    val storageRef = storage.child("monan").child(url)
+                    glideLoadImage(image_eating, storageRef)
+                }
+
+            })
+        recycler_list_image.adapter = mListImageAdapter
     }
 
+    private fun glideLoadImage(img: ImageView, url: StorageReference) {
+        GlideApp.with(activityContext)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .fitCenter()
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
+    }
+
+    @SuppressLint("SetTextI18n")
     fun findQuanAnData(quanAn: QuanAn) {
         mQuanAn = quanAn
 
@@ -138,15 +157,14 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         text_point.text = "${(round(diemQuanAn))}"
 
         text_order.text = "giao hàng: ${quanAn.giaohang}"
-        if(quanAn.giaohang){
+        if (quanAn.giaohang) {
             button_order.visibility = View.VISIBLE
             button_order.setOnClickListener {
-                startActivity(MenuActivity.newInstance(context!!))
+                startActivity(MenuActivity.newInstance(context!!, quanAn.thucdon))
             }
-        }else{
+        } else {
             button_order.visibility = View.GONE
         }
-
 
         if ((quanAn.hinhanhs.isNotEmpty())) {
             var storageRef: StorageReference
@@ -175,12 +193,10 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         text_name_eating.text = quanAn.tenquanan
         text_location.text = quanAn.diachi
 
-//        text_distance
         text_status.text =
             "Mở cửa:${DateUtils.convertMinuteToHours(quanAn.giomocua)} - Đóng cửa:${DateUtils.convertMinuteToHours(
                 quanAn.giodongcua
             )}"
-//        recycler_menu.isNestedScrollingEnabled = false
     }
 
     fun getAllCommentFollowQuanAn() {
@@ -218,25 +234,12 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         dataRef.addChildEventListener(childEventListener)
     }
 
-
-/*
-    fun findThucDonData(thucDons: MutableList<ThucDonResponse>) {
-        recycler_menu.visibility = View.VISIBLE
-        text_menu_viewmore.text = "Xem thêm"
-        recycler_menu.visibility = View.GONE
-        text_menu_viewmore.text = "Quán ăn chưa có thực đơn"
-
-        if (thucDons.size > 0) {
-            monAnAdapter = MonAnAdapter(activity!!, thucDons, MonAnAdapter.TYPE_VIEW, this)
-            recycler_menu.adapter = monAnAdapter
-        }
-    }
-*/
-
     fun findCommentData(binhluans: ArrayList<BinhLuan>) {
         commentAdapter =
-            CommentAdapter(activity!!, binhluans,
-                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this)
+            CommentAdapter(
+                activity!!, binhluans,
+                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this
+            )
         recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
         recycler_user_comment.adapter = commentAdapter
         recycler_user_comment.isNestedScrollingEnabled = false
@@ -286,19 +289,20 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     }
 
     override fun onClickEditComment(binhLuan: BinhLuan) {
-//        mActivity.pushFragment(R.id.frame_layout,PostCommentFragment.newInstance())
     }
 
     override fun onClickDeleteComment(binhLuan: BinhLuan) {
         showAlertListerner("Xác nhận xóa Comment!", "Bạn có muốn xóa comment này?",
             DialogInterface.OnClickListener { _, _ ->
                 FirebaseDatabase.getInstance().reference.child("quanans")
-                    .child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id).child("binhluans").child(binhLuan.id).removeValue()
+                    .child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id).child("binhluans")
+                    .child(binhLuan.id).removeValue()
             })
     }
 
     override fun onStop() {
         super.onStop()
         cleanupListener()
+        diemQuanAn = 0.0
     }
 }

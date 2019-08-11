@@ -8,9 +8,9 @@ import dagger.android.ContributesAndroidInjector
 
 @Module
 abstract class FragmentBindingModule {
-    @FragmentScoped
+/*    @FragmentScoped
     @ContributesAndroidInjector
-    internal abstract fun oDauFragment(): ODauFragment
+    internal abstract fun oDauFragment(): ODauFragment*/
 
 /*    @FragmentScoped
     @ContributesAndroidInjector

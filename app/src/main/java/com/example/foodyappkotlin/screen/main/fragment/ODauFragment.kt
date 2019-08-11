@@ -17,8 +17,10 @@ import com.example.foodyappkotlin.data.request.QuanAnRequest
 import com.example.foodyappkotlin.data.source.remote.FoodyRemoteDataSource
 import com.example.foodyappkotlin.screen.adapter.OdauAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
+import com.example.foodyappkotlin.screen.main.MainActivity
 import com.example.foodyappkotlin.screen.menu.MenuActivity
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_odau.*
 import kotlinx.android.synthetic.main.fragment_odau.view.*
 import javax.inject.Inject
@@ -43,6 +45,9 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     @Inject
     lateinit var foodyRepository: FoodyRepository
 
+    @Inject
+    lateinit var mActivity: MainActivity
+
     companion object {
         fun getInstance(): ODauFragment {
             return ODauFragment()
@@ -59,16 +64,17 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         return mView
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initView()
     }
 
     private fun initView() {
+    /*    actionbarBack.visibility = View.VISIBLE
+        actionbarBack.setOnClickListener{
+            mActivity.onBackPressed()
+        }*/
+
         quanAnRequest = QuanAnRequest()
         quanAnRequest.idKhuVuc = "KV1"
         quanAnRequest.page = 1
@@ -97,6 +103,9 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         lOdauAdapter = OdauAdapter(ArrayList(), appSharedPreference.getLocation(), this)
         mView.recycler_quan_an.adapter = lOdauAdapter
         setOnItemSelected()
+        swipe_refresh.setOnRefreshListener {
+            mODauPresenter.getQuanAns(quanAnRequest)
+        }
     }
 
     fun setOnItemSelected(){
@@ -155,12 +164,14 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     }
 
     override fun QuanAnsFailure(msg: String) {
+        swipe_refresh.isRefreshing = false
         isLoading = false
         progressBar.visibility = View.GONE
     }
 
     override fun QuanAnsSuccess(quanans: MutableList<QuanAn>) {
         isLoading = false
+        swipe_refresh.isRefreshing = false
         progressBar.visibility = View.GONE
         if (quanAnRequest.typeCall == FoodyRemoteDataSource.SORT_NEAR_ME) {
             val quanAnFilter = ArrayList<QuanAn>()
@@ -182,8 +193,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         startActivity(intentDetailEating)
     }
 
-    override fun startActivityMenu() {
-        startActivity(MenuActivity.newInstance(context!!))
+    override fun startActivityMenu(idThucDon : String) {
+        startActivity(MenuActivity.newInstance(context!!,idThucDon))
     }
 
 
@@ -199,4 +210,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         return distance
     }
 
+    override fun onStop() {
+        super.onStop()
+        mODauPresenter.removeListernerQuanAn()
+    }
 }

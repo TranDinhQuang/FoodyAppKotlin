@@ -12,5 +12,7 @@ interface ODauInterface {
 
     interface Presenter{
         fun getQuanAns(quanAnRequest: QuanAnRequest)
+
+        fun removeListernerQuanAn()
     }
 }

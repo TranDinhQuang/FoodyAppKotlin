@@ -72,6 +72,6 @@ class DetailEatingActivity : BaseActivity(),
     @SuppressLint("ShowToast")
     override fun thucDonsFailure(message: String) {
         //show
-        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+//        Toast.makeText(this, message, Toast.LENGTH_SHORT)
     }
 }

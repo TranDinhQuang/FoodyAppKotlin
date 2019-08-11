@@ -13,6 +13,7 @@ import javax.inject.Singleton
 class FoodyRepository @Inject constructor(
     @Remote private val remoteRepo: FoodyDataSource.Remote
 ) : FoodyDataSource.Remote {
+
     override fun getQuanAnsFollowNguoiDang(
         idKhuVuc: String,
         callback: FoodyDataSource.DataCallBack<QuanAn>
@@ -86,8 +87,8 @@ class FoodyRepository @Inject constructor(
     override fun getHinhAnhBinhLuan(callBack: FoodyDataSource.DataCallBack<List<String>>) {
     }
 
-    override fun getThucDons(maQuanAn: String, callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>) {
-        remoteRepo.getThucDons(maQuanAn, callback)
+    override fun getThucDons(idThucDon: String, callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>) {
+        remoteRepo.getThucDons(idThucDon, callback)
     }
 
     override fun getQuanAns(

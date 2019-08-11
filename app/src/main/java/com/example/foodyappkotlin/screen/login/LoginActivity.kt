@@ -143,4 +143,9 @@ class LoginActivity : BaseActivity(), View.OnClickListener, LoginInterface.View 
     override fun serverFailure(msg: String) {
         progressBar.visibility = View.GONE
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        signOut()
+    }
 }

@@ -204,10 +204,10 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
     //Cần sửa lại
     override fun getThucDons(
-        maThucDon: String,
+        idThucDon: String,
         callback: FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>>
     ) {
-        val thucDonRef = nodeRoot.child("thucdons").child(maThucDon)
+        val thucDonRef = nodeRoot.child("thucdons").child(idThucDon)
         var thucdons: MutableList<ThucDonResponse> = ArrayList()
 
         val postListener = object : ValueEventListener {
