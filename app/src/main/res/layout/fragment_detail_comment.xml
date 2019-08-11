@@ -68,7 +68,7 @@
                 android:padding="@dimen/dp_5">
 
                 <TextView
-                    android:id="@+id/txt_num_like"
+                    android:id="@+id/txt_num_like_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_10"
@@ -78,7 +78,7 @@
                     android:id="@+id/divider"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/txt_num_like"
+                    android:layout_toRightOf="@id/txt_num_like_comment"
                     android:paddingLeft="@dimen/dp_10"
                     android:paddingRight="@dimen/dp_10"
                     android:text="-" />
