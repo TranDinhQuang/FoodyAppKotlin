@@ -98,4 +98,6 @@
     <string name="txt_delete">Xóa</string>
     <string name="hint_input_comment">Nhập bình luận của bạn</string>
     <string name="txt_empty">Rỗng</string>
+    <string name="txt_pick_maps">Click để chọn 1 điểm trên Maps</string>
+    <string name="txt_logout">Đăng xuất</string>
 </resources>

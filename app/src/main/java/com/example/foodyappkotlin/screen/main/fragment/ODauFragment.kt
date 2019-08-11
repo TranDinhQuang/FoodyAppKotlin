@@ -1,12 +1,9 @@
 package com.example.foodyappkotlin.screen.main.fragment
 
-import android.content.Context
 import android.location.Location
 import android.os.Bundle
-import android.support.design.widget.BottomSheetDialog
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,6 +33,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     private lateinit var quanAnRequest: QuanAnRequest
 
     var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi", "Yêu thích")
+    var list_of_items_khuvuc = arrayOf("Hà Nội", "TP.Hồ Chí Minh")
 
     private var isLoading: Boolean = false
 
@@ -81,6 +79,14 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_fillter!!.adapter = adapterSpinner
 
+        spinner_fillter_khuvuc!!.onItemSelectedListener = this
+        val adapterSpinnerKhuVuc =
+            ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items_khuvuc)
+        adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner_fillter_khuvuc!!.adapter = adapterSpinnerKhuVuc
+        spinner_fillter_khuvuc.setSelection(0,true)
+        spinner_fillter_khuvuc.isSelected = false
+
         progressBar.visibility = View.VISIBLE
 
         mQuanans = ArrayList()
@@ -90,38 +96,58 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         mView.recycler_quan_an.layoutManager = linearLayoutManager
         lOdauAdapter = OdauAdapter(ArrayList(), appSharedPreference.getLocation(), this)
         mView.recycler_quan_an.adapter = lOdauAdapter
+        setOnItemSelected()
+    }
 
-        txt_khuvuc.setOnClickListener {
+    fun setOnItemSelected(){
+        spinner_fillter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when (p2) {
+                    0 -> {
+                        quanAnRequest.page = 1
+                        quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_DESC
+                        mODauPresenter.getQuanAns(quanAnRequest)
+                    }
+                    1 -> {
+                        quanAnRequest.page = 1
+                        quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_ASC
+                        mODauPresenter.getQuanAns(quanAnRequest)
+                    }
+                    2 -> {
+                        quanAnRequest.page = 1
+                        quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_NEAR_ME
+                        mODauPresenter.getQuanAns(quanAnRequest)
+                    }
+                }
+            }
+        }
+
+        spinner_fillter_khuvuc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+
+            }
+
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                when (p2) {
+                    0 -> {
+                        quanAnRequest.idKhuVuc = "KV1"
+                        mODauPresenter.getQuanAns(quanAnRequest)
+                    }
+                    1 -> {
+                        quanAnRequest.idKhuVuc = "KV2"
+                        mODauPresenter.getQuanAns(quanAnRequest)
+                    }
+                }
+            }
+
         }
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        if (p1 == spinner_fillter) {
-            when (p2) {
-                0 -> {
-                    quanAnRequest.page = 1
-                    quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_ASC
-                    mODauPresenter.getQuanAns(quanAnRequest)
-                }
-                1 -> {
-                    quanAnRequest.page = 1
-                    quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_BY_DATE_DESC
-                    mODauPresenter.getQuanAns(quanAnRequest)
-                }
-                2 -> {
-                    quanAnRequest.page = 1
-                    quanAnRequest.typeCall = FoodyRemoteDataSource.SORT_NEAR_ME
-                    mODauPresenter.getQuanAns(quanAnRequest)
-                }
-            }
-        } else {
-            when (p2) {
-                0 -> {
-
-                }
-            }
-        }
-
     }
 
     override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -172,4 +198,5 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         val distance = Math.round(loc1.distanceTo(loc2) / 1000 * 100) / 100.0
         return distance
     }
+
 }
