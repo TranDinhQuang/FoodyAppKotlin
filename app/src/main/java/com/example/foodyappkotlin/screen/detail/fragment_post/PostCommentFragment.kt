@@ -3,6 +3,7 @@ package com.example.foodyappkotlin.screen.detail.fragment_post
 import android.Manifest
 import android.app.Activity.RESULT_OK
 import android.arch.lifecycle.ViewModelProviders
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
@@ -147,11 +148,12 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
             showAlertMessage("Thiếu thông tin", "Bạn cần chọn và nhập đầy đủ các thông tin")
         } else {
             var binhLuan = BinhLuan()
-            binhLuan.mauser = appSharedPreference.getToken()!!
+            binhLuan.id_user = appSharedPreference.getToken()!!
+            binhLuan.ten_user = appSharedPreference.getUser().tenhienthi
+            binhLuan.hinhanh_user = appSharedPreference.getUser().hinhanh
+            binhLuan.user = appSharedPreference.getUser().taikhoan
             binhLuan.tieude = txtTitleComment.text.toString()
             binhLuan.noidung = txtContentComment.text.toString()
-            binhLuan.num_like = 0
-            binhLuan.num_share = 0
             binhLuan.chamdiem = ratingBar.rating
             if (!listImagePost.isNullOrEmpty()) {
                 var i = 1
@@ -221,53 +223,6 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
         }
         return true
     }
-/*
-    private fun showPermissionDialog() {
-        Dexter.withActivity(mActivity).withPermissions().withListener(
-            object : MultiplePermissionsListener {
-                override fun onPermissionsChecked(report: MultiplePermissionsReport?) {
-                    if (report != null) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                        }
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog()
-                        }
-                    }
-                }
-
-                override fun onPermissionRationaleShouldBeShown(
-                    permissions: MutableList<PermissionRequest>?,
-                    token: PermissionToken?
-                ) {
-                    token?.continuePermissionRequest()
-                }
-            }
-        ).withErrorListener { showSettingsDialog() }
-            .onSameThread()
-            .check()
-    }
-
-    fun showSettingsDialog() {
-        val builder = AlertDialog.Builder(activityContext)
-        builder.setTitle(getString(R.string.message_need_permission))
-        builder.setMessage(getString(R.string.message_grant_permission))
-        builder.setPositiveButton(getString(R.string.label_setting)) { dialog, which ->
-            dialog.cancel()
-            openSettings()
-        }
-        builder.setNegativeButton(getString(R.string.cancel)) { dialog, which -> dialog.cancel() }
-        builder.show()
-    }*/
-
-    private fun openSettings() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-        val uri = Uri.fromParts("package", mActivity.packageName, null)
-        intent.data = uri
-        startActivityForResult(intent, 101)
-    }
 
     private fun startCamera(file: File) {
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
@@ -290,18 +245,25 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
         pickPhoto.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
         startActivityForResult(pickPhoto, REQUEST_GALLERY_PHOTO)
     }
-    //start camera
 
     override fun postCommentFailure() {
         txtPostComment.isEnabled = true
         progressBar.visibility = View.GONE
-        Toast.makeText(activityContext, "that bai", Toast.LENGTH_SHORT)
+        showAlertMessage(
+            "Có lỗi",
+            "Xảy ra lỗi khi gửi dữ liệu tới Server, vui lòng kiểm tra kết nối và thử lại"
+        )
     }
 
     override fun postCommentSuccess() {
-        progressBar.visibility = View.GONE
-        mActivity.popFragment()
-        Toast.makeText(activityContext, "Thanh cong", Toast.LENGTH_SHORT)
+        showAlertListernerOneclick(
+            "Thành công",
+            "Bình luận của bạn đã được gửi đến cho chúng tôi,cảm ơn bản đã đóng góp",
+            "Xem bình luận",
+            DialogInterface.OnClickListener { p0, p1 ->
+                progressBar.visibility = View.GONE
+                mActivity.popFragment()
+            })
     }
 
 }

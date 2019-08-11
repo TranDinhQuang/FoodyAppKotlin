@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.detail.fragment_detail_comment
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.util.Log
@@ -14,6 +15,7 @@ import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.models.ThaoLuan
 import com.example.foodyappkotlin.data.repository.FoodyRepository
+import com.example.foodyappkotlin.data.response.ThongSoResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.ThaoLuanAdapter
 import com.google.firebase.database.*
@@ -25,28 +27,22 @@ import javax.inject.Inject
 
 class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.OnClickListener {
 
-
-    var isLiked = false
-
-    lateinit var binhLuan: BinhLuan
-
-    private lateinit var mQuanAn: QuanAn
-
-    lateinit var mPresenter: DetailCommentPresenter
-
-    lateinit var thaoLuanAdapter: ThaoLuanAdapter
-
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
-
+    var isLiked = false
+    lateinit var binhLuan: BinhLuan
+    lateinit var mQuanAn: QuanAn
+    lateinit var mPresenter: DetailCommentPresenter
+    lateinit var thaoLuanAdapter: ThaoLuanAdapter
     lateinit var storageRef: StorageReference
+    lateinit var refThongSo: Query
+    lateinit var listernerThongSo: ChildEventListener
+    var thongSo = ThongSoResponse()
 
     @Inject
     lateinit var repository: FoodyRepository
-
     @Inject
     lateinit var appSharedPreference: AppSharedPreference
-
-    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
 
     companion object {
         fun newInstance(quanAn: QuanAn, binhLuan: BinhLuan): Fragment {
@@ -75,31 +71,41 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             R.id.layout_like -> {
                 isLiked = !isLiked
                 if (isLiked) {
-                    appSharedPreference.getUser().liked.put(binhLuan.id, binhLuan.id)
+                    appSharedPreference.getUser().liked[binhLuan.id] = binhLuan.id
                     img_like.setImageResource(R.drawable.ic_like_red)
-                    binhLuan.num_like += 1
-                    /* nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
-                         .child("binhluans").child(binhLuan.id).child("num_comment")
-                         .setValue(binhLuan.num_like)*/
+                    thongSo.num_like += 1
+                    nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
+                        .child("num_like").setValue(thongSo.num_like).addOnCompleteListener {
+                            Log.d("kiemtra", "hoafn thanh")
+                        }
                 } else {
                     appSharedPreference.getUser().liked.values.remove(binhLuan.id)
                     img_like.setImageResource(R.drawable.ic_like)
-                    binhLuan.num_like -= 1
-                    /*    nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
-                            .child("binhluans").child(binhLuan.id).child("num_comment")
-                            .setValue(binhLuan.num_like)*/
+                    if (thongSo.num_like > 0) {
+                        thongSo.num_like -= 1
+                    }
+                    nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
+                        .child("num_like")
+                        .setValue(thongSo.num_like)
                 }
                 nodeRoot.child("thanhviens").child(appSharedPreference.getToken()!!).child("liked")
                     .setValue(appSharedPreference.getUser().liked)
-                txt_num_like.text = "${binhLuan.num_like} like"
             }
 
             R.id.layout_comment -> {
                 layout_post_comment.visibility = View.VISIBLE
+                layout_post_comment.requestFocus()
 
             }
             R.id.layout_share -> {
-
+                val sendIntent = Intent()
+                sendIntent.action = Intent.ACTION_SEND
+                sendIntent.putExtra(
+                    Intent.EXTRA_TEXT,
+                    "${binhLuan.ten_user} đã bình luận về ${mQuanAn.tenquanan} - ${mQuanAn.diachi} với nội dung: ${binhLuan.noidung}"
+                )
+                sendIntent.type = "text/plain"
+                startActivity(sendIntent)
             }
             R.id.btn_post -> {
                 if (edt_comment.text.trim().toString() != "") {
@@ -108,37 +114,53 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                     thaoLuan.taikhoan = appSharedPreference.getUser().taikhoan
                     thaoLuan.hinhanh = appSharedPreference.getUser().hinhanh
                     thaoLuan.noidung = edt_comment.text.trim().toString()
-                    nodeRoot.child("binhluans").child(mQuanAn.id).child(binhLuan.id).push()
-                        .setValue(thaoLuan)
+                    val refThaoLuan =
+                        nodeRoot.child("binhluans").child(mQuanAn.id).child(binhLuan.id).push()
+                    thaoLuan.id_thaoluan = refThaoLuan.key!!
+                    refThaoLuan.setValue(thaoLuan)
                         .addOnCompleteListener {
-                            binhLuan.num_comment += 1
-                            /*     nodeRoot.child("quanans").child("KV${mQuanAn.id_khuvuc}")
-                                     .child(mQuanAn.id)
-                                     .child("binhluans").child(binhLuan.id).child("num_comment")
-                                     .setValue(binhLuan.num_comment)*/
-                            txt_num_comment.text = "${binhLuan.num_share} share"
                             edt_comment.setText("")
+                            hideKeyboard()
                             layout_post_comment.visibility = View.GONE
+                            thongSo.num_comment += 1
+                            nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
+                                .child("num_comment")
+                                .setValue(thongSo.num_comment)
                         }
                 } else {
                     showAlertMessage("Có lỗi", "Không được để trống comment của bạn!")
                 }
             }
+            R.id.txt_delete_comment -> {
+                if (thongSo.num_comment > 0) {
+                    thongSo.num_comment -= 1
+                }
+                nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
+                    .child("num_comment")
+                    .setValue(thongSo.num_comment)
+            }
         }
     }
 
     private fun initData() {
+        getThongSoBinhLuan()
         mPresenter = DetailCommentPresenter(repository)
-        thaoLuanAdapter = ThaoLuanAdapter(activityContext, ArrayList())
+        thaoLuanAdapter = ThaoLuanAdapter(
+            activityContext,
+            ArrayList(),
+            appSharedPreference.getUser().taikhoan,
+            mQuanAn.id,
+            binhLuan.id,
+            nodeRoot
+        )
         recycler_thao_luan.adapter = thaoLuanAdapter
-//        mPresenter.getThaoLuan(mQuanAn.id, binhLuan.id, this)
         getThaoLuanIntoComment(mQuanAn.id, binhLuan.id)
         text_title.text = binhLuan.tieude
         text_content_comment.text = binhLuan.noidung
         text_title.text = binhLuan.tieude
-        txt_num_like.text = "${binhLuan.num_like} like"
-        txt_num_comment.text = "${binhLuan.num_comment} comment"
-        txt_num_share.text = "${binhLuan.num_share} share"
+        glideLoadImage(image_avatar_user, binhLuan.hinhanh_user)
+        text_name_user.text = binhLuan.ten_user
+
         if (binhLuan.hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(binhLuan.hinhanh.values)
             loadImage(imageUrl)
@@ -149,11 +171,56 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             img_like.setImageResource(R.drawable.ic_like_red)
             isLiked = true
         }
-        if (binhLuan.mauser == appSharedPreference.getToken())
-            layout_like.setOnClickListener(this)
+
+        if (binhLuan.id_user == appSharedPreference.getToken()) {
+            layout_function.visibility = View.VISIBLE
+        } else {
+            layout_function.visibility = View.GONE
+        }
+
+        layout_like.setOnClickListener(this)
         layout_comment.setOnClickListener(this)
         layout_share.setOnClickListener(this)
         btn_post.setOnClickListener(this)
+        txt_delete_comment.setOnClickListener(this)
+    }
+
+    fun getThongSoBinhLuan() {
+        refThongSo =
+            nodeRoot.child("thongsobinhluans").child(mQuanAn.id).orderByKey().equalTo(binhLuan.id)
+        listernerThongSo = object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                txt_num_like.text = "${thongSo?.num_like} like"
+                txt_num_comment.text = "${thongSo?.num_comment} comment"
+                txt_num_share.text = "${thongSo?.num_share} share"
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                val thongSo = p0.getValue(ThongSoResponse::class.java)
+
+                if (thongSo != null) {
+                    txt_num_like.text = "${thongSo?.num_like} like"
+                    txt_num_comment.text = "${thongSo?.num_comment} comment"
+                    txt_num_share.text = "${thongSo?.num_share} share"
+                } else {
+                    txt_num_like.text = "0 like"
+                    txt_num_comment.text = "0 comment"
+                    txt_num_share.text = "0 share"
+                }
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+            }
+
+        }
+        refThongSo.addChildEventListener(listernerThongSo)
     }
 
     fun getThaoLuanIntoComment(
@@ -163,14 +230,12 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
         val refThaoLuan = nodeRoot.child("binhluans").child(idQuanan).child(idBinhLuan)
         refThaoLuan.addChildEventListener(object : ChildEventListener {
             override fun onCancelled(p0: DatabaseError) {
-
             }
 
             override fun onChildMoved(p0: DataSnapshot, p1: String?) {
             }
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
-
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
@@ -183,6 +248,8 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
+                val thaoLuan = p0.getValue(ThaoLuan::class.java)
+                thaoLuanAdapter.removeThaoLuan(thaoLuan!!)
             }
         })
     }
@@ -255,8 +322,17 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             .into(img)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    private fun glideLoadImage(img: ImageView, url: String) {
+        GlideApp.with(activityContext)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
 
     }
 }

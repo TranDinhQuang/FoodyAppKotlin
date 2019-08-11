@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    android:id="@+id/layout_item_search"
     android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/img_quan_an"
         android:padding="@dimen/dp_5"
+        android:scaleType="fitXY"
         android:layout_width="@dimen/dp_60"
         android:layout_height="@dimen/dp_60"
         android:src="@drawable/placeholder" />
@@ -14,6 +16,7 @@
         android:id="@+id/txt_ten_quan_an"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:maxLines="1"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/img_quan_an"
         android:padding="@dimen/dp_5"
@@ -23,7 +26,7 @@
         android:id="@+id/txt_dia_chi"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_5"
+        android:maxLines="1"
         android:layout_below="@id/txt_ten_quan_an"
         android:layout_alignBottom="@id/img_quan_an"
         android:textSize="@dimen/sp_12"

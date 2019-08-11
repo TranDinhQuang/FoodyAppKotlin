@@ -1,10 +1,12 @@
 package com.example.foodyappkotlin.screen.adapter
 
+import android.content.Context
 import android.location.Location
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
@@ -92,9 +94,12 @@ class OdauAdapter(
             v.group2.visibility = View.VISIBLE
             if (quanan.binhluans.size >= 2) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
+                glideLoadImage(v.context,v.image_avatar_comment,listBinhLuan[0].hinhanh_user)
                 v.text_cmt_two.text = listBinhLuan[1].noidung
+                glideLoadImage(v.context,v.image_avatar_comment_second,listBinhLuan[1].hinhanh_user)
             } else if (quanan.binhluans.size == 1) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
+                glideLoadImage(v.context,v.image_avatar_comment,listBinhLuan[0].hinhanh_user)
                 v.group2.visibility = View.GONE
 
             }
@@ -139,13 +144,22 @@ class OdauAdapter(
         }
 
 
-
         GlideApp.with(v.context)
             .load(storageRef)
             .error(R.drawable.placeholder)
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(v.image_foody)
+    }
+
+    private fun glideLoadImage(context : Context,img: ImageView, url: String) {
+        GlideApp.with(context)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .fitCenter()
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
     }
 
 

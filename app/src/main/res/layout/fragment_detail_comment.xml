@@ -6,6 +6,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:padding="@dimen/dp_6"
         android:layout_height="match_parent">
 
         <LinearLayout
@@ -28,6 +29,7 @@
                     android:id="@+id/text_name_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/dp_5"
                     android:layout_gravity="center"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -39,12 +41,14 @@
                 android:text="title"
                 android:textAllCaps="true"
                 android:textSize="@dimen/sp_18"
+                android:layout_marginTop="@dimen/dp_10"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text_content_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:padding="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_5"
                 android:text="content" />
 
@@ -58,6 +62,7 @@
                 android:background="#ECECEC" />
 
             <RelativeLayout
+                android:id="@+id/layout_thongso"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/dp_5">
@@ -67,7 +72,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="@dimen/dp_10"
-                    android:text="30 like" />
+                    android:text="0 like" />
 
                 <TextView
                     android:id="@+id/divider"
@@ -83,7 +88,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toRightOf="@id/divider"
-                    android:text="20 comment" />
+                    android:text="0 comment" />
 
                 <TextView
                     android:id="@+id/txt_num_share"
@@ -91,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:paddingRight="@dimen/dp_10"
-                    android:text="20 share" />
+                    android:text="0 share" />
             </RelativeLayout>
 
             <LinearLayout
@@ -132,7 +137,6 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center">
-
 
                     <ImageView
                         android:layout_width="24dp"
@@ -211,29 +215,32 @@
                 android:paddingBottom="@dimen/dp_20"
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
-            <RelativeLayout
-                android:id="@+id/layout_post_comment"
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/layout_post_comment"
+            android:layout_width="match_parent"
+            android:background="@color/gray3"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/layout_all"
+            android:layout_alignParentBottom="true">
+
+            <EditText
+                android:id="@+id/edt_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/layout_all"
-                android:layout_alignParentBottom="true">
+                android:layout_toLeftOf="@id/btn_post"
+                android:hint="@string/hint_input_comment"
+                android:backgroundTint="@color/red"
+                android:imeOptions="actionDone"
+                android:textColor="@color/pink2" />
 
-                <EditText
-                    android:id="@+id/edt_comment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@id/btn_post"
-                    android:backgroundTint="@color/red"
-                    android:imeOptions="actionDone"
-                    android:textColor="@color/gray" />
-
-                <Button
-                    android:id="@+id/btn_post"
-                    android:layout_width="60dp"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:text="Post" />
-            </RelativeLayout>
-        </LinearLayout>
+            <Button
+                android:id="@+id/btn_post"
+                android:layout_width="60dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:text="Post" />
+        </RelativeLayout>
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

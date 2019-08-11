@@ -77,7 +77,7 @@ public class DateUtils {
         return DateUtils.getStringFromLong(calendar.getTimeInMillis(), "dd-MM-yyyy");
     }
 
-    public static long getCurrentTime() {
+    public static Long getCurrentTime() {
         return new Date().getTime();
     }
 

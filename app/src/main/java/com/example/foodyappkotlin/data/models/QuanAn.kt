@@ -13,6 +13,7 @@ data class QuanAn(
     var giodongcua: Long = 0,
     var giomocua: Long = 0,
     var ngaytao : Long = 0,
+    var nguoidang: String = "",
 //    var luotthich: Long = 0,
 //    var num_comments: Long = 0,
 //    var num_images: Long = 0,

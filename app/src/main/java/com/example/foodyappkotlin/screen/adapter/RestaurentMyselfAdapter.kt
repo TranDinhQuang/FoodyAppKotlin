@@ -9,11 +9,12 @@ import android.widget.ImageView
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.di.module.GlideApp
+import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_my_restaurent.view.*
 
-class RestaurentMyselfAdapter(val context: Context, var quanAns: MutableList<QuanAn>) :
+class RestaurentMyselfAdapter(val context: Context, var quanAns: MutableList<QuanAn>,val view : OnClickItemListerner) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
@@ -31,6 +32,9 @@ class RestaurentMyselfAdapter(val context: Context, var quanAns: MutableList<Qua
         var hinhAnhQuanAn = ArrayList<String>(quanAns[p1].hinhanhs.values)
         storageRef = storage.child("monan").child(hinhAnhQuanAn[0])
         glideLoadImage(p0.itemView.img_quan_an,storageRef)
+        p0.itemView.layout_quanan.setOnClickListener {
+            view.openOverViewFragment(quanAns[p1])
+        }
     }
 
     private fun glideLoadImage(img: ImageView, url: StorageReference) {
@@ -48,4 +52,12 @@ class RestaurentMyselfAdapter(val context: Context, var quanAns: MutableList<Qua
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+
+    interface OnClickItemListerner{
+        fun openOverViewFragment(quanan: QuanAn)
+
+        fun editQuanAn(quanan: QuanAn)
+
+        fun deleteQuanAn(quanan: QuanAn)
+    }
 }

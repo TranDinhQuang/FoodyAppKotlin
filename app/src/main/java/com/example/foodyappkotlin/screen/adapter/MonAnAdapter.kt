@@ -58,6 +58,7 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse
         GlideApp.with(context)
             .load(url)
             .error(R.drawable.placeholder)
+            .fitCenter()
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(img)

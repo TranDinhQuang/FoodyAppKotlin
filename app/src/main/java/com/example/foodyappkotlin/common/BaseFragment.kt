@@ -10,6 +10,8 @@ import android.provider.Settings
 import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import com.example.foodyappkotlin.R
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -52,12 +54,15 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
         return childFragmentInjector
     }
 
-    fun showKeyBoard() {
 
+    fun Context.hideKeyboard(view: View) {
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    fun hideKeyBoard() {
-
+    fun Fragment.hideKeyboard() {
+        view?.let { activity?.hideKeyboard(it) }
     }
 
     fun showAlertListerner(
@@ -69,6 +74,18 @@ abstract class BaseFragment : Fragment(), HasSupportFragmentInjector {
             .setTitle(title)
             .setMessage(message)
             .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
+    }
+
+    fun showAlertListernerOneclick(
+        title: String,
+        message: String,
+        txtButton: String,
+        listerner: DialogInterface.OnClickListener
+    ) {
+        AlertDialog.Builder(activityContext)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(txtButton, listerner).show()
     }
 
 

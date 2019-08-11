@@ -15,6 +15,7 @@ import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.source.remote.FoodyRemoteDataSource
 import com.example.foodyappkotlin.screen.adapter.SearchAdapter
+import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_search_ui.*
 import javax.inject.Inject
@@ -81,4 +82,8 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
     override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
     }
 
+    override fun onClickItemListerner(quanAn: QuanAn) {
+        val intentDetailEating = DetailEatingActivity.newInstance(context!!, quanAn)
+        startActivity(intentDetailEating)
+    }
 }

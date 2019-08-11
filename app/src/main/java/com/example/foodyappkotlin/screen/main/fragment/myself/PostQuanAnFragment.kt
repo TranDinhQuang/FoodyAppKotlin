@@ -33,6 +33,7 @@ import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.PicturePostAdapter
 import com.example.foodyappkotlin.screen.main.MainActivity
 import com.example.foodyappkotlin.screen.maps.MapsActivity
+import com.example.foodyappkotlin.util.DateUtils
 import com.example.foodyappkotlin.view.ItemOffsetDecoration
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
@@ -90,6 +91,12 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         fun newInstance(): Fragment {
             val postQuanAnFragment = PostQuanAnFragment()
             return postQuanAnFragment
+        }
+
+        fun newInstance(quanAn: QuanAn): Fragment {
+            val postQuanAnFragmentEdit = PostQuanAnFragment()
+            postQuanAnFragmentEdit.quanAn = quanAn
+            return postQuanAnFragmentEdit
         }
     }
 
@@ -237,6 +244,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 quanAn.giomocua = edt_time_open.text.toString().trim().toLong()
                 quanAn.giodongcua = edt_time_close.text.toString().trim().toLong()
                 quanAn.hinhanhs = listImagePost
+                quanAn.ngaytao = DateUtils.getCurrentTime()
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     quanAn.giaohang = switch_giao_hang.showText
                 }
