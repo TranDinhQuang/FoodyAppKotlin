@@ -11,15 +11,18 @@ class DetailEatingPresenter(
 ) :
     DetailEatingInterface.Presenter {
     override fun getThucDons() {
-        repository.getThucDons(maThucDon,
-            object : FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>> {
-                override fun onSuccess(data: MutableList<ThucDonResponse>) {
-                    view.thucDonsSuccess(data)
-                }
 
-                override fun onFailure(message: String) {
-                    view.thucDonsFailure(message)
-                }
-            })
     }
+    /* override fun getThucDons() {
+         repository.getThucDons(maThucDon,
+             object : FoodyDataSource.DataCallBack<MutableList<ThucDonResponse>> {
+                 override fun onSuccess(data: MutableList<ThucDonResponse>) {
+                     view.thucDonsSuccess(data)
+                 }
+
+                 override fun onFailure(message: String) {
+                     view.thucDonsFailure(message)
+                 }
+             })
+     }*/
 }

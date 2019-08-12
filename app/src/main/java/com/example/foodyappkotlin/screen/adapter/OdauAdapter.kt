@@ -137,7 +137,7 @@ class OdauAdapter(
         if (quanan.giaohang) {
             v.button_order.visibility = View.VISIBLE
             v.button_order.setOnClickListener {
-                itemClickListener.startActivityMenu()
+                itemClickListener.startActivityMenu(quanan.thucdon)
             }
         } else {
             v.button_order.visibility = View.GONE
@@ -198,6 +198,6 @@ class OdauAdapter(
     interface OnClickListener {
         fun onItemClickListener(quanAn: QuanAn)
 
-        fun startActivityMenu()
+        fun startActivityMenu(idThucDon : String)
     }
 }

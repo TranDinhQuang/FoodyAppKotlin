@@ -28,11 +28,27 @@
                 android:scaleType="fitXY"
                 android:src="@drawable/background_login" />
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_list_image"
+                android:layout_width="match_parent"
+                android:padding="@dimen/dp_5"
+                android:clipToPadding="false"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/image_eating"
+                android:scrollbars="horizontal" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_5"
+                android:background="#ECECEC" />
+
             <LinearLayout
                 android:id="@+id/group_eating"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/image_eating"
+                android:layout_below="@id/recycler_list_image"
                 android:orientation="vertical">
 
                 <TextView
@@ -58,7 +74,7 @@
                     <android.support.constraint.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@drawable/bg_line_top_bottom"
+                        android:background="@drawable/bg_border_textview"
                         android:padding="@dimen/dp_10">
 
                         <TextView
@@ -247,6 +263,7 @@
     </android.support.v4.widget.NestedScrollView>
 
     <LinearLayout
+        android:id="@+id/button_order"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -260,7 +277,6 @@
             android:src="@drawable/ic_online_order" />
 
         <TextView
-            android:id="@+id/button_order"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/dp_40"
             android:layout_alignParentBottom="true"

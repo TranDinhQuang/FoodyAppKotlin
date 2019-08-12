@@ -312,10 +312,6 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         return timeLong
     }
 
-    override fun onStop() {
-        super.onStop()
-    }
-
     fun pushQuanAnToDataBase(quanAn: QuanAn) {
         if (quanAn.id_khuvuc == 1) {
             val refQuanAn = nodeRoot.child("quanans").child("KV1").push()

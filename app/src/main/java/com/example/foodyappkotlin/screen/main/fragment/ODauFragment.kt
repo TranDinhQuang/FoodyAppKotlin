@@ -97,6 +97,9 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         lOdauAdapter = OdauAdapter(ArrayList(), appSharedPreference.getLocation(), this)
         mView.recycler_quan_an.adapter = lOdauAdapter
         setOnItemSelected()
+        swipe_refresh.setOnRefreshListener {
+            mODauPresenter.getQuanAns(quanAnRequest)
+        }
     }
 
     fun setOnItemSelected(){
@@ -155,12 +158,14 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     }
 
     override fun QuanAnsFailure(msg: String) {
+        swipe_refresh.isRefreshing = false
         isLoading = false
         progressBar.visibility = View.GONE
     }
 
     override fun QuanAnsSuccess(quanans: MutableList<QuanAn>) {
         isLoading = false
+        swipe_refresh.isRefreshing = false
         progressBar.visibility = View.GONE
         if (quanAnRequest.typeCall == FoodyRemoteDataSource.SORT_NEAR_ME) {
             val quanAnFilter = ArrayList<QuanAn>()
@@ -182,8 +187,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         startActivity(intentDetailEating)
     }
 
-    override fun startActivityMenu() {
-        startActivity(MenuActivity.newInstance(context!!))
+    override fun startActivityMenu(idThucDon : String) {
+        startActivity(MenuActivity.newInstance(context!!,idThucDon))
     }
 
 
@@ -199,4 +204,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         return distance
     }
 
+    override fun onStop() {
+        super.onStop()
+        mODauPresenter.removeListernerQuanAn()
+    }
 }

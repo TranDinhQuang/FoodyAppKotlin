@@ -61,8 +61,8 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
         return inflater.inflate(R.layout.fragment_detail_comment, null)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         initData()
     }
 
@@ -76,7 +76,6 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                     thongSo.num_like += 1
                     nodeRoot.child("thongsobinhluans").child(mQuanAn.id).child(binhLuan.id)
                         .child("num_like").setValue(thongSo.num_like).addOnCompleteListener {
-                            Log.d("kiemtra", "hoafn thanh")
                         }
                 } else {
                     appSharedPreference.getUser().liked.values.remove(binhLuan.id)
@@ -191,21 +190,21 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
 
             override fun onChildChanged(p0: DataSnapshot, p1: String?) {
                 thongSo = p0.getValue(ThongSoResponse::class.java)!!
-                txt_num_like.text = "${thongSo?.num_like} like"
-                txt_num_comment.text = "${thongSo?.num_comment} comment"
-                txt_num_share.text = "${thongSo?.num_share} share"
+                txt_num_like_comment!!.text = "${thongSo.num_like} like"
+                txt_num_comment!!.text = "${thongSo.num_comment} comment"
+                txt_num_share!!.text = "${thongSo.num_share} share"
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 thongSo = p0.getValue(ThongSoResponse::class.java)!!
-                txt_num_like.text = "${thongSo?.num_like} like"
-                txt_num_comment.text = "${thongSo?.num_comment} comment"
-                txt_num_share.text = "${thongSo?.num_share} share"
+                txt_num_like_comment!!.text = "${thongSo.num_like} like"
+                txt_num_comment!!.text = "${thongSo.num_comment} comment"
+                txt_num_share!!.text = "${thongSo.num_share} share"
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
                 thongSo = p0.getValue(ThongSoResponse::class.java)!!
-                txt_num_like.text = "${thongSo?.num_like} like"
+                txt_num_like_comment.text = "${thongSo?.num_like} like"
                 txt_num_comment.text = "${thongSo?.num_comment} comment"
                 txt_num_share.text = "${thongSo?.num_share} share"
             }
@@ -330,6 +329,6 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
 
     override fun onDestroyView() {
         super.onDestroyView()
-
+        refThongSo.removeEventListener(listernerThongSo)
     }
 }
