@@ -149,7 +149,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             )} km"
         }
         quanAn.binhluans.mapNotNull {
-            diemQuanAn += it.value.chamdiem
+            diemQuanAn += it.value.chamdiem / 2
         }
         if (diemQuanAn > 0) {
             diemQuanAn /= quanAn.binhluans.size
