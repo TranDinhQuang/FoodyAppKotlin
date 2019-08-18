@@ -18,6 +18,7 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
+import com.example.foodyappkotlin.data.response.ThongSoResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
@@ -27,6 +28,7 @@ import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
 import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentComments
 import com.example.foodyappkotlin.screen.detail.fragment_detail_comment.FragmentDetailComment
+import com.example.foodyappkotlin.screen.detail.fragment_post.ChangingCommentFragment
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.example.foodyappkotlin.screen.menu.MenuActivity
 import com.example.foodyappkotlin.util.DateUtils
@@ -34,6 +36,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_detail_comment.*
 import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.layout_feature.*
 import java.text.SimpleDateFormat
@@ -90,10 +93,12 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             ViewModelProviders.of(this).get(DetailViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
 
+        mQuanAn = detailViewModel.quanan.value!!
+
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             findQuanAnData(item!!)
             findCommentData(ArrayList())
-            findListImageRecyclerView(item.hinhanhs)
+            findListImageRecyclerView(item!!.hinhanhs)
 
         })
 
@@ -138,8 +143,6 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     @SuppressLint("SetTextI18n")
     fun findQuanAnData(quanAn: QuanAn) {
-        mQuanAn = quanAn
-
         if (appSharedPreference.getLocation() != null) {
             text_distance.text = "Cách bạn: ${distance(
                 appSharedPreference.getLocation().latitude,
@@ -201,7 +204,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     fun getAllCommentFollowQuanAn() {
         dataRef =
-            FirebaseDatabase.getInstance().reference.child("quanans").child("KV1").child(mQuanAn.id)
+            FirebaseDatabase.getInstance().reference.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
                 .child("binhluans")
         var binhluans = ArrayList<BinhLuan>()
 
@@ -238,14 +241,13 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         commentAdapter =
             CommentAdapter(
                 activity!!, binhluans,
-                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this
+                appSharedPreference.getToken()!!,mQuanAn.id, appSharedPreference.getUser().liked, this
             )
         recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
         recycler_user_comment.adapter = commentAdapter
         recycler_user_comment.isNestedScrollingEnabled = false
         getAllCommentFollowQuanAn()
     }
-
 
     fun distance(lat1: Double, long1: Double, lat2: Double, long2: Double): Double {
         val loc1 = Location("")
@@ -289,6 +291,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     }
 
     override fun onClickEditComment(binhLuan: BinhLuan) {
+      mActivity.pushFragment(R.id.layout_food_detail,ChangingCommentFragment.newInstance(binhLuan))
     }
 
     override fun onClickDeleteComment(binhLuan: BinhLuan) {

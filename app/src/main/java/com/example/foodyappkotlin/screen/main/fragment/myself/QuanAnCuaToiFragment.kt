@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.main.fragment.myself
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_my_restaurent.*
+import kotlinx.android.synthetic.main.fragment_odau.*
 import javax.inject.Inject
 
 class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
@@ -61,10 +63,6 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         return inflater.inflate(R.layout.fragment_my_restaurent, null)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initData()
@@ -85,6 +83,11 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         btn_add.setOnClickListener {
             mActivity.pushFragment(R.id.frame_layout, PostQuanAnFragment.newInstance())
         }
+
+        swiperefresh.setOnRefreshListener {
+            mAdapterRestaurent.quanAns.clear()
+            getQuanAnFllowNguoiDang()
+        }
     }
 
     fun getQuanAnFllowNguoiDang() {
@@ -101,6 +104,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                swiperefresh.isRefreshing = false
                 val quanAn = p0.getValue(QuanAn::class.java)
                 mAdapterRestaurent.addQuanAn(quanAn!!)
             }
@@ -152,5 +156,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     override fun deleteQuanAn(quanan: QuanAn) {
+        showAlertListerner("Thông báo!","Bạn có chắc chắn muốn xoá quán ăn này?",
+            DialogInterface.OnClickListener { p0, p1 -> nodeRoot.child("quanans").child("KV${quanan.id_khuvuc}").child(quanan.id).removeValue() })
     }
 }

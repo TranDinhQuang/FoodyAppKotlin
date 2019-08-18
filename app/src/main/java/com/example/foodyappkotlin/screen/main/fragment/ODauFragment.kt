@@ -70,11 +70,6 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     }
 
     private fun initView() {
-    /*    actionbarBack.visibility = View.VISIBLE
-        actionbarBack.setOnClickListener{
-            mActivity.onBackPressed()
-        }*/
-
         quanAnRequest = QuanAnRequest()
         quanAnRequest.idKhuVuc = "KV1"
         quanAnRequest.page = 1
@@ -196,7 +191,6 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun startActivityMenu(idThucDon : String) {
         startActivity(MenuActivity.newInstance(context!!,idThucDon))
     }
-
 
     private fun distance(lat1: Double, long1: Double, location: Location): Double {
         val loc1 = Location("")

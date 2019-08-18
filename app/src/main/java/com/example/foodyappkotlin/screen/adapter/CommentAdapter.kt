@@ -3,23 +3,33 @@ package com.example.foodyappkotlin.screen.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import com.example.foodyappkotlin.AppSharedPreference
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.data.models.BinhLuan
+import com.example.foodyappkotlin.data.response.ThongSoResponse
 import com.example.foodyappkotlin.di.module.GlideApp
+import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
-import javax.inject.Inject
 
-class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,var userId : String,var listLiked : Map<String,String>,val view :  CommentAdapter.CommentOnCLickListerner) :
+class CommentAdapter(
+    val context: Context,
+    var comments: MutableList<BinhLuan>,
+    var userId: String,
+    var idQuanAn: String,
+    var listLiked: Map<String, String>,
+    val view: CommentAdapter.CommentOnCLickListerner
+) :
     RecyclerView.Adapter<CommentAdapter.ViewHolder>() {
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+    lateinit var refThongSo: Query
+    lateinit var listernerThongSo: ChildEventListener
+    var thongSo = ThongSoResponse()
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
 
@@ -38,21 +48,21 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
         p0.itemView.text_title.text = comments[p1].tieude
         p0.itemView.text_name_user.text = comments[p1].ten_user
         p0.itemView.text_point.text = comments[p1].chamdiem.toString()
-        glideLoadImageLink(p0.itemView.image_avatar_user,comments[p1].hinhanh_user)
+        glideLoadImageLink(p0.itemView.image_avatar_user, comments[p1].hinhanh_user)
 
-/*        p0.itemView.txt_num_like.text = "${comments[p1].num_like} like"
-        p0.itemView.txt_num_share.text = "${comments[p1].num_share} share"*/
+        getThongSoBinhLuan(p0.itemView, idQuanAn, comments[p1].id)
+
         if (comments[p1].hinhanh.isNotEmpty()) {
             val imageUrl: ArrayList<String> = ArrayList(comments[p1].hinhanh.values)
             loadImage(p0.itemView, imageUrl)
         }
         listLiked.filterValues {
-           it == comments[p1].id
+            it == comments[p1].id
         }.mapNotNull {
             p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
         }
 
-        if(comments[p1].id_user == userId){
+        if (comments[p1].id_user == userId) {
             p0.itemView.layout_function.visibility = View.VISIBLE
             p0.itemView.txt_edit_comment.setOnClickListener {
                 view.onClickEditComment(comments[p1])
@@ -60,7 +70,7 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
             p0.itemView.txt_delete_comment.setOnClickListener {
                 view.onClickDeleteComment(comments[p1])
             }
-        }else{
+        } else {
             p0.itemView.layout_function.visibility = View.GONE
         }
 
@@ -138,20 +148,55 @@ class CommentAdapter(val context: Context, var comments: MutableList<BinhLuan>,v
             .into(img)
     }
 
+    fun getThongSoBinhLuan(view: View, idQuanAn: String, idBinhLuan: String) {
+        refThongSo =
+            nodeRoot.child("thongsobinhluans").child(idQuanAn).orderByKey().equalTo(idBinhLuan)
+        listernerThongSo = object : ChildEventListener {
+            override fun onCancelled(p0: DatabaseError) {
+            }
+
+            override fun onChildMoved(p0: DataSnapshot, p1: String?) {
+            }
+
+            override fun onChildChanged(p0: DataSnapshot, p1: String?) {
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                view.txt_num_like!!.text = "${thongSo.num_like} like"
+                view.txt_num_comment!!.text = "${thongSo.num_comment} comment"
+                view.txt_num_share!!.text = "${thongSo.num_share} share"
+            }
+
+            override fun onChildAdded(p0: DataSnapshot, p1: String?) {
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                view.txt_num_like!!.text = "${thongSo.num_like} like"
+                view.txt_num_comment!!.text = "${thongSo.num_comment} comment"
+                view.txt_num_share!!.text = "${thongSo.num_share} share"
+            }
+
+            override fun onChildRemoved(p0: DataSnapshot) {
+                thongSo = p0.getValue(ThongSoResponse::class.java)!!
+                view.txt_num_like.text = "${thongSo?.num_like} like"
+                view.txt_num_comment.text = "${thongSo?.num_comment} comment"
+                view.txt_num_share.text = "${thongSo?.num_share} share"
+            }
+
+        }
+        refThongSo.addChildEventListener(listernerThongSo)
+    }
+
     fun onDataChanged(comment: BinhLuan) {
         comments.add(comment)
         notifyDataSetChanged()
     }
 
-    fun removeComment(comment: BinhLuan){
+    fun removeComment(comment: BinhLuan) {
         comments.remove(comment)
         notifyDataSetChanged()
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
-    interface CommentOnCLickListerner{
-       fun onClickItemCommentListerner(binhLuan : BinhLuan)
+    interface CommentOnCLickListerner {
+        fun onClickItemCommentListerner(binhLuan: BinhLuan)
 
         fun onClickEditComment(binhLuan: BinhLuan)
 

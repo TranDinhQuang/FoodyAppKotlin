@@ -29,6 +29,7 @@ class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner 
     lateinit var mPresenter: CommentsPresenter
     lateinit var dataRef: Query
     lateinit var childEventListener: ChildEventListener
+    lateinit var mQuanAn : QuanAn
 
     @Inject
     lateinit var repository: FoodyRepository
@@ -64,26 +65,27 @@ class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner 
     private fun initData() {
         mPresenter = CommentsPresenter(repository, this)
 
+
         detailViewModel = activity?.run {
             ViewModelProviders.of(this).get(DetailViewModel::class.java)
         } ?: throw Exception("Invalid Activity")
-
+        mQuanAn =detailViewModel.quanan.value!!
 
         commentAdapter =
             CommentAdapter(activity!!, ArrayList(),
-                appSharedPreference.getToken()!!, appSharedPreference.getUser().liked, this)
+                appSharedPreference.getToken()!!,mQuanAn.id, appSharedPreference.getUser().liked, this)
         recycler_comments.adapter = commentAdapter
+
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->
             if (item != null) {
-//                mPresenter.getAllComment(item.id)
-                getAllCommentFollowQuanAn(item.id)
+                getAllCommentFollowQuanAn(item)
             }
         })
     }
 
-    fun getAllCommentFollowQuanAn(idQuanAn: String) {
+    fun getAllCommentFollowQuanAn(quanAn: QuanAn) {
         dataRef =
-            FirebaseDatabase.getInstance().reference.child("quanans").child("KV1").child(idQuanAn)
+            FirebaseDatabase.getInstance().reference.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                 .child("binhluans")
         var binhluans = ArrayList<BinhLuan>()
 

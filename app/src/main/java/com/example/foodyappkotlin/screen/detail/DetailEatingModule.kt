@@ -8,6 +8,7 @@ import com.example.foodyappkotlin.screen.detail.fragment_comments.FragmentCommen
 import com.example.foodyappkotlin.screen.detail.fragment_detail_comment.FragmentDetailComment
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewModule
+import com.example.foodyappkotlin.screen.detail.fragment_post.ChangingCommentFragment
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentModule
 import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
@@ -29,6 +30,10 @@ abstract class DetailEatingModule {
     @FragmentScoped
     @ContributesAndroidInjector(modules = [(PostCommentModule::class)])
     internal abstract fun postCommentFragment(): PostCommentFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector(modules = [(PostCommentModule::class)])
+    internal abstract fun changingCommentFragment(): ChangingCommentFragment
 
     @FragmentScoped
     @ContributesAndroidInjector

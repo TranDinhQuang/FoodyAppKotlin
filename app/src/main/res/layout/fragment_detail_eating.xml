@@ -185,6 +185,7 @@
                         android:layout_marginTop="@dimen/dp_5"
                         android:drawableLeft="@drawable/ic_cash"
                         android:drawablePadding="@dimen/dp_5"
+                        android:visibility="gone"
                         android:text="200.000 - 250.000 đồng" />
                 </LinearLayout>
 

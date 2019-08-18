@@ -32,7 +32,7 @@ interface FoodyDataSource {
         fun getHinhAnhBinhLuan(callBack: DataCallBack<List<String>>)
 
         fun writeCommentToDataBase(
-            idQuanAn: QuanAn, binhluan: BinhLuan, callBack: DataCallBack<String>
+            quanAn: QuanAn, binhluan: BinhLuan, callBack: DataCallBack<String>
         )
 
         fun saveUserLoginData(user : User,callBack: DataCallBack<UserResponse>)

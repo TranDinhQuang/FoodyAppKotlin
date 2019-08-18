@@ -52,6 +52,7 @@ import kotlin.collections.HashMap
 
 class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     PicturePostAdapter.OnClickListener, View.OnClickListener, MonAnAdapter.MonAnOnClickListener {
+
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
     var refThucDon = nodeRoot.child("thucdons").push()
@@ -265,10 +266,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 quanAn.giomocua = convertStringToTime(edt_time_open.text.toString().trim())
                 quanAn.giodongcua = convertStringToTime(edt_time_close.text.toString().trim())
                 quanAn.hinhanhs = listImagePost
-                quanAn.ngaytao = DateUtils.getCurrentTime()
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    quanAn.giaohang = switch_giao_hang.showText
-                }
+                quanAn.ngaytao = DateUtils.getSecondsCurrentTime()
+                quanAn.giaohang = switch_giao_hang.isChecked
+
                 if (spiner_khuvuc.selectedItemPosition == 0) {
                     quanAn.id_khuvuc = 1
                 } else {
@@ -461,4 +461,11 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
     }
 
+    override fun removeImage(link: String) {
+
+    }
+
+    override fun showAlertFailure(type: Int) {
+
+    }
 }

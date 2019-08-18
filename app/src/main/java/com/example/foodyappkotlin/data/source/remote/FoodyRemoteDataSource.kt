@@ -23,8 +23,8 @@ import javax.inject.Singleton
 @Singleton
 class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
-    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
-    val storage = FirebaseStorage.getInstance().reference
+        var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+        val storage = FirebaseStorage.getInstance().reference
 
     @Inject
     lateinit var appSharedPreference: AppSharedPreference
@@ -184,7 +184,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         callBack: FoodyDataSource.DataCallBack<String>
     ) {
         var dataRef =
-            nodeRoot.child("quanans").child("KV1").child(quanAn.id).child("binhluans").push()
+            nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("binhluans").push()
         var hinhanhSuccess: HashMap<String, String> = HashMap()
         binhluan.hinhanh.forEach {
             uploadImageFile(it.value)
@@ -317,13 +317,10 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         var file = Uri.fromFile(File(url))
         var storageRef: StorageReference = storage.child("binhluan/${file.lastPathSegment}")
         var uploadTask = storageRef.putFile(file)
-        // Register observers to listen for when the download is done or if it fails
         uploadTask.addOnFailureListener {
-            // Handle unsuccessful uploads
             Log.d("kiemtra", "Tải ảnh thất bại")
         }.addOnSuccessListener {
             Log.d("kiemtra", "tải ảnh thành công")
-            // taskSnapshot.metadata contains file metadata such as size, content-type, etc.
         }
     }
 

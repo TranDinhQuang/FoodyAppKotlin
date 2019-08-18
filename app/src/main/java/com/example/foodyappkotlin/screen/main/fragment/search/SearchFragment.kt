@@ -9,6 +9,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.QuanAn
@@ -21,7 +23,9 @@ import kotlinx.android.synthetic.main.fragment_search_ui.*
 import javax.inject.Inject
 
 class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.SearchOnClickListener,
-    TextWatcher {
+    TextWatcher, AdapterView.OnItemSelectedListener {
+    var list_of_items_khuvuc = arrayOf("Hà Nội", "TP.Hồ Chí Minh")
+    var mIdKhuVuc: String = "KV1"
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -52,6 +56,13 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
     }
 
     private fun initData() {
+        spinner_fillter_khuvuc.onItemSelectedListener = this
+        val adapterSpinnerKhuVuc =
+            ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items_khuvuc)
+        spinner_fillter_khuvuc!!.adapter = adapterSpinnerKhuVuc
+        spinner_fillter_khuvuc.setSelection(0, true)
+        spinner_fillter_khuvuc.isSelected = false
+
         recycler_quanans.layoutManager = LinearLayoutManager(activityContext)
         mSearchAdapter = SearchAdapter(activityContext, ArrayList(), this)
         recycler_quanans.adapter = mSearchAdapter
@@ -70,11 +81,27 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
     override fun afterTextChanged(p0: Editable?) {
         mPresenter.searchQuanAn(
             this,
-            "KV1",
+            mIdKhuVuc,
             edt_search.text.toString(),
             FoodyRemoteDataSource.FILLTER_BY_NAME
         )
     }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        when (p2) {
+            0 -> {
+                mIdKhuVuc = "KV1"
+            }
+            1 -> {
+                mIdKhuVuc = "KV2"
+            }
+        }
+    }
+
 
     override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
     }

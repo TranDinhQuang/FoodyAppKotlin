@@ -81,6 +81,10 @@ public class DateUtils {
         return new Date().getTime();
     }
 
+    public static Long getSecondsCurrentTime(){
+        return (getCurrentTime() / 1000);
+    }
+
     public static String getFirstDateOfThisMonth(String format) {
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         Calendar date = Calendar.getInstance();

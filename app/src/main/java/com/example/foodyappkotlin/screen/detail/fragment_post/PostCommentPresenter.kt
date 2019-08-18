@@ -21,4 +21,16 @@ class PostCommentPresenter @Inject constructor(val repository: FoodyRepository) 
         })
     }
 
+    override fun editCommentToServer(view : PostCommentInterface.View,quanAn: QuanAn,binhLuan: BinhLuan) {
+        repository.writeCommentToDataBase(quanAn, binhLuan, object : FoodyDataSource.DataCallBack<String> {
+            override fun onSuccess(data: String) {
+                view.postCommentSuccess()
+            }
+
+            override fun onFailure(message: String) {
+                view.postCommentFailure()
+            }
+        })
+    }
+
 }

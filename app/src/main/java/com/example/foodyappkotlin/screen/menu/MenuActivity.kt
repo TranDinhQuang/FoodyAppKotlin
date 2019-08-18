@@ -5,15 +5,11 @@ import android.content.Intent
 import android.os.Bundle
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
-import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.data.source.FoodyDataSource
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
-import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
-import com.example.foodyappkotlin.screen.detail.DetailEatingPresenter
-import com.google.android.libraries.places.internal.i
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_menu.*
 import java.text.DecimalFormat
@@ -23,7 +19,7 @@ import javax.inject.Inject
 class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener,
     NuocUongAdapter.NuocUongOnClickListener {
     var sum_money: Long = 0
-    var idThucDon :String = ""
+    var idThucDon: String = ""
 
     @Inject
     lateinit var foodyRepository: FoodyRepository

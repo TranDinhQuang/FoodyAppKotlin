@@ -38,6 +38,9 @@ class RestaurentMyselfAdapter(val context: Context, var quanAns: MutableList<Qua
         p0.itemView.btn_edit.setOnClickListener {
             view.editQuanAn(quanAns[p1])
         }
+        p0.itemView.btn_delete.setOnClickListener {
+            view.deleteQuanAn(quanAns[p1])
+        }
     }
 
     private fun glideLoadImage(img: ImageView, url: StorageReference) {

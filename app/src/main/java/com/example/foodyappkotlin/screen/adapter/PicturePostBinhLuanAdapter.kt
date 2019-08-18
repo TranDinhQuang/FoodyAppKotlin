@@ -12,19 +12,17 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_picture_post.view.*
 
-class PicturePostAdapter(val context: Context, val view: PicturePostAdapter.OnClickListener) :
-    RecyclerView.Adapter<PicturePostAdapter.ViewHolder>() {
+class PicturePostBinhLuanAdapter(
+    val context: Context,
+    val view: PicturePostBinhLuanAdapter.OnClickListener
+) :
+    RecyclerView.Adapter<PicturePostBinhLuanAdapter.ViewHolder>() {
     var imgsFile: MutableList<String> = ArrayList()
     var isEditQuanAn = false
     val storage = FirebaseStorage.getInstance().reference
     lateinit var storageRef: StorageReference
 
-    companion object {
-        val LIST_ONE_ELEMENT = 0
-        val CONNECT_FAILURE = 1
-    }
-
-    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): PicturePostAdapter.ViewHolder {
+    override fun onCreateViewHolder(p0: ViewGroup, p1: Int): PicturePostBinhLuanAdapter.ViewHolder {
         return ViewHolder(
             LayoutInflater.from(context).inflate(R.layout.item_picture_post, p0, false)
         )
@@ -34,28 +32,12 @@ class PicturePostAdapter(val context: Context, val view: PicturePostAdapter.OnCl
         return imgsFile.size
     }
 
-    override fun onBindViewHolder(p0: PicturePostAdapter.ViewHolder, p1: Int) {
-        if (isEditQuanAn) {
-            storageRef = storage.child("monan").child(imgsFile[p1])
-            glideLoadImage(p0.itemView.image_upload, storageRef)
-        } else {
-            glideLoadImage(p0.itemView.image_upload, imgsFile[p1])
-        }
+    override fun onBindViewHolder(p0: PicturePostBinhLuanAdapter.ViewHolder, p1: Int) {
+        storageRef = storage.child("binhluan").child(imgsFile[p1])
+        glideLoadImage(p0.itemView.image_upload, storageRef)
 
         p0.itemView.img_close.setOnClickListener {
-            if (isEditQuanAn) {
-                if (imgsFile.size == 1) {
-                    view.showAlertFailure(LIST_ONE_ELEMENT)
-                } else {
-                    view.removeImage(imgsFile[p1])
-                    imgsFile.removeAt(p1)
-                    notifyDataSetChanged()
-                }
-            } else {
-                view.removeImage(p1)
-                imgsFile.removeAt(p1)
-                notifyDataSetChanged()
-            }
+            view.removeImage(imgsFile[p1],p1)
         }
     }
 
@@ -79,22 +61,10 @@ class PicturePostAdapter(val context: Context, val view: PicturePostAdapter.OnCl
             .into(img)
     }
 
-    private fun glideLoadImage(img: ImageView, url: String) {
-        GlideApp.with(context)
-            .load(url)
-            .error(R.drawable.placeholder)
-            .thumbnail(0.1f)
-            .placeholder(R.drawable.placeholder)
-            .into(img)
-    }
-
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 
     interface OnClickListener {
-        fun removeImage(position: Int)
 
-        fun removeImage(link: String)
-
-        fun showAlertFailure(type: Int)
+        fun removeImage(link: String,position : Int)
     }
 }
