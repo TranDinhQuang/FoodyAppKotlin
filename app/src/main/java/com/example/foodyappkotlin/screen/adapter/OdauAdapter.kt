@@ -143,10 +143,10 @@ class OdauAdapter(
             v.button_order.visibility = View.GONE
         }
 
-
         GlideApp.with(v.context)
             .load(storageRef)
             .error(R.drawable.placeholder)
+            .centerCrop()
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(v.image_foody)
@@ -156,7 +156,7 @@ class OdauAdapter(
         GlideApp.with(context)
             .load(url)
             .error(R.drawable.placeholder)
-            .fitCenter()
+            .centerCrop()
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(img)

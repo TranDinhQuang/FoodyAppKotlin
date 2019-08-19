@@ -47,9 +47,9 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse
                 p0.itemView.txt_number_order.text = "$number_order"
             }
         } else {
-            glideLoadImage(p0.itemView.img_food_menu,monAns[p1].hinhanh)
             p0.itemView.layout_value.visibility = View.GONE
         }
+        glideLoadImage(p0.itemView.img_food_menu,monAns[p1].hinhanh)
         p0.itemView.text_food_name.text = monAns[p1].ten
         p0.itemView.text_food_price.text = monAns[p1].gia.toString()
     }
@@ -58,7 +58,7 @@ class MonAnAdapter(val context: Context, val monAns: MutableList<ThucDonResponse
         GlideApp.with(context)
             .load(url)
             .error(R.drawable.placeholder)
-            .fitCenter()
+            .centerCrop()
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(img)

@@ -120,6 +120,18 @@ abstract class BaseActivity : AppCompatActivity(), HasSupportFragmentInjector {
             .setPositiveButton("Đồng ý", listerner).setNegativeButton("Hủy bỏ", null).show()
     }
 
+    fun showAlertListernerOneClick(
+        title: String,
+        message: String,
+        txtButton: String,
+        listerner: DialogInterface.OnClickListener
+    ) {
+        AlertDialog.Builder(this)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(txtButton, listerner).show()
+    }
+
     fun showPermissionDialog() {
         Dexter.withActivity(this).withPermissions().withListener(
             object : MultiplePermissionsListener {

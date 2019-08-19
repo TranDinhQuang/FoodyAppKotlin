@@ -16,11 +16,104 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/img_avatar_user"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="@dimen/dp_100"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/dp_160"
         android:src="@drawable/placeholder" />
+
+    <LinearLayout
+        android:id="@+id/layout_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/img_avatar_user"
+        android:layout_marginTop="@dimen/dp_20"
+        android:padding="@dimen/dp_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_user_name"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/txt_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:text="Tran Quang"
+            android:textColor="@color/red5"
+            android:textSize="@dimen/sp_18" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_user_name"
+        android:padding="@dimen/dp_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_user"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/txt_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:text="tdquang252@gmail.com"
+            android:textColor="@color/red5"
+            android:textSize="@dimen/sp_18" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_permission"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_user"
+        android:padding="@dimen/dp_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_permission"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/txt_permission"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:text="Người dùng"
+            android:textColor="@color/red5"
+            android:textSize="@dimen/sp_18" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/layout_permission"
+        android:padding="@dimen/dp_5">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/txt_location"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/txt_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dp_10"
+            android:maxLines="2"
+            android:textColor="@color/red5"
+            android:textSize="@dimen/sp_18" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/txt_logout"

@@ -20,8 +20,8 @@ import com.example.foodyappkotlin.screen.main.MainActivity
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_my_restaurent.*
-import kotlinx.android.synthetic.main.fragment_odau.*
 import javax.inject.Inject
 
 class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
@@ -66,6 +66,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initData()
+        mActivity.actionbarBack.visibility = View.GONE
     }
 
     private fun initData() {
@@ -83,11 +84,11 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         btn_add.setOnClickListener {
             mActivity.pushFragment(R.id.frame_layout, PostQuanAnFragment.newInstance())
         }
-
+/*
         swiperefresh.setOnRefreshListener {
             mAdapterRestaurent.quanAns.clear()
             getQuanAnFllowNguoiDang()
-        }
+        }*/
     }
 
     fun getQuanAnFllowNguoiDang() {
@@ -104,7 +105,9 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-                swiperefresh.isRefreshing = false
+         /*       if(swiperefresh.isRefreshing){
+                    swiperefresh.isRefreshing = false
+                }*/
                 val quanAn = p0.getValue(QuanAn::class.java)
                 mAdapterRestaurent.addQuanAn(quanAn!!)
             }
@@ -113,8 +116,12 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             }
 
         }
-
         refQuanAn.addChildEventListener(mListernerQuanAn)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        refQuanAn.removeEventListener(mListernerQuanAn)
     }
 
     fun getQuanAnSuccess(data: QuanAn) {

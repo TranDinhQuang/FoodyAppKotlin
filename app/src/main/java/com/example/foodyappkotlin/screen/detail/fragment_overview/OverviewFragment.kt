@@ -85,6 +85,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData()
+        mActivity.showActionBack(View.OnClickListener { mActivity.finish() })
     }
 
     fun initData() {
@@ -205,7 +206,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     fun getAllCommentFollowQuanAn() {
         dataRef =
             FirebaseDatabase.getInstance().reference.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
-                .child("binhluans")
+                .child("binhluans").orderByKey()
         var binhluans = ArrayList<BinhLuan>()
 
         childEventListener = object : ChildEventListener {

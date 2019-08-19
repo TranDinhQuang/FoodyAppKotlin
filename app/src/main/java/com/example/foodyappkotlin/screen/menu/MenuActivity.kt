@@ -1,8 +1,10 @@
 package com.example.foodyappkotlin.screen.menu
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.data.repository.FoodyRepository
@@ -12,6 +14,7 @@ import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
 import com.example.foodyappkotlin.screen.adapter.NuocUongAdapter
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_menu.*
+import kotlinx.android.synthetic.main.app_toolbar.*
 import java.text.DecimalFormat
 import javax.inject.Inject
 
@@ -46,6 +49,17 @@ class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener,
     fun initData(thucDons: MutableList<ThucDonResponse>) {
         val monAnAdapter = MonAnAdapter(this, thucDons, MonAnAdapter.TYPE_ORDER, this)
         recycler_menu_monan.adapter = monAnAdapter
+        button_order.setOnClickListener {
+            showAlertListernerOneClick(
+                "Thông báo!",
+                "Chúng tôi đã ghi nhận đơn hàng của bạn, đơn vị vận chuyển của chúng tôi sẽ liên hệ với bạn, xin cảm ơn!",
+                "Ok",
+                DialogInterface.OnClickListener { p0, p1 -> finish() })
+        }
+        actionbarBack.visibility = View.VISIBLE
+        actionbarBack.setOnClickListener {
+            finish()
+        }
     }
 
     fun callApi() {
@@ -56,7 +70,6 @@ class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener,
                 }
 
                 override fun onFailure(message: String) {
-
                 }
             })
     }

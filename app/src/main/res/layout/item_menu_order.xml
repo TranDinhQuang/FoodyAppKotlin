@@ -18,8 +18,8 @@
 
             <ImageView
                 android:id="@+id/img_food_menu"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_60"
                 android:layout_centerVertical="true"
                 android:src="@color/backgroundtrangchu" />
 
@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dp_5"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_toLeftOf="@id/layout_value"
                 android:layout_toRightOf="@id/img_food_menu"
                 android:padding="@dimen/dp_2"

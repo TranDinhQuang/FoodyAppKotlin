@@ -34,7 +34,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     private lateinit var mQuanans: MutableList<QuanAn>
     private lateinit var quanAnRequest: QuanAnRequest
 
-    var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi", "Yêu thích")
+    var list_of_items = arrayOf("Mới nhất", "Cũ nhất", "Gần tôi")
     var list_of_items_khuvuc = arrayOf("Hà Nội", "TP.Hồ Chí Minh")
 
     private var isLoading: Boolean = false
@@ -67,6 +67,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initView()
+        mActivity.actionbarBack.visibility = View.GONE
     }
 
     private fun initView() {

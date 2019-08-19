@@ -15,7 +15,9 @@ import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
 import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
+import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
 import com.example.foodyappkotlin.screen.detail.DetailViewModel
+import com.example.foodyappkotlin.screen.detail.fragment_post.PostCommentFragment
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_comment.*
 import kotlinx.android.synthetic.main.item_empty_value.*
@@ -30,6 +32,9 @@ class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner 
     lateinit var dataRef: Query
     lateinit var childEventListener: ChildEventListener
     lateinit var mQuanAn : QuanAn
+
+    @Inject
+    lateinit var mActivity: DetailEatingActivity
 
     @Inject
     lateinit var repository: FoodyRepository
@@ -60,11 +65,15 @@ class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initData()
+        mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
     }
 
     private fun initData() {
         mPresenter = CommentsPresenter(repository, this)
 
+        btn_review.setOnClickListener {
+            mActivity.pushFragment(R.id.layout_food_detail, PostCommentFragment.newInstance())
+        }
 
         detailViewModel = activity?.run {
             ViewModelProviders.of(this).get(DetailViewModel::class.java)

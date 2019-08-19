@@ -96,6 +96,7 @@ class ChangingQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListene
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData()
+        mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -15,8 +15,7 @@
         android:layout_below="@id/spinner_fillter_khuvuc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:hint="input text" />
+        android:hint="@string/txt_input_name_restaurant" />
 
     <ImageView
         android:layout_width="wrap_content"

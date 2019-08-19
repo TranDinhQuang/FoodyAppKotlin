@@ -89,6 +89,7 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
+        mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
     }
 
     override fun removeImage(position: Int) {

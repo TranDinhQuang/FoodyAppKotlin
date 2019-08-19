@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomNavigationView
 import android.view.MenuItem
+import android.view.View
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
 import com.example.foodyappkotlin.screen.main.fragment.ODauFragment
@@ -12,6 +13,7 @@ import com.example.foodyappkotlin.screen.main.fragment.myself.QuanAnCuaToiFragme
 import com.example.foodyappkotlin.screen.main.fragment.profile.ProfileFragment
 import com.example.foodyappkotlin.screen.main.fragment.search.SearchFragment
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.layout_main_activity.*
 
 class MainActivity : BaseActivity() {
@@ -72,5 +74,10 @@ class MainActivity : BaseActivity() {
         for (fragment in supportFragmentManager.fragments) {
             fragment.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    fun showActionBack(listerner : View.OnClickListener){
+        actionbarBack.visibility = View.VISIBLE
+        actionbarBack.setOnClickListener(listerner)
     }
 }

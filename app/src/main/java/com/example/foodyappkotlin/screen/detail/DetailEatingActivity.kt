@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseActivity
@@ -15,6 +16,7 @@ import com.example.foodyappkotlin.data.response.ThucDonResponse
 import com.example.foodyappkotlin.di.scope.ActivityScoped
 import com.example.foodyappkotlin.screen.detail.fragment_overview.OverviewFragment
 import dagger.android.AndroidInjection
+import kotlinx.android.synthetic.main.app_toolbar.*
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
@@ -73,5 +75,10 @@ class DetailEatingActivity : BaseActivity(),
     override fun thucDonsFailure(message: String) {
         //show
 //        Toast.makeText(this, message, Toast.LENGTH_SHORT)
+    }
+
+    fun showActionBack(listerner : View.OnClickListener){
+        actionbarBack.visibility = View.VISIBLE
+        actionbarBack.setOnClickListener(listerner)
     }
 }

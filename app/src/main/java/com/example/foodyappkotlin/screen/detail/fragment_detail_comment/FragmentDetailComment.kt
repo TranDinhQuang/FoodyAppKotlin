@@ -1,5 +1,6 @@
 package com.example.foodyappkotlin.screen.detail.fragment_detail_comment
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,6 +19,8 @@ import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.response.ThongSoResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.ThaoLuanAdapter
+import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
+import com.example.foodyappkotlin.screen.detail.fragment_post.ChangingCommentFragment
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -40,7 +43,11 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
     var thongSo = ThongSoResponse()
 
     @Inject
+    lateinit var mActivity: DetailEatingActivity
+
+    @Inject
     lateinit var repository: FoodyRepository
+
     @Inject
     lateinit var appSharedPreference: AppSharedPreference
 
@@ -64,6 +71,7 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initData()
+        mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
     }
 
     override fun onClick(p0: View?) {
@@ -131,6 +139,15 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
                 }
             }
             R.id.txt_delete_comment -> {
+                showAlertListerner("Xác nhận xóa Comment!", "Bạn có muốn xóa comment này?",
+                    DialogInterface.OnClickListener { _, _ ->
+                        FirebaseDatabase.getInstance().reference.child("quanans")
+                            .child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id).child("binhluans")
+                            .child(binhLuan.id).removeValue()
+                    })
+            }
+            R.id.txt_edit_comment -> {
+                mActivity.pushFragment(R.id.layout_food_detail, ChangingCommentFragment.newInstance(binhLuan))
             }
         }
     }
@@ -176,6 +193,7 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
         layout_share.setOnClickListener(this)
         btn_post.setOnClickListener(this)
         txt_delete_comment.setOnClickListener(this)
+        txt_edit_comment.setOnClickListener(this)
     }
 
     fun getThongSoBinhLuan() {

@@ -149,7 +149,7 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
     ) {
         var dataRef =
             nodeRoot.child("quanans").child("KV1").child(idQuanan).child("binhluans").orderByKey()
-                .limitToLast(1000)
+                .limitToLast(100)
         var binhluans = ArrayList<BinhLuan>()
 
         val childEventListener = object : ChildEventListener {

@@ -52,7 +52,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
         val DEFAULT_ZOOM = 15
 
         val PLACE_AUTOCOMPLETE_REQUEST_CODE = 0
-        private val mDefaultLocation = LatLng(-33.8523341, 151.2106085)
+        private val mDefaultLocation = LatLng(21.008513, 105.846314)
 
         val PLACE_PICKER_REQUEST = 2
 
@@ -92,6 +92,8 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             // Setting the title for the marker.
             // This will be displayed on taping the marker
             markerOptions.title("${it.latitude} - ${it.longitude}")
+            mLastKnownLocation!!.latitude = it.latitude
+            mLastKnownLocation!!.longitude = it.longitude
             address = getAddress(it.latitude, it.longitude)
             txt_show_pick_location.text = address
             // Clears the previously touched position
@@ -109,6 +111,7 @@ class MapsActivity : BaseActivity(), OnMapReadyCallback {
             returnIntent.putExtra("result", address)
             returnIntent.putExtra("latitude", mLastKnownLocation!!.latitude)
             returnIntent.putExtra("longitude", mLastKnownLocation!!.longitude)
+            Log.d("kiemtra","${mLastKnownLocation!!.latitude} - ${mLastKnownLocation!!.longitude}")
             setResult(Activity.RESULT_OK, returnIntent)
             finish()
         }

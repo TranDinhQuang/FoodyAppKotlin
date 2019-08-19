@@ -18,7 +18,9 @@ import com.example.foodyappkotlin.data.repository.FoodyRepository
 import com.example.foodyappkotlin.data.source.remote.FoodyRemoteDataSource
 import com.example.foodyappkotlin.screen.adapter.SearchAdapter
 import com.example.foodyappkotlin.screen.detail.DetailEatingActivity
+import com.example.foodyappkotlin.screen.main.MainActivity
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_search_ui.*
 import javax.inject.Inject
 
@@ -26,6 +28,9 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
     TextWatcher, AdapterView.OnItemSelectedListener {
     var list_of_items_khuvuc = arrayOf("Hà Nội", "TP.Hồ Chí Minh")
     var mIdKhuVuc: String = "KV1"
+
+    @Inject
+    lateinit var mActivity: MainActivity
 
     @Inject
     lateinit var foodyRepository: FoodyRepository
@@ -53,6 +58,7 @@ class SearchFragment : BaseFragment(), SearchInterface.View, SearchAdapter.Searc
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData()
+        mActivity.actionbarBack.visibility = View.GONE
     }
 
     private fun initData() {

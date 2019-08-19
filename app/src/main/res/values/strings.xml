@@ -100,4 +100,10 @@
     <string name="txt_empty">Rỗng</string>
     <string name="txt_pick_maps">Click để chọn 1 điểm trên Maps</string>
     <string name="txt_logout">Đăng xuất</string>
+    <string name="txt_login">Đăng nhập</string>
+    <string name="txt_input_name_restaurant">Nhập tên quán ăn</string>
+    <string name="txt_permission">Quyền truy cập:</string>
+    <string name="txt_user">Tài khoản:</string>
+    <string name="txt_user_name">Tên hiển thị:</string>
+    <string name="txt_location">Vị trí của bạn:</string>
 </resources>

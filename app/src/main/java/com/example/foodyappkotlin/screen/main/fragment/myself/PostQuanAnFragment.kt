@@ -16,6 +16,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -104,6 +105,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initData()
+        mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -130,6 +132,7 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 mLatitude = data.getDoubleExtra("latitude", 0.0)
                 mLongitude = data.getDoubleExtra("longitude", 0.0)
                 edt_dia_chi.setText(result)
+                Log.d("kiemtra","$mLatitude - $mLongitude")
             }
         }
     }
@@ -265,7 +268,12 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 quanAn.longitude = mLongitude
                 quanAn.giomocua = convertStringToTime(edt_time_open.text.toString().trim())
                 quanAn.giodongcua = convertStringToTime(edt_time_close.text.toString().trim())
-                quanAn.hinhanhs = listImagePost
+
+                var idHinhAnh = 1
+                mAdapterImages.imgsFile.forEach {
+                    quanAn.hinhanhs["hinhanh$idHinhAnh"] = Uri.fromFile(File(it)).lastPathSegment
+                    idHinhAnh += 1
+                }
                 quanAn.ngaytao = DateUtils.getSecondsCurrentTime()
                 quanAn.giaohang = switch_giao_hang.isChecked
 

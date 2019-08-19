@@ -31,19 +31,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/spinner_khuvuc" />
-
+<!--
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swiperefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/spinner_khuvuc">
+        android:layout_below="@id/spinner_khuvuc">-->
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_restaurent_myself"
             android:layout_width="match_parent"
+            android:layout_below="@id/spinner_khuvuc"
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/dp_10" />
-    </android.support.v4.widget.SwipeRefreshLayout>
+<!--    </android.support.v4.widget.SwipeRefreshLayout>-->
 
     <ProgressBar
         android:id="@+id/progressBar"
