@@ -18,7 +18,6 @@ import com.example.foodyappkotlin.R
 import com.example.foodyappkotlin.common.BaseFragment
 import com.example.foodyappkotlin.data.models.BinhLuan
 import com.example.foodyappkotlin.data.models.QuanAn
-import com.example.foodyappkotlin.data.response.ThongSoResponse
 import com.example.foodyappkotlin.di.module.GlideApp
 import com.example.foodyappkotlin.screen.adapter.CommentAdapter
 import com.example.foodyappkotlin.screen.adapter.MonAnAdapter
@@ -36,7 +35,6 @@ import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import dagger.android.support.AndroidSupportInjection
-import kotlinx.android.synthetic.main.fragment_detail_comment.*
 import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.layout_feature.*
 import java.text.SimpleDateFormat
@@ -111,14 +109,15 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             mActivity.pushFragment(R.id.layout_food_detail, FragmentComments.newInstance())
         }
         text_menu_viewmore.setOnClickListener {
-            startActivity(MenuActivity.newInstance(context!!, mQuanAn.thucdon))
+            startActivity(MenuActivity.newInstance(context!!, mQuanAn))
         }
     }
 
     fun findListImageRecyclerView(listHinhAnhQuanAn: HashMap<String, String>) {
         val hinhAnhsQuanAn = ArrayList<String>(listHinhAnhQuanAn.values)
-        val layoutManager = LinearLayoutManager(activityContext,LinearLayoutManager.HORIZONTAL,false)
-       recycler_list_image.layoutManager = layoutManager
+        val layoutManager =
+            LinearLayoutManager(activityContext, LinearLayoutManager.HORIZONTAL, false)
+        recycler_list_image.layoutManager = layoutManager
         mListImageAdapter = OverviewListImageAdapter(
             activityContext,
             hinhAnhsQuanAn,
@@ -164,7 +163,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         if (quanAn.giaohang) {
             button_order.visibility = View.VISIBLE
             button_order.setOnClickListener {
-                startActivity(MenuActivity.newInstance(context!!, quanAn.thucdon))
+                startActivity(MenuActivity.newInstance(context!!, quanAn))
             }
         } else {
             button_order.visibility = View.GONE
@@ -205,7 +204,8 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
 
     fun getAllCommentFollowQuanAn() {
         dataRef =
-            FirebaseDatabase.getInstance().reference.child("quanans").child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
+            FirebaseDatabase.getInstance().reference.child("quanans")
+                .child("KV${mQuanAn.id_khuvuc}").child(mQuanAn.id)
                 .child("binhluans").orderByKey()
         var binhluans = ArrayList<BinhLuan>()
 
@@ -241,8 +241,12 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     fun findCommentData(binhluans: ArrayList<BinhLuan>) {
         commentAdapter =
             CommentAdapter(
-                activity!!, binhluans,
-                appSharedPreference.getToken()!!,mQuanAn.id, appSharedPreference.getUser().liked, this
+                activity!!,
+                binhluans,
+                appSharedPreference.getToken()!!,
+                mQuanAn.id,
+                appSharedPreference.getUser().liked,
+                this
             )
         recycler_user_comment.layoutManager = LinearLayoutManager(activityContext)
         recycler_user_comment.adapter = commentAdapter
@@ -292,7 +296,10 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
     }
 
     override fun onClickEditComment(binhLuan: BinhLuan) {
-      mActivity.pushFragment(R.id.layout_food_detail,ChangingCommentFragment.newInstance(binhLuan))
+        mActivity.pushFragment(
+            R.id.layout_food_detail,
+            ChangingCommentFragment.newInstance(binhLuan)
+        )
     }
 
     override fun onClickDeleteComment(binhLuan: BinhLuan) {

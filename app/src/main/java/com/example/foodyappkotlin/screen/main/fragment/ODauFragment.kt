@@ -27,6 +27,8 @@ import javax.inject.Inject
 
 class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener,
     AdapterView.OnItemSelectedListener {
+    private var mLocationPermissionGranted: Boolean = false
+    var location: Location? = null
 
     private lateinit var lOdauAdapter: OdauAdapter
     private lateinit var mView: View
@@ -67,7 +69,16 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initView()
+        settingToolbar()
+    }
+
+    fun settingToolbar() {
         mActivity.actionbarBack.visibility = View.GONE
+        mActivity.actionbarRight.visibility = View.VISIBLE
+        mActivity.actionbarRight.setImageResource(R.drawable.ic_location_home)
+        mActivity.actionbarRight.setOnClickListener {
+
+        }
     }
 
     private fun initView() {
@@ -86,7 +97,7 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
             ArrayAdapter(activity, android.R.layout.simple_spinner_item, list_of_items_khuvuc)
         adapterSpinner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_fillter_khuvuc!!.adapter = adapterSpinnerKhuVuc
-        spinner_fillter_khuvuc.setSelection(0,true)
+        spinner_fillter_khuvuc.setSelection(0, true)
         spinner_fillter_khuvuc.isSelected = false
 
         progressBar.visibility = View.VISIBLE
@@ -104,8 +115,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         }
     }
 
-    fun setOnItemSelected(){
-        spinner_fillter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
+    fun setOnItemSelected() {
+        spinner_fillter.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onNothingSelected(p0: AdapterView<*>?) {
 
             }
@@ -131,25 +142,26 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
             }
         }
 
-        spinner_fillter_khuvuc.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+        spinner_fillter_khuvuc.onItemSelectedListener =
+            object : AdapterView.OnItemSelectedListener {
+                override fun onNothingSelected(p0: AdapterView<*>?) {
 
-            }
+                }
 
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                when (p2) {
-                    0 -> {
-                        quanAnRequest.idKhuVuc = "KV1"
-                        mODauPresenter.getQuanAns(quanAnRequest)
-                    }
-                    1 -> {
-                        quanAnRequest.idKhuVuc = "KV2"
-                        mODauPresenter.getQuanAns(quanAnRequest)
+                override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                    when (p2) {
+                        0 -> {
+                            quanAnRequest.idKhuVuc = "KV1"
+                            mODauPresenter.getQuanAns(quanAnRequest)
+                        }
+                        1 -> {
+                            quanAnRequest.idKhuVuc = "KV2"
+                            mODauPresenter.getQuanAns(quanAnRequest)
+                        }
                     }
                 }
-            }
 
-        }
+            }
     }
 
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
@@ -189,8 +201,8 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
         startActivity(intentDetailEating)
     }
 
-    override fun startActivityMenu(idThucDon : String) {
-        startActivity(MenuActivity.newInstance(context!!,idThucDon))
+    override fun startActivityMenu(quanAn: QuanAn) {
+        startActivity(MenuActivity.newInstance(context!!, quanAn))
     }
 
     private fun distance(lat1: Double, long1: Double, location: Location): Double {

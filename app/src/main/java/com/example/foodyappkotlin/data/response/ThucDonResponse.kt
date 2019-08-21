@@ -8,5 +8,6 @@ data class ThucDonResponse(
     var id: String = "",
     var ten: String = "",
     var gia: Long = 0,
-    var hinhanh: String = ""
+    var hinhanh: String = "",
+    var soluong: Int = 0
 ) : Serializable

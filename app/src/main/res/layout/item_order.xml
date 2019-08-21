@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/dp_5">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/img_food_menu"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="@dimen/dp_60"
+            android:layout_centerVertical="true"
+            android:src="@color/backgroundtrangchu" />
+
+        <TextView
+            android:id="@+id/text_food_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_toRightOf="@id/img_food_menu"
+            android:padding="@dimen/dp_2"
+            android:text="ten"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/text_food_name_value"
+            android:gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@id/text_food_name"
+            android:layout_marginTop="@dimen/dp_5"
+            android:padding="@dimen/dp_2"
+            android:text="ten"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/text_food_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_food_name"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_toRightOf="@id/img_food_menu"
+            android:padding="@dimen/dp_2"
+            android:text="gia"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/text_food_price_value"
+            android:gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/text_food_price"
+            android:layout_toRightOf="@id/text_food_price"
+            android:padding="@dimen/dp_2"
+            android:text="ten"
+            android:textSize="@dimen/sp_12" />
+
+
+        <TextView
+            android:id="@+id/text_food_accounting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/text_food_price_value"
+            android:layout_marginLeft="@dimen/dp_5"
+            android:layout_toRightOf="@id/img_food_menu"
+            android:padding="@dimen/dp_2"
+            android:text="Thanh tien"
+            android:textSize="@dimen/sp_12" />
+
+        <TextView
+            android:id="@+id/text_food_accounting_value"
+            android:gravity="right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@id/text_food_accounting"
+            android:layout_toRightOf="@id/text_food_accounting"
+            android:padding="@dimen/dp_2"
+            android:text="ten"
+            android:textSize="@dimen/sp_12" />
+
+    </RelativeLayout>
+</android.support.v7.widget.LinearLayoutCompat>

@@ -132,6 +132,7 @@ class CommentAdapter(
                 glideLoadImage(view.img_four_four, storageRef)
                 view.img_transparent.visibility = View.VISIBLE
                 view.text_number.visibility = View.VISIBLE
+                view.text_number.text = "+${hinhanhs.size - 4}"
             }
         }
     }

@@ -28,11 +28,12 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     RestaurentMyselfAdapter.OnClickItemListerner {
 
     var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
-    lateinit var refQuanAn: Query
-    lateinit var mListernerQuanAn: ChildEventListener
     val storage = FirebaseStorage.getInstance().reference
     var list_of_items = arrayOf("Hà Nội", "TP.Hồ Chí Minh")
     private var mIdKhuVuc = ""
+    private var isRemoveEventListerner = false
+    lateinit var refQuanAn: Query
+    lateinit var mListernerQuanAn: ChildEventListener
 
     @Inject
     lateinit var mActivity: MainActivity
@@ -65,6 +66,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        isRemoveEventListerner = false
         initData()
         mActivity.actionbarBack.visibility = View.GONE
     }
@@ -84,14 +86,10 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         btn_add.setOnClickListener {
             mActivity.pushFragment(R.id.frame_layout, PostQuanAnFragment.newInstance())
         }
-/*
-        swiperefresh.setOnRefreshListener {
-            mAdapterRestaurent.quanAns.clear()
-            getQuanAnFllowNguoiDang()
-        }*/
     }
 
     fun getQuanAnFllowNguoiDang() {
+        progressBar.visibility = View.VISIBLE
         refQuanAn = nodeRoot.child("quanans").child(mIdKhuVuc).orderByChild("nguoidang")
             .equalTo(appSharedPreference.getUser().taikhoan)
         mListernerQuanAn = object : ChildEventListener {
@@ -105,11 +103,11 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             }
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
-         /*       if(swiperefresh.isRefreshing){
-                    swiperefresh.isRefreshing = false
-                }*/
-                val quanAn = p0.getValue(QuanAn::class.java)
-                mAdapterRestaurent.addQuanAn(quanAn!!)
+                if (!isRemoveEventListerner) {
+                    progressBar.visibility = View.GONE
+                    val quanAn = p0.getValue(QuanAn::class.java)
+                    mAdapterRestaurent.addQuanAn(quanAn!!)
+                }
             }
 
             override fun onChildRemoved(p0: DataSnapshot) {
@@ -122,6 +120,7 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     override fun onStop() {
         super.onStop()
         refQuanAn.removeEventListener(mListernerQuanAn)
+        isRemoveEventListerner = true
     }
 
     fun getQuanAnSuccess(data: QuanAn) {
@@ -163,7 +162,10 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     override fun deleteQuanAn(quanan: QuanAn) {
-        showAlertListerner("Thông báo!","Bạn có chắc chắn muốn xoá quán ăn này?",
-            DialogInterface.OnClickListener { p0, p1 -> nodeRoot.child("quanans").child("KV${quanan.id_khuvuc}").child(quanan.id).removeValue() })
+        showAlertListerner("Thông báo!", "Bạn có chắc chắn muốn xoá quán ăn này?",
+            DialogInterface.OnClickListener { p0, p1 ->
+                nodeRoot.child("quanans").child("KV${quanan.id_khuvuc}").child(quanan.id)
+                    .removeValue()
+            })
     }
 }

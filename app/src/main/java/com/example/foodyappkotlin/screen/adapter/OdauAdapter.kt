@@ -101,7 +101,6 @@ class OdauAdapter(
                 v.text_cmt_one.text = listBinhLuan[0].noidung
                 glideLoadImage(v.context,v.image_avatar_comment,listBinhLuan[0].hinhanh_user)
                 v.group2.visibility = View.GONE
-
             }
         } else {
             v.group.visibility = View.GONE
@@ -137,7 +136,7 @@ class OdauAdapter(
         if (quanan.giaohang) {
             v.button_order.visibility = View.VISIBLE
             v.button_order.setOnClickListener {
-                itemClickListener.startActivityMenu(quanan.thucdon)
+                itemClickListener.startActivityMenu(quanan)
             }
         } else {
             v.button_order.visibility = View.GONE
@@ -198,6 +197,6 @@ class OdauAdapter(
     interface OnClickListener {
         fun onItemClickListener(quanAn: QuanAn)
 
-        fun startActivityMenu(idThucDon : String)
+        fun startActivityMenu(quanAn: QuanAn)
     }
 }

@@ -65,7 +65,6 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
         val ADD_COMMENT = 0
         val EDIT_COMMENT = 1
 
-
         val REQUEST_TAKE_PHOTO = 101
         val REQUEST_GALLERY_PHOTO = 102
 
@@ -261,7 +260,6 @@ class PostCommentFragment : BaseFragment(), PostCommentInterface.View,
             "Bình luận của bạn đã được gửi đến cho chúng tôi,cảm ơn bản đã đóng góp",
             "Xem bình luận",
             DialogInterface.OnClickListener { p0, p1 ->
-                progressBar.visibility = View.GONE
                 mActivity.popFragment()
             })
     }

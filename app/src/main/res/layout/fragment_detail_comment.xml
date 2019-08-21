@@ -6,8 +6,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:padding="@dimen/dp_6"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:padding="@dimen/dp_6">
 
         <LinearLayout
             android:id="@+id/layout_all"
@@ -29,8 +29,8 @@
                     android:id="@+id/text_name_user"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/dp_5"
                     android:layout_gravity="center"
+                    android:paddingLeft="@dimen/dp_5"
                     android:textStyle="bold" />
             </LinearLayout>
 
@@ -38,18 +38,18 @@
                 android:id="@+id/text_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_10"
                 android:text="title"
                 android:textAllCaps="true"
                 android:textSize="@dimen/sp_18"
-                android:layout_marginTop="@dimen/dp_10"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/text_content_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dp_5"
                 android:layout_marginTop="@dimen/dp_5"
+                android:padding="@dimen/dp_5"
                 android:text="content" />
 
             <include layout="@layout/multiimage_layout" />
@@ -180,23 +180,33 @@
             <LinearLayout
                 android:id="@+id/layout_function"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="@dimen/dp_8"
-                android:visibility="gone"
-                android:layout_height="wrap_content">
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/txt_edit_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Sửa"
+                    android:background="@drawable/bg_border_textview_blue"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:text="@string/txt_edit"
                     android:textColor="@color/blue" />
 
                 <TextView
                     android:id="@+id/txt_delete_comment"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dp_20"
-                    android:text="Xóa"
+                    android:layout_marginLeft="@dimen/dp_10"
+                    android:background="@drawable/bg_border_textview_red"
+                    android:paddingLeft="@dimen/dp_10"
+                    android:paddingTop="@dimen/dp_5"
+                    android:paddingRight="@dimen/dp_10"
+                    android:paddingBottom="@dimen/dp_5"
+                    android:text="@string/txt_delete"
                     android:textColor="@color/red" />
             </LinearLayout>
 
@@ -216,22 +226,23 @@
                 app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/layout_post_comment"
             android:layout_width="match_parent"
-            android:background="@color/gray3"
-            android:visibility="gone"
             android:layout_height="wrap_content"
             android:layout_below="@+id/layout_all"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            android:background="@color/gray3"
+            android:visibility="gone">
 
             <EditText
                 android:id="@+id/edt_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/btn_post"
-                android:hint="@string/hint_input_comment"
                 android:backgroundTint="@color/red"
+                android:hint="@string/hint_input_comment"
                 android:imeOptions="actionDone"
                 android:textColor="@color/pink2" />
 

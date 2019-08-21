@@ -23,8 +23,8 @@ import javax.inject.Singleton
 @Singleton
 class FoodyRemoteDataSource : FoodyDataSource.Remote {
 
-        var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
-        val storage = FirebaseStorage.getInstance().reference
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
+    val storage = FirebaseStorage.getInstance().reference
 
     @Inject
     lateinit var appSharedPreference: AppSharedPreference
@@ -184,7 +184,8 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
         callBack: FoodyDataSource.DataCallBack<String>
     ) {
         var dataRef =
-            nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id).child("binhluans").push()
+            nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
+                .child("binhluans").push()
         var hinhanhSuccess: HashMap<String, String> = HashMap()
         binhluan.hinhanh.forEach {
             uploadImageFile(it.value)
