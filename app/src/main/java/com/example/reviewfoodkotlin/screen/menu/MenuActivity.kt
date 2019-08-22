@@ -1,5 +1,6 @@
 package com.example.reviewfoodkotlin.screen.menu
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
@@ -55,16 +56,56 @@ class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener {
         callApi()
     }
 
+    @SuppressLint("SetTextI18n")
     fun initData(thucDons: MutableList<ThucDonResponse>) {
         monAnAdapter = MonAnAdapter(this, thucDons, MonAnAdapter.TYPE_ORDER, this)
+        txt_fee_ship_value.text = "${(distance(
+            appSharedPreference.getLocation().latitude,
+            appSharedPreference.getLocation().longitude,
+            mQuanAn.latitude,
+            mQuanAn.longitude
+        ).roundToLong() * 5000)} VND"
+        if ((distance(
+                appSharedPreference.getLocation().latitude,
+                appSharedPreference.getLocation().longitude,
+                mQuanAn.latitude,
+                mQuanAn.longitude
+            ).roundToLong() * 5000) < 30000
+        ) {
+            txt_fee_ship_value.text = "${convertMoneyToStringMoney(30000)} VND"
+        } else {
+            txt_fee_ship_value.text = "${convertMoneyToStringMoney(
+                distance(
+                    appSharedPreference.getLocation().latitude,
+                    appSharedPreference.getLocation().longitude,
+                    mQuanAn.latitude,
+                    mQuanAn.longitude
+                ).roundToLong() * 5000
+            )} VND"
+        }
         recycler_menu_monan.adapter = monAnAdapter
+        if(mQuanAn.giaohang){
+            button_order.visibility = View.VISIBLE
+        }else{
+            button_order.visibility = View.GONE
+        }
+
         button_order.setOnClickListener {
-            setValueOrdersToServer()
-            showAlertListernerOneClick(
-                "Thông báo!",
-                "Chúng tôi đã ghi nhận đơn hàng của bạn, đơn vị vận chuyển của chúng tôi sẽ liên hệ với bạn, xin cảm ơn!",
-                "Ok",
-                DialogInterface.OnClickListener { p0, p1 -> finish() })
+            if (distance(
+                    appSharedPreference.getLocation().latitude,
+                    appSharedPreference.getLocation().longitude,
+                    mQuanAn.latitude,
+                    mQuanAn.longitude
+                ).roundToLong() > 20
+            ) {
+                showAlertListernerOneClick(
+                    "Thông báo!",
+                    "Khoảng cách của bạn là quá lớn, khoảng cách giao hàng tối đa là : 20km",
+                    "Thoát",
+                    DialogInterface.OnClickListener { p0, p1 -> finish() })
+            }else{
+                setValueOrdersToServer()
+            }
         }
         actionbarBack.visibility = View.VISIBLE
         actionbarBack.setOnClickListener {
@@ -97,6 +138,15 @@ class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener {
                 .child("donhang").push()
             request.id = refDonHang.key!!
             refDonHang.setValue(request)
+            showAlertListernerOneClick(
+                "Thông báo!",
+                "Chúng tôi đã ghi nhận đơn hàng của bạn, đơn vị vận chuyển của chúng tôi sẽ liên hệ với bạn, xin cảm ơn!",
+                "Ok",
+                DialogInterface.OnClickListener { p0, p1 -> finish() })
+        } else {
+            showAlertMessage(
+                "Có lỗi!", "Bạn phải đặt tối thiểu 1 mặt hàng"
+            )
         }
     }
 
@@ -124,11 +174,17 @@ class MenuActivity : BaseActivity(), MonAnAdapter.MonAnOnClickListener {
             })
     }
 
+    fun convertMoneyToStringMoney(money: Long): String {
+        val formatter = DecimalFormat("#,###")
+        val formattedNumber = formatter.format(money)
+        return formattedNumber
+    }
+
     fun calculatorAllItem(money: Long) {
         sum_money += money
         val formatter = DecimalFormat("#,###")
         val formattedNumber = formatter.format(sum_money)
-        sum_value.text = formattedNumber
+        sum_value.text = "$formattedNumber VND"
     }
 
     override fun monAnCalculatorMoney(money: Long) {

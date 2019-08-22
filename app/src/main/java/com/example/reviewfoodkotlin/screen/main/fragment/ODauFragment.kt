@@ -1,5 +1,6 @@
 package com.example.reviewfoodkotlin.screen.main.fragment
 
+import android.content.DialogInterface
 import android.location.Location
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -18,7 +19,10 @@ import com.example.reviewfoodkotlin.data.source.remote.FoodyRemoteDataSource
 import com.example.reviewfoodkotlin.screen.adapter.OdauAdapter
 import com.example.reviewfoodkotlin.screen.detail.DetailEatingActivity
 import com.example.reviewfoodkotlin.screen.main.MainActivity
+import com.example.reviewfoodkotlin.screen.main.myorders.MyOrdersFragment
 import com.example.reviewfoodkotlin.screen.menu.MenuActivity
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.app_toolbar.*
 import kotlinx.android.synthetic.main.fragment_odau.*
@@ -27,6 +31,7 @@ import javax.inject.Inject
 
 class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener,
     AdapterView.OnItemSelectedListener {
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     private var mLocationPermissionGranted: Boolean = false
     var location: Location? = null
 
@@ -75,9 +80,9 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     fun settingToolbar() {
         mActivity.actionbarBack.visibility = View.GONE
         mActivity.actionbarRight.visibility = View.VISIBLE
-        mActivity.actionbarRight.setImageResource(R.drawable.ic_location_home)
+        mActivity.actionbarRight.setImageResource(R.drawable.ic_orders)
         mActivity.actionbarRight.setOnClickListener {
-
+            mActivity.pushFragment(R.id.frame_layout, MyOrdersFragment.newInstance())
         }
     }
 
@@ -107,7 +112,12 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
 
         val linearLayoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
         mView.recycler_quan_an.layoutManager = linearLayoutManager
-        lOdauAdapter = OdauAdapter(ArrayList(), appSharedPreference.getLocation(), this)
+        lOdauAdapter = OdauAdapter(
+            ArrayList(),
+            appSharedPreference.getLocation(),
+            appSharedPreference.getUser().permission,
+            this
+        )
         mView.recycler_quan_an.adapter = lOdauAdapter
         setOnItemSelected()
         swipe_refresh.setOnRefreshListener {
@@ -220,5 +230,20 @@ class ODauFragment : Fragment(), ODauInterface.View, OdauAdapter.OnClickListener
     override fun onStop() {
         super.onStop()
         mODauPresenter.removeListernerQuanAn()
+    }
+
+    override fun deleteRestaurant(quanAn: QuanAn) {
+        mActivity.showAlertListerner("Thông báo!", "Bạn có chắc chắn muốn xoá quán ăn này?",
+            DialogInterface.OnClickListener { p0, p1 ->
+                nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
+                    .removeValue().addOnSuccessListener {
+                        nodeRoot.child("thucdons").child(quanAn.thucdon).removeValue()
+                    }.addOnFailureListener {
+                        mActivity.showAlertMessage(
+                            "Thất bại!",
+                            "Có lỗi xảy ra trong quá trình xoá quán ăn, vui lòng kiểm tra các kết nối mạng và thử lại"
+                        )
+                    }
+            })
     }
 }

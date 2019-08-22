@@ -11,18 +11,24 @@ import com.example.reviewfoodkotlin.R
 import com.example.reviewfoodkotlin.data.models.BinhLuan
 import com.example.reviewfoodkotlin.data.models.QuanAn
 import com.example.reviewfoodkotlin.di.module.GlideApp
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_odau.view.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import kotlin.math.round
 
 class OdauAdapter(
-    var quanans: MutableList<QuanAn>, val locationDevider: Location,
+    var quanans: MutableList<QuanAn>, val locationDevider: Location, val permission: Int,
     val itemClickListener: OdauAdapter.OnClickListener
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    var mListQuanAn = this.quanans
+    var nodeRoot: DatabaseReference = FirebaseDatabase.getInstance().reference
     val storage = FirebaseStorage.getInstance().reference
+
+    var mListQuanAn = this.quanans
     private var isLoading: Boolean = false
 
     companion object {
@@ -94,12 +100,16 @@ class OdauAdapter(
             v.group2.visibility = View.VISIBLE
             if (quanan.binhluans.size >= 2) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
-                glideLoadImage(v.context,v.image_avatar_comment,listBinhLuan[0].hinhanh_user)
+                glideLoadImage(v.context, v.image_avatar_comment, listBinhLuan[0].hinhanh_user)
                 v.text_cmt_two.text = listBinhLuan[1].noidung
-                glideLoadImage(v.context,v.image_avatar_comment_second,listBinhLuan[1].hinhanh_user)
+                glideLoadImage(
+                    v.context,
+                    v.image_avatar_comment_second,
+                    listBinhLuan[1].hinhanh_user
+                )
             } else if (quanan.binhluans.size == 1) {
                 v.text_cmt_one.text = listBinhLuan[0].noidung
-                glideLoadImage(v.context,v.image_avatar_comment,listBinhLuan[0].hinhanh_user)
+                glideLoadImage(v.context, v.image_avatar_comment, listBinhLuan[0].hinhanh_user)
                 v.group2.visibility = View.GONE
             }
         } else {
@@ -120,9 +130,18 @@ class OdauAdapter(
         if (diemQuanAn > 0) {
             diemQuanAn /= quanan.binhluans.size
         }
-        v.text_point.text = "${(round(diemQuanAn))}"
+        v.text_point.text = "${(roundOffDecimal(diemQuanAn))}"
         v.text_food.text = quanan.tenquanan
         v.text_address.text = quanan.diachi
+
+        if (permission == 1) {
+            v.txt_delete_restaurant.visibility = View.VISIBLE
+            v.txt_delete_restaurant.setOnClickListener {
+                itemClickListener.deleteRestaurant(quanan)
+            }
+        }else{
+            v.txt_delete_restaurant.visibility = View.GONE
+        }
 
         if (locationDevider != null) {
             v.text_distance.text = "${distance(
@@ -151,7 +170,13 @@ class OdauAdapter(
             .into(v.image_foody)
     }
 
-    private fun glideLoadImage(context : Context,img: ImageView, url: String) {
+    fun roundOffDecimal(number: Double): Double? {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        return df.format(number).toDouble()
+    }
+
+    private fun glideLoadImage(context: Context, img: ImageView, url: String) {
         GlideApp.with(context)
             .load(url)
             .error(R.drawable.placeholder)
@@ -198,5 +223,7 @@ class OdauAdapter(
         fun onItemClickListener(quanAn: QuanAn)
 
         fun startActivityMenu(quanAn: QuanAn)
+
+        fun deleteRestaurant(quanAn: QuanAn)
     }
 }

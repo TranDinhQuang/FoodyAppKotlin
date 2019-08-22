@@ -81,7 +81,7 @@ class FragmentComments : BaseFragment(), CommentAdapter.CommentOnCLickListerner 
 
         commentAdapter =
             CommentAdapter(activity!!, ArrayList(),
-                appSharedPreference.getToken()!!,mQuanAn.id, appSharedPreference.getUser().liked, this)
+                appSharedPreference.getToken()!!,appSharedPreference.getUser().permission,mQuanAn.id, appSharedPreference.getUser().liked, this)
         recycler_comments.adapter = commentAdapter
 
         detailViewModel.quanan.observe(this, Observer<QuanAn> { item ->

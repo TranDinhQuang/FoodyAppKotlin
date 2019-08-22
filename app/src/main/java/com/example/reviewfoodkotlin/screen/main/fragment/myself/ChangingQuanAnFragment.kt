@@ -266,11 +266,11 @@ class ChangingQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListene
     }
 
     fun imageUploadAndDelete() {
-        if (listImageDelete.isNotEmpty()) {
+       /* if (listImageDelete.isNotEmpty()) {
             listImageDelete.forEach {
                 deleteImageFileQuanAn(it)
             }
-        }
+        }*/
         if (listImageUpload.isNotEmpty()) {
             listImageUpload.forEach {
                 uploadImageFileQuanAn(it)

@@ -37,11 +37,12 @@ import com.google.firebase.storage.StorageReference
 import dagger.android.support.AndroidSupportInjection
 import kotlinx.android.synthetic.main.fragment_detail_eating.*
 import kotlinx.android.synthetic.main.layout_feature.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.math.round
 
 class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.MonAnOnClickListener,
     NuocUongAdapter.NuocUongOnClickListener, CommentAdapter.CommentOnCLickListerner {
@@ -157,9 +158,12 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
         if (diemQuanAn > 0) {
             diemQuanAn /= quanAn.binhluans.size
         }
-        text_point.text = "${(round(diemQuanAn))}"
+        text_point.text = "${(roundOffDecimal(diemQuanAn))}"
 
-        text_order.text = "giao hàng: ${quanAn.giaohang}"
+        when {
+            quanAn.giaohang -> text_order.text = "giao hàng: Hỗ trợ giao hàng"
+            else -> text_order.text = "giao hàng: Không hỗ trợ giao hàng"
+        }
         if (quanAn.giaohang) {
             button_order.visibility = View.VISIBLE
             button_order.setOnClickListener {
@@ -200,6 +204,12 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
             "Mở cửa:${DateUtils.convertMinuteToHours(quanAn.giomocua)} - Đóng cửa:${DateUtils.convertMinuteToHours(
                 quanAn.giodongcua
             )}"
+    }
+
+    fun roundOffDecimal(number: Double): Double? {
+        val df = DecimalFormat("#.##")
+        df.roundingMode = RoundingMode.FLOOR
+        return df.format(number).toDouble()
     }
 
     fun getAllCommentFollowQuanAn() {
@@ -244,6 +254,7 @@ class OverviewFragment : BaseFragment(), OverviewInterface.View, MonAnAdapter.Mo
                 activity!!,
                 binhluans,
                 appSharedPreference.getToken()!!,
+                appSharedPreference.getUser().permission,
                 mQuanAn.id,
                 appSharedPreference.getUser().liked,
                 this

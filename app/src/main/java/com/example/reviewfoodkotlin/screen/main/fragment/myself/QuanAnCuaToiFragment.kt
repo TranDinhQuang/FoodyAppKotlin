@@ -89,7 +89,6 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     }
 
     fun getQuanAnFllowNguoiDang() {
-        progressBar.visibility = View.VISIBLE
         refQuanAn = nodeRoot.child("quanans").child(mIdKhuVuc).orderByChild("nguoidang")
             .equalTo(appSharedPreference.getUser().taikhoan)
         mListernerQuanAn = object : ChildEventListener {
@@ -104,7 +103,6 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
 
             override fun onChildAdded(p0: DataSnapshot, p1: String?) {
                 if (!isRemoveEventListerner) {
-                    progressBar.visibility = View.GONE
                     val quanAn = p0.getValue(QuanAn::class.java)
                     mAdapterRestaurent.addQuanAn(quanAn!!)
                 }
@@ -165,7 +163,14 @@ class QuanAnCuaToiFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
         showAlertListerner("Thông báo!", "Bạn có chắc chắn muốn xoá quán ăn này?",
             DialogInterface.OnClickListener { p0, p1 ->
                 nodeRoot.child("quanans").child("KV${quanan.id_khuvuc}").child(quanan.id)
-                    .removeValue()
+                    .removeValue().addOnSuccessListener {
+                        nodeRoot.child("thucdons").child(quanan.thucdon).removeValue()
+                    }.addOnFailureListener {
+                        mActivity.showAlertMessage(
+                            "Thất bại!",
+                            "Có lỗi xảy ra trong quá trình xoá quán ăn, vui lòng kiểm tra các kết nối mạng và thử lại"
+                        )
+                    }
             })
     }
 }

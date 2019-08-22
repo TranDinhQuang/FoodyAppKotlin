@@ -1,5 +1,6 @@
 package com.example.reviewfoodkotlin.screen.splash
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -22,6 +23,10 @@ import com.google.android.gms.maps.model.LatLng
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.fragment_odau.*
 import javax.inject.Inject
+import android.net.NetworkInfo
+import android.net.ConnectivityManager
+
+
 
 
 class SplashActivity : BaseActivity() {
@@ -53,21 +58,21 @@ class SplashActivity : BaseActivity() {
     private fun delayTime() {
         mWaitHandler.postDelayed({
             try {
-                if(mLocationPermissionGranted){
+                if (mLocationPermissionGranted) {
                     if (appSharedPreferences.getToken() == "") {
                         progressBar.visibility = View.GONE
                         val intent = Intent(applicationContext, LoginActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        if (checkNetWorkEnabled()) {
+                        if (isOnline()) {
                             mPresenter.getUserLogin(appSharedPreferences.getToken()!!)
                         } else {
                             //show message
+                            showAlertMessage("Có lỗi","Vui lòng kiểm tra các kết nối mạng và thử lại")
                         }
                     }
-                }
-                else{
+                } else {
                     delayTime()
                 }
             } catch (ignored: Exception) {
@@ -76,6 +81,7 @@ class SplashActivity : BaseActivity() {
         }, 5000)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -86,7 +92,13 @@ class SplashActivity : BaseActivity() {
             (MapsActivity.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     mLocationPermissionGranted = true
-                }else{
+                    val locManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+                    val network_enabled = locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+                    if (network_enabled) {
+                        location = locManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+                        appSharedPreferences.setLocation(location!!)
+                    }
+                } else {
                     getLocationPermission()
                 }
             }
@@ -94,6 +106,10 @@ class SplashActivity : BaseActivity() {
     }
 
     private fun getLocationPermission() {
+        val defaultLocation = Location("")
+        defaultLocation.latitude = 21.026047
+        defaultLocation.longitude = 105.81267
+        appSharedPreferences.setLocation(defaultLocation)
         if (ContextCompat.checkSelfPermission(
                 this.applicationContext,
                 android.Manifest.permission.ACCESS_FINE_LOCATION
@@ -119,6 +135,12 @@ class SplashActivity : BaseActivity() {
         val locManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val network_enabled = locManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
         return network_enabled
+    }
+
+    fun isOnline(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cm.activeNetworkInfo
+        return netInfo != null && netInfo.isConnectedOrConnecting
     }
 
     fun getUserSuccess(userResponse: UserResponse) {

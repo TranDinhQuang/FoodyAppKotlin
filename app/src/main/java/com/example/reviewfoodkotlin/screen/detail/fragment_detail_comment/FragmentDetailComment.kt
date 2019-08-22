@@ -182,7 +182,7 @@ class FragmentDetailComment : BaseFragment(), DetailCommentInterface.View, View.
             isLiked = true
         }
 
-        if (binhLuan.id_user == appSharedPreference.getToken()) {
+        if (binhLuan.id_user == appSharedPreference.getToken() || appSharedPreference.getUser().permission == 1) {
             layout_function.visibility = View.VISIBLE
         } else {
             layout_function.visibility = View.GONE

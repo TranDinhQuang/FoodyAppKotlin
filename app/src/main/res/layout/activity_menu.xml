@@ -9,28 +9,42 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_5">
+
+        <TextView
+            android:id="@+id/txt_fee_ship"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phí ship: " />
+
+        <TextView
+            android:id="@+id/txt_fee_ship_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/txt_fee_ship"
+            android:gravity="right" />
+
+        <TextView
+            android:id="@+id/txt_accounting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_fee_ship"
+            android:text="Thanh toán: "
+            android:textSize="@dimen/sp_20" />
 
         <TextView
             android:id="@+id/sum_value"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
+            android:gravity="right"
+            android:textColor="@color/orange"
+            android:layout_toRightOf="@id/txt_accounting"
             android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dp_24"
-            android:paddingTop="@dimen/dp_24"
-            android:paddingBottom="@dimen/dp_24"
-            android:text="0"
-            android:textSize="@dimen/dp_20" />
+            android:layout_below="@+id/txt_fee_ship"
+            android:layout_alignParentRight="true"
+            android:text="0 VND"
+            android:textSize="@dimen/sp_20" />
 
-        <TextView
-            android:id="@+id/txt_vnd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/sum_value"
-            android:paddingLeft="@dimen/dp_16"
-            android:paddingTop="@dimen/dp_24"
-            android:paddingBottom="@dimen/dp_24"
-            android:text="VND"
-            android:textSize="@dimen/dp_20" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_menu_monan"

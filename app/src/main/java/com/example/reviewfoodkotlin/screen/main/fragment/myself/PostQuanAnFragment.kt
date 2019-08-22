@@ -15,7 +15,6 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.content.FileProvider
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -129,8 +128,9 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
                 val result = data!!.getStringExtra("result")
                 mLatitude = data.getDoubleExtra("latitude", 0.0)
                 mLongitude = data.getDoubleExtra("longitude", 0.0)
+                edt_latitude.setText(mLatitude.toString())
+                edt_longitude.setText(mLongitude.toString())
                 edt_dia_chi.setText(result)
-                Log.d("kiemtra","$mLatitude - $mLongitude")
             }
         }
     }
@@ -254,10 +254,13 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
     fun addQuanAnCuaToi() {
         if (edt_ten_quan_an.text.toString().trim() != "" && edt_dia_chi.text.toString().trim() != ""
             && edt_time_open.text.toString().trim() != "" && edt_time_close.text.toString().trim() != ""
-            && listImagePost.size > 0 && thucDonsRequest.size > 0
+            && listImagePost.size > 0 && thucDonsRequest.size > 0 && edt_latitude.text.toString().trim() != ""
+            && edt_longitude.text.toString().trim() != ""
         ) {
             refThucDon.setValue(thucDonsRequest).addOnSuccessListener {
                 quanAn = QuanAn()
+                mLatitude = edt_latitude.text.trim().toString().toDouble()
+                mLongitude = edt_longitude.text.trim().toString().toDouble()
                 quanAn.nguoidang = appSharedPreference.getUser().taikhoan
                 quanAn.thucdon = refThucDon.key!!
                 quanAn.tenquanan = edt_ten_quan_an.text.toString().trim()
@@ -395,9 +398,18 @@ class PostQuanAnFragment : BaseFragment(), AdapterView.OnItemSelectedListener,
             showAlertMessage("Có lỗi", "Tải ảnh món ăn lên hệ thống thất bại,vui lòng thử lại")
         }.addOnSuccessListener {
             btn_add_mon_an.isEnabled = true
-            thucDon.hinhanh = url
+            thucDon.hinhanh = file.lastPathSegment
             glideLoadImage(img_mon_an, url)
         }
+    }
+
+    private fun glideLoadImage(img: ImageView, url: StorageReference) {
+        GlideApp.with(activityContext)
+            .load(url)
+            .error(R.drawable.placeholder)
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
     }
 
     private fun glideLoadImage(img: ImageView, url: String) {

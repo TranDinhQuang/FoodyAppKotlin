@@ -16,11 +16,14 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_comment.view.*
 import kotlinx.android.synthetic.main.multiimage_layout.view.*
+import java.math.RoundingMode
+import java.text.DecimalFormat
 
 class CommentAdapter(
     val context: Context,
     var comments: MutableList<BinhLuan>,
     var userId: String,
+    var permission : Int,
     var idQuanAn: String,
     var listLiked: Map<String, String>,
     val view: CommentAdapter.CommentOnCLickListerner
@@ -43,12 +46,6 @@ class CommentAdapter(
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(p0: ViewHolder, p1: Int) {
-        if(comments[p1].id_user == userId){
-            p0.itemView.layout_function.visibility = View.VISIBLE
-        }else{
-            p0.itemView.layout_function.visibility = View.INVISIBLE
-        }
-
         p0.itemView.text_title.text = comments[p1].tieude
         p0.itemView.text_content_comment.text = comments[p1].noidung
         p0.itemView.text_title.text = comments[p1].tieude
@@ -68,7 +65,7 @@ class CommentAdapter(
             p0.itemView.img_like.setImageResource(R.drawable.ic_like_red)
         }
 
-        if (comments[p1].id_user == userId) {
+        if (comments[p1].id_user == userId || permission == 1) {
             p0.itemView.layout_function.visibility = View.VISIBLE
             p0.itemView.txt_edit_comment.setOnClickListener {
                 view.onClickEditComment(comments[p1])

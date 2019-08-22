@@ -9,6 +9,8 @@ import android.widget.ImageView
 import com.example.reviewfoodkotlin.R
 import com.example.reviewfoodkotlin.data.response.ThucDonResponse
 import com.example.reviewfoodkotlin.di.module.GlideApp
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.item_menu_order.view.*
 
 class MonAnAdapter(
@@ -18,6 +20,8 @@ class MonAnAdapter(
     val view: MonAnAdapter.MonAnOnClickListener
 ) :
     RecyclerView.Adapter<MonAnAdapter.ViewHolder>() {
+    val storage = FirebaseStorage.getInstance().reference
+
     companion object {
         val TYPE_VIEW = 1
         val TYPE_ORDER = 2
@@ -52,7 +56,8 @@ class MonAnAdapter(
         } else {
             p0.itemView.layout_value.visibility = View.GONE
         }
-        glideLoadImage(p0.itemView.img_food_menu, monAns[p1].hinhanh)
+        val storageRef = storage.child("monan").child(monAns[p1].hinhanh)
+        glideLoadImage(p0.itemView.img_food_menu, storageRef)
         p0.itemView.text_food_name.text = monAns[p1].ten
         p0.itemView.text_food_price.text = monAns[p1].gia.toString()
     }
@@ -62,6 +67,15 @@ class MonAnAdapter(
             .load(url)
             .error(R.drawable.placeholder)
             .centerCrop()
+            .thumbnail(0.1f)
+            .placeholder(R.drawable.placeholder)
+            .into(img)
+    }
+
+    private fun glideLoadImage(img: ImageView, url: StorageReference) {
+        GlideApp.with(context)
+            .load(url)
+            .error(R.drawable.placeholder)
             .thumbnail(0.1f)
             .placeholder(R.drawable.placeholder)
             .into(img)

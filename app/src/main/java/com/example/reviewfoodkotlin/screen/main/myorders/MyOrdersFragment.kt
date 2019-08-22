@@ -1,4 +1,4 @@
-package com.example.reviewfoodkotlin.screen.main.my_orders
+package com.example.reviewfoodkotlin.screen.main.myorders
 
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -9,10 +9,12 @@ import com.example.reviewfoodkotlin.AppSharedPreference
 import com.example.reviewfoodkotlin.R
 import com.example.reviewfoodkotlin.common.BaseFragment
 import com.example.reviewfoodkotlin.data.repository.FoodyRepository
+import com.example.reviewfoodkotlin.data.response.MyOrdersResponse
 import com.example.reviewfoodkotlin.screen.adapter.MyOrdersAdapter
 import com.example.reviewfoodkotlin.screen.main.MainActivity
 import com.google.firebase.database.*
 import dagger.android.support.AndroidSupportInjection
+import kotlinx.android.synthetic.main.fragment_my_orders.*
 import javax.inject.Inject
 
 class MyOrdersFragment : BaseFragment() {
@@ -47,28 +49,32 @@ class MyOrdersFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         mActivity.showActionBack(View.OnClickListener { mActivity.popFragment() })
+        getThucDons()
     }
 
     fun getThucDons() {
-        val refThucDon =
+        var monAns: MutableList<MyOrdersResponse> = ArrayList()
+        var refThucDon =
             nodeRoot.child("thanhviens").child(appSharedPreference.getToken()!!).child("donhang")
-                .addListenerForSingleValueEvent(object : ValueEventListener {
-                    override fun onCancelled(p0: DatabaseError) {
+        refThucDon.addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onCancelled(p0: DatabaseError) {
 
+            }
+
+            override fun onDataChange(p0: DataSnapshot) {
+                p0.children.forEach {
+                    if (it.hasChildren()) {
+                        monAns.add(it.getValue(MyOrdersResponse::class.java)!!)
                     }
-
-                    override fun onDataChange(p0: DataSnapshot) {
-                        p0.children.forEach {
-                            if (it.hasChildren()) {
-
-                            }
-                        }
-                    }
-                })
+                    initView(monAns)
+                }
+                refThucDon.removeEventListener(this)
+            }
+        })
     }
 
-    fun initView() {
-     /*   mAdapter = MyOrdersAdapter(activityContext,)
-        recycler_orders.adapter*/
+    fun initView(orders: MutableList<MyOrdersResponse>) {
+        mAdapter = MyOrdersAdapter(activityContext, orders)
+        recycler_orders.adapter = mAdapter
     }
 }

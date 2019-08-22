@@ -32,9 +32,37 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/edt_ten_quan_an"
             android:layout_marginTop="@dimen/dp_5"
+            android:hint="@string/hint_address_restaurent"
             android:maxLines="2"
-            android:paddingRight="@dimen/dp_35"
-            android:hint="@string/hint_address_restaurent"/>
+            android:paddingRight="@dimen/dp_35" />
+
+        <LinearLayout
+            android:id="@+id/layout_location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edt_dia_chi"
+            android:layout_marginTop="@dimen/dp_5"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <EditText
+                android:id="@+id/edt_latitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Latitude"
+                android:inputType="numberDecimal"
+                android:maxLength="10" />
+
+            <EditText
+                android:id="@+id/edt_longitude"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Longitude"
+                android:inputType="numberDecimal"
+                android:maxLength="10" />
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/img_open_google_maps"
@@ -44,15 +72,15 @@
             android:layout_alignBottom="@+id/edt_dia_chi"
             android:layout_alignParentRight="true"
             android:paddingLeft="@dimen/dp_10"
-            android:paddingBottom="@dimen/dp_10"
             android:paddingRight="@dimen/dp_10"
+            android:paddingBottom="@dimen/dp_10"
             android:src="@drawable/ic_search_location" />
 
         <LinearLayout
             android:id="@+id/layout_order"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/edt_dia_chi">
+            android:layout_below="@id/layout_location">
 
             <TextView
                 android:id="@+id/txt_giao_hang"
@@ -163,9 +191,9 @@
             android:id="@+id/recycler_image_quan_an"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="false"
             android:layout_below="@id/layout_take_photo"
-            android:layout_marginTop="@dimen/dp_15" />
+            android:layout_marginTop="@dimen/dp_15"
+            android:nestedScrollingEnabled="false" />
 
         <TextView
             android:id="@+id/txt_menu"
@@ -241,8 +269,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/btn_add_mon_an"
-            android:nestedScrollingEnabled="false"
             android:layout_marginTop="@dimen/dp_15"
+            android:nestedScrollingEnabled="false"
             app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
 
         <Button

@@ -341,7 +341,6 @@ class FoodyRemoteDataSource : FoodyDataSource.Remote {
             }
 
             override fun onDataChange(p0: DataSnapshot) {
-
                 p0.children.forEach {
                     val quanAn = it.getValue(QuanAn::class.java)
                     if (quanAn != null && quanAn.tenquanan.toLowerCase().contains(textSearch.trim().toLowerCase())) {

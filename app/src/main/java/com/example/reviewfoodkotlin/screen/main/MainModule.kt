@@ -11,6 +11,7 @@ import com.example.reviewfoodkotlin.screen.main.fragment.myself.PostQuanAnFragme
 import com.example.reviewfoodkotlin.screen.main.fragment.myself.QuanAnCuaToiFragment
 import com.example.reviewfoodkotlin.screen.main.fragment.profile.ProfileFragment
 import com.example.reviewfoodkotlin.screen.main.fragment.search.SearchFragment
+import com.example.reviewfoodkotlin.screen.main.myorders.MyOrdersFragment
 import dagger.Binds
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -49,4 +50,8 @@ abstract class MainModule {
     @FragmentScoped
     @ContributesAndroidInjector
     internal abstract fun profileFragment(): ProfileFragment
+
+    @FragmentScoped
+    @ContributesAndroidInjector
+    internal abstract fun myOrdersFragment(): MyOrdersFragment
 }

@@ -250,8 +250,8 @@ class ChangingCommentFragment : BaseFragment(),
             nodeRoot.child("quanans").child("KV${quanAn.id_khuvuc}").child(quanAn.id)
                 .child("binhluans").child(binhLuan.id)
         var numHinhAnh = 1
+        binhLuan.hinhanh.clear()
         if (mAdapter.imgsFile.size > 0) {
-            binhLuan.hinhanh.clear()
             mAdapter.imgsFile.forEach {
                 binhLuan.hinhanh["hinhanh$numHinhAnh"] = it
                 numHinhAnh += 1
@@ -283,17 +283,19 @@ class ChangingCommentFragment : BaseFragment(),
     }
 
     private fun deleteImage(url: String, position: Int) {
-        var storageRef: StorageReference = storage.child("binhluan/$url")
-        storageRef.delete().addOnSuccessListener {
-            mAdapter.imgsFile.removeAt(position)
-            mAdapter.notifyDataSetChanged()
-            showAlertMessage("Thông báo", "Xoá hình ảnh thành công")
-        }.addOnFailureListener {
-            showAlertMessage(
-                "Có lỗi",
-                "Xoá hình ảnh thất bại, vui lòng kiểm tra lại kết nối và thử lại"
-            )
-        }
+        mAdapter.imgsFile.removeAt(position)
+        mAdapter.notifyDataSetChanged()
+        /*    var storageRef: StorageReference = storage.child("binhluan/$url")
+            storageRef.delete().addOnSuccessListener {
+                mAdapter.imgsFile.removeAt(position)
+                mAdapter.notifyDataSetChanged()
+                showAlertMessage("Thông báo", "Xoá hình ảnh thành công")
+            }.addOnFailureListener {
+                showAlertMessage(
+                    "Có lỗi",
+                    "Xoá hình ảnh thất bại, vui lòng kiểm tra lại kết nối và thử lại"
+                )
+            }*/
     }
 
 
