@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/dp_24">
+
+    <Spinner
+        android:id="@+id/spinner_fillter_khuvuc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dp_10" />
+
+    <EditText
+        android:id="@+id/edt_search"
+        android:layout_below="@id/spinner_fillter_khuvuc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/txt_input_name_restaurant" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/edt_search"
+        android:src="@drawable/ic_search_24dp" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_quanans"
+        android:layout_below="@id/edt_search"
+        android:layout_marginTop="@dimen/dp_24"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+</RelativeLayout>

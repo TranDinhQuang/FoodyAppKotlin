@@ -72,6 +72,7 @@ dependencies {
     implementation 'android.arch.lifecycle:extensions:1.1.1'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.android.gms:play-services-places:16.0.0'
+    implementation 'com.google.android.libraries.places:places:1.0.0'
     implementation 'com.karumi:dexter:4.2.0'
 }
 apply plugin: 'com.google.gms.google-services'

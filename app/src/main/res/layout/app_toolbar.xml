@@ -9,11 +9,13 @@
     android:background="@color/colorAccent">
 
     <ImageView
-        android:id="@+id/actionbarMenu"
+        android:id="@+id/actionbarBack"
         android:layout_width="@dimen/dp_45"
         android:layout_height="@dimen/dp_45"
         android:adjustViewBounds="true"
         android:scaleType="centerInside"
+        android:src="@drawable/ic_arrow_back"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,10 +25,10 @@
         android:layout_width="@dimen/dp_45"
         android:layout_height="@dimen/dp_45"
         android:adjustViewBounds="true"
-        android:padding="@dimen/dp_10"
-        android:scaleType="centerInside"
-        android:src="@drawable/logo_foody"
+        android:scaleType="fitXY"
+        android:src="@drawable/logo_review"
         android:visibility="visible"
+        android:padding="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,13 +51,14 @@
         tools:text="Profiles" />
 
 
-    <LinearLayout
+    <ImageView
         android:id="@+id/actionbarRight"
         android:layout_width="@dimen/dp_45"
         android:layout_height="@dimen/dp_45"
         android:gravity="center"
         android:orientation="horizontal"
         android:visibility="gone"
+        android:padding="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

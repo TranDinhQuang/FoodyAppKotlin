@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.foodyappkotlin">
+    package="com.example.reviewfoodkotlin">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -14,7 +14,7 @@
     <uses-feature android:name="android.hardware.camera.flash" />
 
     <application
-        android:name=".BaseApp"
+        android:name="com.example.reviewfoodkotlin.BaseApp"
         android:allowBackup="true"
         android:exported="false"
         android:grantUriPermissions="true"
@@ -26,8 +26,8 @@
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
@@ -36,18 +36,28 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".screen.maps.MapsActivity"></activity>
-        <activity android:name=".screen.main.MainActivity"></activity>
-        <activity android:name=".screen.login.LoginActivity"></activity>
-        <activity android:name=".screen.menu.MenuActivity"></activity>
-        <activity android:name=".screen.splash.SplashActivity">
+        <activity
+            android:name="com.example.reviewfoodkotlin.screen.maps.MapsActivity"
+            android:launchMode="singleTop"/>
+        <activity
+            android:name="com.example.reviewfoodkotlin.screen.main.MainActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"/>
+        <activity
+            android:name="com.example.reviewfoodkotlin.screen.login.LoginActivity"
+            android:launchMode="singleTop"/>
+        <activity android:name="com.example.reviewfoodkotlin.screen.menu.MenuActivity"/>
+        <activity android:name="com.example.reviewfoodkotlin.screen.splash.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".screen.detail.DetailEatingActivity" />
+        <activity
+            android:name="com.example.reviewfoodkotlin.screen.detail.DetailEatingActivity"
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan" />
     </application>
 
 </manifest>
